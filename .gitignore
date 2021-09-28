@@ -58,3 +58,8 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# JetBrains
+.idea/
+
+.idea/.idea.Shooter.dir/.idea/discord.xml
+.idea/.idea.Shooter.dir/.idea/encodings.xml
