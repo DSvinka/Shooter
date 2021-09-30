@@ -1,10 +1,10 @@
-using UnityEngine;
+using Code.Views;
 
 namespace Code.Interfaces.Factory
 {
-    public interface IPlayerFactory: IFactory
+    internal interface IPlayerFactory: IFactory
     {
-        Transform CreatePlayer();
-        Transform CreatePlayerHud();
+        PlayerView CreatePlayer();
+        PlayerHudView CreatePlayerHud();
     }
 }

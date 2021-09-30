@@ -31,16 +31,16 @@ namespace Code.Factory
             return (enemy, gameObject);
         }
         
-        public (IEnemy enemy, GameObject gameObject) CreateTarget(Transform spawnPoint)
+        public IEnemy CreateTarget(Transform spawnPoint)
         {
             var (enemy, gameObject) = SetupEnemy(_data.TargetData.Prefab, _data.TargetData);
             gameObject.transform.SetParent(null);
             gameObject.transform.position = spawnPoint.position;
             gameObject.transform.rotation = spawnPoint.rotation;
 
-            return (enemy, gameObject);
+            return enemy;
         }
-        public (IEnemyMelee enemy, GameObject gameObject) CreateZombie(Transform spawnPoint)
+        public IEnemyMelee CreateZombie(Transform spawnPoint)
         {
             var (enemy, gameObject) = SetupEnemy(_data.ZombieData.Prefab, _data.ZombieData);
 
@@ -52,7 +52,7 @@ namespace Code.Factory
             gameObject.transform.position = spawnPoint.position;
             gameObject.transform.rotation = spawnPoint.rotation;
 
-            return (enemyMelee, gameObject);
+            return enemyMelee;
         }
     }
 }

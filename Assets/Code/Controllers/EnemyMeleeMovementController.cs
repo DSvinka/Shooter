@@ -32,9 +32,10 @@ namespace Code.Controllers
         {
             if (Time.frameCount % 2 != 0) 
                 return;
-            
-            foreach (var enemy in _enemies)
+
+            for (var index = 0; index < _enemies.Count; index++)
             {
+                var enemy = _enemies[index];
                 var monoBehaviour = enemy as MonoBehaviour;
                 if (monoBehaviour == null)
                     throw new Exception("MonoBehaviour не найден на Enemy объекте");

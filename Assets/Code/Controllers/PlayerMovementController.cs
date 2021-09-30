@@ -17,6 +17,8 @@ namespace Code.Controllers
         private PlayerView _player;
         private Camera _camera;
         private CharacterController _characterController;
+        private Transform _transform;
+        private Transform _cameraTransform;
 
         private Vector3 _moveDirection;
         private float _rotationX;
@@ -62,13 +64,17 @@ namespace Code.Controllers
         public void Initialization()
         {
             _player = _playerInitialization.GetPlayer();
-            
+
             _characterController = _player.GetComponent<CharacterController>();
             if (_characterController == null)
                 throw new Exception("Компонент CharacterController остуствует на префабе игрока");
+            
             _camera = _player.GetComponentInChildren<Camera>();
             if (_camera == null)
                 throw new Exception("Объект Camera остуствует на префабе игрока");
+            
+            _transform = _player.transform;
+            _cameraTransform = _camera.transform;
 
             _mouseXProxy.AxisOnChange += OnMouseXInput;
             _mouseYProxy.AxisOnChange += OnMouseYInput;
@@ -97,8 +103,8 @@ namespace Code.Controllers
 
         public void Execute(float deltaTime)
         {
-            var forward = _player.transform.TransformDirection(Vector3.forward);
-            var right = _player.transform.TransformDirection(Vector3.right);
+            var forward = _transform.TransformDirection(Vector3.forward);
+            var right = _transform.TransformDirection(Vector3.right);
 
             var isRunning = _runInput;
             var curSpeedX = canMove ? (isRunning ? _data.RunningSpeed : _data.WalkingSpeed) * _movementInput.y : 0;
@@ -126,8 +132,8 @@ namespace Code.Controllers
             {
                 _rotationX += -_mouseInput.y * _data.LookSpeed;
                 _rotationX = Mathf.Clamp(_rotationX, -_data.LookXLimit, _data.LookXLimit);
-                _camera.transform.localRotation = Quaternion.Euler(_rotationX, 0, 0);
-                _player.transform.rotation *= Quaternion.Euler(0, _mouseInput.x * _data.LookSpeed, 0);
+                _cameraTransform.localRotation = Quaternion.Euler(_rotationX, 0, 0);
+                _transform.rotation *= Quaternion.Euler(0, _mouseInput.x * _data.LookSpeed, 0);
             }
         }
     }

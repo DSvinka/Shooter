@@ -1,4 +1,5 @@
 using System;
+using Code.Controllers.ObjectPool;
 using Code.Data.DataStores;
 using Code.Factory;
 using Code.Markers;
@@ -21,20 +22,22 @@ namespace Code.Controllers.Initialization
             if (playerSpawn == null)
                 throw new Exception("Спавнер игрока отсуствует!");
 
+            var poolServices = new PoolServices();
+            
             var playerFactory = new PlayerFactory(data);
             var enemyFactory = new EnemyFactory(data);
 
             var inputInitialization = new InputInitialization();
-            var enemyInitialization = new EnemyInitialization(data, enemyFactory, enemySpawnMarkers);
+            var enemyInitialization = new EnemyInitialization(enemyFactory, enemySpawnMarkers);
             var playerInitialization = new PlayerInitialization(playerFactory, playerSpawn.transform.position);
 
             var inputController = new InputController();
             var playerHudController = new PlayerHudController(playerInitialization);
-            var weaponController = new WeaponController(playerHudController, playerInitialization);
+            var weaponController = new WeaponController(playerHudController, playerInitialization, poolServices);
             var enemyController = new EnemyController(enemyInitialization);
             var enemyMeleeController = new EnemyMeleeController(enemyInitialization);
             var enemyMeleeMovementController = new EnemyMeleeMovementController(enemyInitialization, playerInitialization);
-            
+
             var playerController = new PlayerController(data.PlayerData, playerInitialization, weaponController, playerHudController);
             var playerMovementController = new PlayerMovementController(_data.PlayerData, playerInitialization);
 

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Code.Interfaces.Data;
-using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -9,11 +8,11 @@ namespace Code.Data
 {
     internal static class DataUtils
     {
-        public static T GetData<T>(string path, ref T obj) where T : Object
+        public static T GetData<T>(string path, T obj) where T : Object
         {
             if (obj == null)
             {
-                obj = Load<T>(path);
+                obj = AssetPath.Load<T>(path);
             }
             
             if (obj is IData item)
@@ -22,7 +21,7 @@ namespace Code.Data
             return obj;
         }
 
-        public static Dictionary<string, T> GetDatasDict<T>(string path, ref Dictionary<string, T> obj) where T : Object
+        public static Dictionary<string, T> GetDatasDict<T>(string path, Dictionary<string, T> obj) where T : Object
         {
             if (obj != null)
                 return obj;
@@ -42,9 +41,6 @@ namespace Code.Data
             return obj;
         }
 
-        private static T Load<T>(string path) where T : Object =>
-            AssetDatabase.LoadAssetAtPath<T>(path);
-        
         private static T[] LoadAll<T>(string path) where T : Object =>
             Resources.LoadAll<T>(path);
     }

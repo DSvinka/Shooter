@@ -242,6 +242,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _aimPoint: {fileID: 3264037247321206258}
+  _camera: {fileID: 2613886901008341890}
   _weapon: {fileID: 5585907418177647772}
 --- !u!1 &8659468588182517968
 GameObject:
