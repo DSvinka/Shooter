@@ -1,14 +1,18 @@
 ﻿using Code.Data;
 using Code.Interfaces.Units;
-using Code.Managers;
 using UnityEngine;
 
 namespace Code.Markers
 {
+    public enum Enemies
+    {
+        Target
+    }
+
     internal sealed class EnemySpawnMarker : MonoBehaviour
     {
-        [SerializeField] private EnemyManager.EnemyType _enemyType;
+        [SerializeField] private Enemies _enemyType;
 
-        public EnemyManager.EnemyType EnemyType => _enemyType;
+        public Enemies EnemyType => _enemyType;
     }
 }

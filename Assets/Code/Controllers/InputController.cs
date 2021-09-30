@@ -13,7 +13,6 @@ namespace Code.Controllers
             MouseInput.MouseY.GetAxis();
             MouseInput.MouseX.GetAxis();
             MouseInput.Fire.GetKey();
-            MouseInput.Aim.GetKey();
             
             KeysInput.Escape.GetKeyDown();
             KeysInput.Reload.GetKeyDown();

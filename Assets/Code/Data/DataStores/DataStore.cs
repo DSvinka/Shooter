@@ -16,7 +16,6 @@ namespace Code.Data.DataStores
         [Header("Data")]
         [SerializeField] [AssetPath.Attribute(typeof(PlayerData))] private string _playerDataPath;
         [SerializeField] [AssetPath.Attribute(typeof(TargetData))] private string _targetDataPath;
-        [SerializeField] [AssetPath.Attribute(typeof(EnemyMeleeData))] private string _zombieDataPath;
 
         #endregion
 
@@ -24,7 +23,6 @@ namespace Code.Data.DataStores
 
         private PlayerData _player;
         private TargetData _target;
-        private EnemyMeleeData _zombie;
         
         private GameObject _playerHudPrefab;
 
@@ -34,7 +32,6 @@ namespace Code.Data.DataStores
 
         public PlayerData PlayerData => GetData(_playerDataPath, ref _player);
         public TargetData TargetData => GetData(_targetDataPath, ref _target);
-        public EnemyMeleeData ZombieData => GetData(_zombieDataPath, ref _zombie);
         public GameObject PlayerHudPrefab => GetData(_playerHudPrefabPath, ref _playerHudPrefab);
 
         #endregion

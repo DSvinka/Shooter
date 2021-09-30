@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f9ecfb83a864d0898539c1f04d37176, type: 3}
   m_Name: Target
   m_EditorClassIdentifier: 
-  _prefabPath: Assets/Resources/Prefab/Units/Target.prefab
+  _targetPrefabPath: Assets/Resources/Prefab/Units/Target.prefab
   _maxHealth: 30
   _maxArmor: 20
-  _enemyType: 0

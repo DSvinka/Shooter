@@ -6,6 +6,5 @@
         public const string MOUSEX = "Mouse X";
         
         public const int FIRE = 0;
-        public const int AIM = 1;
     }
 }

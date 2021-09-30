@@ -102,11 +102,6 @@ namespace Code.Controllers
             var monoBehaviour = enemy as MonoBehaviour;
             if (monoBehaviour == null)
                 throw new Exception("Enemy не имеет класса MonoBehaviour");
-            
-            _initialization.GetEnemies().Remove(enemy);
-            if (enemy is IEnemyMelee enemyMelee)
-                _initialization.GetMeleeEnemies().Remove(enemyMelee);
-            
             Object.Destroy(monoBehaviour.gameObject);
         }
     }

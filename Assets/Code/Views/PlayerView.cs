@@ -6,12 +6,9 @@ namespace Code.Views
 {
     internal sealed class PlayerView : MonoBehaviour, IUnit
     {
-        [SerializeField] private Transform _aimPoint;
-        
         // TODO: Заменить этот костыль на нормальный подбор оружия
         [SerializeField] private WeaponView _weapon;
         public WeaponView Weapon => _weapon;
-        public Transform AimPoint => _aimPoint;
         
         public event Action<GameObject, IUnit, float> OnDamage = delegate(GameObject attacker, IUnit player, float damage) {  };
         public event Action<GameObject, IUnit, float> OnArmored = delegate(GameObject armorer, IUnit player, float armor) {  };
