@@ -9,7 +9,7 @@ namespace Code.Views
     {
         public float Health { get; set; }
         public float Armor { get; set; }
-        public IEnemyData Data { get; set; }
+        public IUnitData Data { get; set; }
 
         public event Action<GameObject, IUnit, float> OnDamage = delegate(GameObject attacker, IUnit target, float damage) {  };
         public event Action<GameObject, IUnit, float> OnArmored = delegate(GameObject armorer, IUnit target, float armor) {  };
