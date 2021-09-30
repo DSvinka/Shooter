@@ -5,6 +5,7 @@ using Code.Factory;
 using Code.Interfaces;
 using Code.Interfaces.Data;
 using Code.Interfaces.Units;
+using Code.Managers;
 using Code.Markers;
 using Code.Views;
 using UnityEngine;
@@ -16,8 +17,9 @@ namespace Code.Controllers.Initialization
         private readonly DataStore _data;
         private readonly EnemyFactory _enemyFactory;
         private readonly EnemySpawnMarker[] _enemySpawnMarkers;
+        private List<IEnemyMelee> _meleeEnemies;
         private List<IEnemy> _enemies;
-
+        
         public EnemyInitialization(DataStore data, EnemyFactory enemyFactory, EnemySpawnMarker[] enemySpawnMarkers)
         {
             _data = data;
@@ -25,46 +27,66 @@ namespace Code.Controllers.Initialization
             _enemySpawnMarkers = enemySpawnMarkers;
 
             _enemies = new List<IEnemy>();
+            _meleeEnemies = new List<IEnemyMelee>();
         }
 
         public void Initialization()
         {
             if (_enemySpawnMarkers.Length == 0)
                 return;
-
-            Transform enemy;
-            Transform spawnerTransform;
+            
             foreach (var enemySpawnMarker in _enemySpawnMarkers)
             {
-                IEnemy enemyComponent;
+                IEnemy enemy;
+
                 switch (enemySpawnMarker.EnemyType)
                 {
-                    case Enemies.Target:
-                        enemy = _enemyFactory.CreateTarget();
-                        enemyComponent = enemy.GetComponent<IEnemy>();
-                        if (enemyComponent == null)
-                            throw new Exception($"IEnemy не найден в {enemy.gameObject.name}");
-                        enemyComponent.Health = _data.TargetData.MaxHealth;
-                        enemyComponent.Armor = _data.TargetData.MaxArmor;
-                        enemyComponent.Data = _data.TargetData;
-                        
+                    case EnemyManager.EnemyType.Target:
+                        (enemy, _) = _enemyFactory.CreateTarget(enemySpawnMarker.transform);
                         break;
+                
+                    case EnemyManager.EnemyType.Zombie:
+                        var (enemyMelee, _) = _enemyFactory.CreateZombie(enemySpawnMarker.transform);
+                        enemy = enemyMelee as IEnemy;
+                        if (enemy == null)
+                            throw new Exception("Префаб зомби не имеет IEnemy интерфейса");
+                        break;
+                
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-                
-                spawnerTransform = enemySpawnMarker.transform;
-                enemy.SetParent(null);
-                enemy.position = spawnerTransform.position;
-                enemy.rotation = spawnerTransform.rotation;
 
-                _enemies.Add(enemyComponent);
+                AddEnemy(enemy, enemy.Data.EnemyType);
             }
+        }
+
+        public void AddEnemy(IEnemy enemy, EnemyManager.EnemyType enemyType)
+        {
+            switch (enemyType)
+            {
+                case EnemyManager.EnemyType.Target:
+                    break;
+                
+                case EnemyManager.EnemyType.Zombie:
+                    var enemyMelee = enemy as IEnemyMelee;
+                    if (enemyMelee == null)
+                        throw new Exception("Zombie не имеет интерфейса IEnemyMelee");
+                    _meleeEnemies.Add(enemyMelee);
+                    break;
+                
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            _enemies.Add(enemy);
         }
 
         public List<IEnemy> GetEnemies()
         {
             return _enemies;
+        }
+        public List<IEnemyMelee> GetMeleeEnemies()
+        {
+            return _meleeEnemies;
         }
     }
 }

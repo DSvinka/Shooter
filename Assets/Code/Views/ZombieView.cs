@@ -5,10 +5,15 @@ using UnityEngine;
 
 namespace Code.Views
 {
-    internal sealed class TargetView: MonoBehaviour, IEnemy
+    internal sealed class ZombieView: MonoBehaviour, IEnemy, IEnemyMelee
     {
+        [SerializeField] private Transform _attackPoint;
+        
         public float Health { get; set; }
         public float Armor { get; set; }
+        public Transform AttackPoint => _attackPoint;
+        public float Cooldown { get; set; }
+        
         public IEnemyData Data { get; set; }
 
         public event Action<GameObject, IUnit, float> OnDamage = delegate(GameObject attacker, IUnit target, float damage) {  };

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Code.Controllers.Initialization;
 using Code.Input.Inputs;
 using Code.Interfaces;
@@ -20,12 +21,16 @@ namespace Code.Controllers
         private int _ammo;
         private float _cooldown;
         private bool _isReloading;
+        private bool _isAiming;
 
         private ParticleSystem _particleSystem;
         private AudioSource _audioSource;
 
         private bool _reloadInput;
+        private bool _aimInput;
         private bool _fireInput;
+
+        private Vector3 _gunInitialPosition;
 
         public WeaponController(PlayerHudController playerHudController, PlayerInitialization playerInitialization)
         {
@@ -34,15 +39,19 @@ namespace Code.Controllers
 
             _reloadInputProxy = KeysInput.Reload;
             _fireInputProxy = MouseInput.Fire;
+            _aimInputProxy = MouseInput.Aim;
         }
 
         #region Input Proxy
         
         private IUserKeyDownProxy _reloadInputProxy;
         private IUserKeyProxy _fireInputProxy;
+        private IUserKeyProxy _aimInputProxy;
         
         private void OnReloadInput(bool value) => _reloadInput = value;
         private void OnFireInput(bool value) => _fireInput = value;
+        private void OnAimInput(bool value) => _aimInput = value;
+
 
         #endregion
 
@@ -52,6 +61,7 @@ namespace Code.Controllers
 
             _reloadInputProxy.KeyOnDown += OnReloadInput;
             _fireInputProxy.KeyOnChange += OnFireInput;
+            _aimInputProxy.KeyOnChange += OnAimInput;
 
             if (_weapon != null)
                 _hudController.SetMaxAmmo(_weapon.WeaponData.MaxAmmo);
@@ -64,6 +74,7 @@ namespace Code.Controllers
             
             _reloadInputProxy.KeyOnDown -= OnReloadInput;
             _fireInputProxy.KeyOnChange -= OnFireInput;
+            _aimInputProxy.KeyOnChange -= OnAimInput;
         }
 
         public void Execute(float deltaTime)
@@ -71,6 +82,7 @@ namespace Code.Controllers
             if (_weapon == null)
                 return;
             
+            Aim();
             Reload();
             Shoot();
 
@@ -83,10 +95,26 @@ namespace Code.Controllers
             _weapon = weapon;
             _particleSystem = _weapon.GetComponentInChildren<ParticleSystem>();
             _audioSource = _weapon.GetComponent<AudioSource>();
-            
+
+            _gunInitialPosition = _weapon.transform.localPosition;
             _hudController.SetMaxAmmo(_weapon.WeaponData.MaxAmmo);
         }
 
+        private void Aim()
+        {
+            if (_aimInput && !_isReloading)
+            {
+                _weapon.transform.localPosition = _player.AimPoint.localPosition;
+                _isAiming = true;
+            }
+            else if (_isAiming && (!_aimInput || _isReloading))
+            {
+                _weapon.transform.localPosition = _gunInitialPosition;
+                _isAiming = false;
+            }
+                
+        }
+        
         private void Reload()
         {
             if (_reloadInput && _ammo != _weapon.WeaponData.MaxAmmo)
