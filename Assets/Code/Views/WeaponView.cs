@@ -8,6 +8,7 @@ namespace Code.Views
         [Header("Модельки и расположения")]
         [SerializeField] private GameObject _model;
         [SerializeField] private Transform _shotPoint;
+        
 
         [Header("Характеристики Оружия")]
         [SerializeField] private WeaponData _weaponData; // TODO: Заменить это на ENUM

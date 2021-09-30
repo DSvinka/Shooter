@@ -15,3 +15,4 @@ MonoBehaviour:
   _playerHudPrefabPath: Assets/Resources/Prefab/UI/HUD.prefab
   _playerDataPath: Assets/Resources/Data/Player.asset
   _targetDataPath: Assets/Resources/Data/Target.asset
+  _zombieDataPath: Assets/Resources/Data/Zombie.asset

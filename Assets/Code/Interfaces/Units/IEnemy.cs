@@ -1,4 +1,5 @@
 ﻿using Code.Interfaces.Data;
+using Code.Managers;
 
 namespace Code.Interfaces.Units
 {
@@ -6,6 +7,6 @@ namespace Code.Interfaces.Units
     {
         float Health { get; set; }
         float Armor { get; set; }
-        IUnitData Data { get; set; }
+        IEnemyData Data { get; set; }
     }
 }
