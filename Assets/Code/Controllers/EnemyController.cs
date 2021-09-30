@@ -13,6 +13,7 @@ namespace Code.Controllers
         private readonly EnemyInitialization _initialization;
 
         private List<IEnemy> _enemies;
+        private List<IEnemyMelee> _enemiesMelee;
 
         public EnemyController(EnemyInitialization initialization)
         {
@@ -22,6 +23,7 @@ namespace Code.Controllers
         public void Initialization()
         {
             _enemies = _initialization.GetEnemies();
+            _enemiesMelee = _initialization.GetMeleeEnemies();
 
             if (_enemies != null)
             {
@@ -103,9 +105,9 @@ namespace Code.Controllers
             if (monoBehaviour == null)
                 throw new Exception("Enemy не имеет класса MonoBehaviour");
             
-            _initialization.GetEnemies().Remove(enemy);
+            _enemies.Remove(enemy);
             if (enemy is IEnemyMelee enemyMelee)
-                _initialization.GetMeleeEnemies().Remove(enemyMelee);
+                _enemiesMelee.Remove(enemyMelee);
             
             Object.Destroy(monoBehaviour.gameObject);
         }

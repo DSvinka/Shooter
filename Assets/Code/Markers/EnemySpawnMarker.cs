@@ -1,6 +1,4 @@
-﻿using Code.Data;
-using Code.Interfaces.Units;
-using Code.Managers;
+﻿using Code.Managers;
 using UnityEngine;
 
 namespace Code.Markers

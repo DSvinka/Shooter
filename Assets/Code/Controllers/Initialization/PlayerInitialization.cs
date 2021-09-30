@@ -1,8 +1,6 @@
 ﻿using System;
-using Cinemachine;
 using Code.Factory;
 using Code.Interfaces;
-using Code.Interfaces.Factory;
 using Code.Views;
 using UnityEngine;
 
@@ -26,11 +24,11 @@ namespace Code.Controllers.Initialization
 
         public void Initialization()
         {
-            _player = _playerFactory.CreatePlayer().GetComponent<PlayerView>();
+            _player = _playerFactory.CreatePlayer();
             if (_player == null)
                 throw new Exception("Компонент Player остуствует у префаба игрока");
             
-            _playerHud = _playerFactory.CreatePlayerHud().GetComponent<PlayerHudView>();
+            _playerHud = _playerFactory.CreatePlayerHud();
             if (_playerHud == null)
                 throw new Exception("Компонент PlayerHud остуствует у префаба интерфейса игрока");
             

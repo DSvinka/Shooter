@@ -1,6 +1,4 @@
-﻿using Code.Managers;
-
-namespace Code.Interfaces.Data
+﻿namespace Code.Interfaces.Data
 {
     public interface IUnitData
     {

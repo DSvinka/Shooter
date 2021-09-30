@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using Code.Controllers.Starter;
 using static Code.Data.DataUtils;
 using UnityEngine;
 
@@ -32,10 +30,10 @@ namespace Code.Data.DataStores
 
         #region Свойства
 
-        public PlayerData PlayerData => GetData(_playerDataPath, ref _player);
-        public TargetData TargetData => GetData(_targetDataPath, ref _target);
-        public EnemyMeleeData ZombieData => GetData(_zombieDataPath, ref _zombie);
-        public GameObject PlayerHudPrefab => GetData(_playerHudPrefabPath, ref _playerHudPrefab);
+        public PlayerData PlayerData => GetData(_playerDataPath, _player);
+        public TargetData TargetData => GetData(_targetDataPath, _target);
+        public EnemyMeleeData ZombieData => GetData(_zombieDataPath, _zombie);
+        public GameObject PlayerHudPrefab => GetData(_playerHudPrefabPath, _playerHudPrefab);
 
         #endregion
     }

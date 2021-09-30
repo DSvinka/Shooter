@@ -27,28 +27,25 @@ namespace Code.Controllers
         {
             if (Time.frameCount % 2 != 0) 
                 return;
-            
-            foreach (var enemy in _enemies)
+
+            for (var index = 0; index < _enemies.Count; index++)
             {
+                var enemy = _enemies[index];
                 enemy.Cooldown -= deltaTime * 2;
-                if (enemy.Cooldown >= 0) 
+                if (enemy.Cooldown >= 0)
                     continue;
-                
+
                 var monoBehaviour = enemy as MonoBehaviour;
                 if (monoBehaviour == null)
                     throw new Exception("MonoBehaviour не найден на объекте");
-                
-                var enemyComponent = enemy as IEnemy;
-                if (enemyComponent == null)
-                    throw new Exception("IEnemy не найден на объекте");
-                
-                var meleeData = enemyComponent.Data as IEnemyMeleeData;
+
+                var meleeData = enemy.Data as IEnemyMeleeData;
                 if (meleeData == null)
                     throw new Exception("IEnemyMeleeData не найден на объекте");
-                  
+
                 var position = enemy.AttackPoint.position;
                 var forward = enemy.AttackPoint.forward;
-                
+
                 // TODO: Добавить звуки для зомби
                 //_particleSystem.Play();
                 //_audioSource.PlayOneShot(data.FireClip);

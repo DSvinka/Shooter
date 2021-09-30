@@ -37,7 +37,7 @@ public partial class AssetPath
         public Attribute(Type type)
         {
             m_Type = type; 
-            m_PathType = Types.Project;
+            m_PathType = Types.Resources;
         }
 
 

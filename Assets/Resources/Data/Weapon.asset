@@ -12,16 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0898139a6b08b4c40abe00b43e7d0541, type: 3}
   m_Name: Weapon
   m_EditorClassIdentifier: 
-  m_prefabPath: Assets/Resources/Prefab/Weapons/StickGun.prefab
-  _name: "\u041F\u0430\u043B\u043A\u0430 Gun"
-  _description: "\u041F\u0430\u043B\u043A\u0430 \u043D\u043E \u043F\u0443\u0448\u043A\u0430"
-  _icon: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
-  _price: 520
+  _weaponPrefabPath: Assets/Resources/Prefab/Weapons/StickGun.prefab
+  _bulletPrefabPath: Assets/Resources/Prefab/Weapons/Bullet.prefab
   _damage: 10
-  _maxAmmo: 32
+  _magazineSize: 32
   _fireRate: 0.1
   _maxDistance: 100
+  _spread: 11
+  _spreadAim: 6
+  _bulletForce: 100
+  _bulletLifeTime: 3
   _reloadClipPath: Assets/Resources/Sounds/Weapons/StickGun/Reload.wav
   _fireClipPath: Assets/Resources/Sounds/Weapons/StickGun/Fire.wav
   _noAmmoClipPath: Assets/Resources/Sounds/Weapons/StickGun/NoAmmo.wav
   _reloadMove: {x: -45, y: 0, z: 0}
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 51

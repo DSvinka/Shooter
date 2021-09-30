@@ -1,7 +1,8 @@
-﻿using Code.Data.DataStores;
-using Code.Interfaces;
+﻿using System;
+using Code.Data.DataStores;
 using Code.Interfaces.Factory;
-using UnityEngine;
+using Code.Views;
+using Object = UnityEngine.Object;
 
 namespace Code.Factory
 {
@@ -14,16 +15,22 @@ namespace Code.Factory
             _data = data;
         }
 
-        public Transform CreatePlayer()
+        public PlayerView CreatePlayer()
         {
-            var player = Object.Instantiate(_data.PlayerData.PlayerPrefab);
-            return player.transform;
+            var gameObject = Object.Instantiate(_data.PlayerData.PlayerPrefab);
+            var player = gameObject.GetComponent<PlayerView>();
+            if (player == null)
+                throw new Exception("У префаба игрока не найден компонент PlayerView!");
+            return player;
         }
 
-        public Transform CreatePlayerHud()
+        public PlayerHudView CreatePlayerHud()
         {
-            var player = Object.Instantiate(_data.PlayerHudPrefab);
-            return player.transform;
+            var gameObject = Object.Instantiate(_data.PlayerHudPrefab);
+            var playerHud = gameObject.GetComponent<PlayerHudView>();
+            if (playerHud == null)
+                throw new Exception("У префаба игрока не найден компонент PlayerHudView!");
+            return playerHud;
         }
     }
 }

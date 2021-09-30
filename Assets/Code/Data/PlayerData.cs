@@ -34,7 +34,7 @@ namespace Code.Data
         
         #region Свойства
         
-        public GameObject PlayerPrefab => GetData(_playerPrefabPath, ref _playerPrefab);
+        public GameObject PlayerPrefab => GetData(_playerPrefabPath, _playerPrefab);
 
         public float MaxHealth => _maxHealth;
         public float MaxArmor => _maxArmor;

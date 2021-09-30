@@ -1,9 +1,8 @@
-﻿using Code.Interfaces.Data;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Code.Interfaces.Units
 {
-    public interface IEnemyMelee
+    public interface IEnemyMelee: IEnemy
     {
         Transform AttackPoint { get; }
         float Cooldown { get; set; }

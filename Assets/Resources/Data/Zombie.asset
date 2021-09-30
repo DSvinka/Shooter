@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _prefabPath: Assets/Resources/Prefab/Units/Zombie.prefab
   _maxHealth: 50
-  _maxArmor: 50
+  _maxArmor: 0
   _attackDamage: 25
   _attackDistance: 0.25
   _attackRate: 1

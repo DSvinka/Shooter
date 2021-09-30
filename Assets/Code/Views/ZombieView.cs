@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Code.Views
 {
-    internal sealed class ZombieView: MonoBehaviour, IEnemy, IEnemyMelee
+    internal sealed class ZombieView: MonoBehaviour, IEnemyMelee
     {
         [SerializeField] private Transform _attackPoint;
         
