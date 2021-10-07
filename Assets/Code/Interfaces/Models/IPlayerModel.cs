@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Code.Interfaces.Models
 {
-    internal interface IPlayerModel
+    internal interface IPlayerModel: IUnitModel
     {
         Camera Camera { get; }
         PlayerView View { get; }

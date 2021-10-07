@@ -26,6 +26,8 @@ namespace Code.Data
         [Header("Звуки")]
         [SerializeField] [AssetPath.Attribute(typeof(AudioClip))] private string _attackClipPath;
         [SerializeField] [AssetPath.Attribute(typeof(AudioClip))] private string _getDamageClipPath;
+        [SerializeField] private float _maxPitch = 2f;
+        [SerializeField] private float _minPitch = 1f;
         
         [Header("Метки")]
         [SerializeField] private EnemyManager.EnemyType _enemyType;
@@ -54,6 +56,9 @@ namespace Code.Data
         
         public AudioClip AttackClip => GetData(_attackClipPath, _attackClip);
         public AudioClip GetDamageClip => GetData(_getDamageClipPath, _getDamageClip);
+        
+        public float MaxPitch => _maxPitch;
+        public float MinPitch => _minPitch;
         
         public EnemyManager.EnemyType EnemyType => _enemyType;
 

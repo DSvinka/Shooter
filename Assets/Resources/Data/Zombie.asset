@@ -18,4 +18,8 @@ MonoBehaviour:
   _attackDamage: 25
   _attackDistance: 0.25
   _attackRate: 1
+  _attackClipPath: Assets/Resources/Sounds/Units/Zombie/Zombie Attack.wav
+  _getDamageClipPath: Assets/Resources/Sounds/Units/Zombie/Zombie Damaged.wav
+  _maxPitch: 2
+  _minPitch: 1
   _enemyType: 1

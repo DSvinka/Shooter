@@ -31,7 +31,7 @@ namespace Code.Controllers.Initialization
 
             var inputInitialization = new InputInitialization();
             var enemyInitialization = new EnemyInitialization(_data, enemyFactory, enemySpawnMarkers);
-            var playerInitialization = new PlayerInitialization(data.PlayerData, playerFactory, playerSpawn.transform.position);
+            var playerInitialization = new PlayerInitialization(data.PlayerData, playerFactory, playerSpawn.transform);
 
             var inputController = new InputController();
             var playerHudController = new PlayerHudController(playerInitialization);

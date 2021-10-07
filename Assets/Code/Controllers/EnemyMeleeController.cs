@@ -5,6 +5,7 @@ using Code.Interfaces;
 using Code.Interfaces.Models;
 using Code.Interfaces.Views;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Code.Controllers
 {
@@ -76,6 +77,7 @@ namespace Code.Controllers
         private void AddDamage(GameObject attacker, IUnitView unit, float damage)
         {
             var enemy = GetEnemy(unit);
+            
             enemy.AudioSource.PlayOneShot(enemy.Data.GetDamageClip);
 
             if (enemy.Armor > damage)
@@ -100,9 +102,12 @@ namespace Code.Controllers
         
         private void Death(IEnemyMeleeModel enemyMelee)
         {
-            _enemiesMelee.Remove(enemyMelee);
-            
-            UnityEngine.Object.Destroy(enemyMelee.GameObject);
+            // TODO: Добавить таймер с рандомом, чтобы не сразу спавнились черти.
+            enemyMelee.Transform.position = enemyMelee.SpawnPoint.position;
+            enemyMelee.AudioSource.Stop();
+            enemyMelee.Reset();
+            // _enemiesMelee.Remove(enemyMelee);
+            // UnityEngine.Object.Destroy(enemyMelee.GameObject);
         }
     }
 }

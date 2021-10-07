@@ -11,13 +11,13 @@ namespace Code.Controllers.Initialization
     internal sealed class PlayerInitialization: IInitialization
     {
         private readonly PlayerFactory _playerFactory;
-        private readonly Vector3 _playerSpawnPosition;
+        private readonly Transform _playerSpawnPosition;
 
         private PlayerData _data;
         private PlayerModel _player;
         private PlayerHudView _playerHud;
 
-        public PlayerInitialization(PlayerData data, PlayerFactory playerFactory, Vector3 playerSpawnPosition)
+        public PlayerInitialization(PlayerData data, PlayerFactory playerFactory, Transform playerSpawnPosition)
         {
             _data = data;
             _playerFactory = playerFactory;
@@ -35,14 +35,17 @@ namespace Code.Controllers.Initialization
             if (playerCharacterController == null)
                 throw new Exception("Компонент CharacterController не найден на объекте PlayerView");
             
-            var playerModel = new PlayerModel(playerView, _data, playerCharacterController, playerCamera,  null);
+            var playerModel = new PlayerModel(playerView, _data, playerCharacterController, playerCamera,  null)
+            {
+                SpawnPoint = _playerSpawnPosition
+            };
 
             _player = playerModel;
             _playerHud = _playerFactory.CreatePlayerHud();
 
             _playerHud.transform.SetParent(null);
             _player.Transform.SetParent(null);
-            _player.Transform.position = _playerSpawnPosition;
+            _player.Transform.position = _playerSpawnPosition.position;
         }
 
         public PlayerModel GetPlayer()

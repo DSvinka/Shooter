@@ -8,6 +8,7 @@ using Code.Models;
 using UnityEngine;
 using UnityEngine.AI;
 using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 namespace Code.Factory
 {
@@ -39,6 +40,7 @@ namespace Code.Factory
 
             var enemyModel = new EnemyModel(enemyView, gameObject, data)
             {
+                SpawnPoint = spawnPoint,
                 Health = data.MaxHealth,
                 Armor = data.MaxArmor
             };
@@ -66,10 +68,13 @@ namespace Code.Factory
 
             var enemyMeleeModel = new EnemyMeleeModel(enemyMeleeView, gameObject, enemyNavMeshAgent, enemyAudioSource, data)
             {
+                SpawnPoint = spawnPoint,
                 Health = data.MaxHealth,
-                Armor = data.MaxArmor
+                Armor = data.MaxArmor,
+                Pitch = Random.Range(data.MinPitch, data.MaxPitch)
             };
             enemyMeleeView.Model = enemyMeleeModel;
+            enemyAudioSource.pitch = enemyMeleeModel.Pitch;
 
             gameObject.transform.position = spawnPoint.position;
             gameObject.transform.rotation = spawnPoint.rotation;

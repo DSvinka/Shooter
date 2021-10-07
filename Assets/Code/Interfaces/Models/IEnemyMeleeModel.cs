@@ -10,6 +10,5 @@ namespace Code.Interfaces.Models
         IEnemyMeleeData Data { get; }
         IEnemyMeleeView View { get; }
         NavMeshAgent NavMeshAgent { get; }
-        AudioSource AudioSource { get; }
     }
 }
