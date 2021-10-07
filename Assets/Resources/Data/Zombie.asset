@@ -20,6 +20,6 @@ MonoBehaviour:
   _attackRate: 1
   _attackClipPath: Assets/Resources/Sounds/Units/Zombie/Zombie Attack.wav
   _getDamageClipPath: Assets/Resources/Sounds/Units/Zombie/Zombie Damaged.wav
-  _maxPitch: 2
-  _minPitch: 1
-  _enemyType: 1
+  _maxRandomSoundPitch: 2
+  _minRandomSoundPitch: 1
+  _enemyType: 0

@@ -51,21 +51,21 @@ namespace Code.Controllers
             }
         }
 
-        private void AddHealth(GameObject healer, IUnitView _, float health)
+        private void AddHealth(GameObject healer, int _, float health)
         {
             _player.Health += health;
             if (_player.Health > _player.Data.MaxHealth)
                 _player.Health = _player.Data.MaxHealth;
         }
 
-        private void AddArmor(GameObject armorer, IUnitView _, float armor)
+        private void AddArmor(GameObject armorer, int _, float armor)
         {
             _player.Armor += armor;
             if (_player.Armor > _player.Data.MaxArmor)
                 _player.Armor = _player.Data.MaxArmor;
         }
 
-        private void AddDamage(GameObject attacker, IUnitView _, float damage)
+        private void AddDamage(GameObject attacker, int _, float damage)
         {
             if (_player.Armor > damage)
             {

@@ -37,10 +37,7 @@ namespace Code.Controllers.Initialization
             var playerHudController = new PlayerHudController(playerInitialization);
             var weaponController = new WeaponController(playerHudController, playerInitialization, weaponFactory);
             
-            var enemyController = new EnemyController(enemyInitialization);
-            var enemyMeleeController = new EnemyMeleeController(enemyInitialization);
-            var enemyMeleeAttackController = new EnemyMeleeAttackController(enemyInitialization);
-            var enemyMeleeMovementController = new EnemyMeleeMovementController(enemyInitialization, playerInitialization);
+            var enemyController = new EnemyController(enemyInitialization, playerInitialization);
 
             var playerController = new PlayerController(playerInitialization, weaponController, playerHudController, _data.StickGunData);
             var playerMovementController = new PlayerMovementController(playerInitialization);
@@ -53,10 +50,6 @@ namespace Code.Controllers.Initialization
             controllers.Add(weaponController);
             
             controllers.Add(enemyController);
-            controllers.Add(enemyMeleeController);
-            controllers.Add(enemyMeleeAttackController);
-            controllers.Add(enemyMeleeMovementController);
-            
             controllers.Add(playerController);
             controllers.Add(playerMovementController);
         }

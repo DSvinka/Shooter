@@ -31,11 +31,15 @@ namespace Code.Controllers.Initialization
             if (playerCamera == null)
                 throw new Exception("Компонент Camera не найден в детях объекта PlayerView");
             
+            var playerAudioSource = playerView.GetComponent<AudioSource>();
+            if (playerAudioSource == null)
+                throw new Exception("Компонент AudioSource не найден на объекте PlayerView");
+            
             var playerCharacterController = playerView.GetComponent<CharacterController>();
             if (playerCharacterController == null)
                 throw new Exception("Компонент CharacterController не найден на объекте PlayerView");
             
-            var playerModel = new PlayerModel(playerView, _data, playerCharacterController, playerCamera,  null)
+            var playerModel = new PlayerModel(playerView, _data, playerAudioSource, playerCharacterController, playerCamera,  null)
             {
                 SpawnPoint = _playerSpawnPosition
             };

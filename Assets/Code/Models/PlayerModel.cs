@@ -22,8 +22,10 @@ namespace Code.Models
         
         public bool CanMove { get; set; }
         public Transform CameraTransform { get; }
-        public CharacterController CharacterController { get; }
         
+        public CharacterController CharacterController { get; }
+        public AudioSource AudioSource { get; }
+
         public void Reset()
         {
             CanMove = true;
@@ -31,7 +33,7 @@ namespace Code.Models
             Armor = Data.MaxArmor;
         }
 
-        public PlayerModel(PlayerView view, PlayerData data, CharacterController characterController, Camera camera, WeaponModel weapon = null)
+        public PlayerModel(PlayerView view, PlayerData data, AudioSource audioSource, CharacterController characterController, Camera camera, WeaponModel weapon = null)
         {
             View = view;
             Data = data;
@@ -48,8 +50,7 @@ namespace Code.Models
             
             CameraTransform = camera.transform;
             CharacterController = characterController;
+            AudioSource = audioSource;
         }
-
-       
     }
 }

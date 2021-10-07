@@ -1,82 +1,111 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Code.Controllers.Initialization;
 using Code.Interfaces;
+using Code.Interfaces.Bridges;
 using Code.Interfaces.Models;
-using Code.Interfaces.Views;
+using Code.Models;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Code.Controllers
 {
-    internal sealed class EnemyController: IController, IInitialization, ICleanup
+    internal sealed class EnemyController: IController, IInitialization, ICleanup, IExecute
     {
         private readonly EnemyInitialization _initialization;
+        private readonly PlayerInitialization _playerInitialization;
 
-        private List<IEnemyModel> _enemies;
+        private Dictionary<int, IEnemyModel> _enemies;
+        private PlayerModel _player;
 
-        public EnemyController(EnemyInitialization initialization)
+        public EnemyController(EnemyInitialization initialization, PlayerInitialization playerInitialization)
         {
             _initialization = initialization;
+            _playerInitialization = playerInitialization;
         }
         
         public void Initialization()
         {
             _enemies = _initialization.GetEnemies();
+            _player = _playerInitialization.GetPlayer();
 
-            if (_enemies != null)
+            if (_enemies.Count != 0)
             {
-                foreach (var enemy in _enemies)
+                foreach (var enemyDict in _enemies)
                 {
-                    enemy.View.OnArmored += AddArmor;
-                    enemy.View.OnHealing += AddHealth;
-                    enemy.View.OnDamage += AddDamage;
+                    var value = enemyDict.Value;
+                    if (value.GameObject != null)
+                    {
+                        value.View.OnArmored += AddArmor;
+                        value.View.OnHealing += AddHealth;
+                        value.View.OnDamage += AddDamage;
+                    }
                 }   
+            }
+        }
+        
+        public void Execute(float deltaTime)
+        {
+            if (Time.frameCount % 2 != 0) 
+                return;
+            
+            if (_enemies.Count == 0) 
+                return;
+
+            if (_player.GameObject == null)
+                _player = _playerInitialization.GetPlayer();
+
+            foreach (var enemyDict in _enemies)
+            {
+                var value = enemyDict.Value;
+                if (value.GameObject == null)
+                {
+                    _enemies.Remove(enemyDict.Key);
+                    continue;
+                }
+                    
+                value.AttackBridge.Attack(deltaTime, value);
+                value.MoveBridge.Move(deltaTime, value, _player.Transform.position);
             }
         }
 
         public void Cleanup()
         {
-            foreach (var enemy in _enemies)
+            if (_enemies.Count != 0)
             {
-                if (enemy != null)
+                foreach (var enemyDict in _enemies)
                 {
-                    enemy.View.OnArmored -= AddArmor;
-                    enemy.View.OnHealing -= AddHealth;
-                    enemy.View.OnDamage -= AddDamage;   
+                    var value = enemyDict.Value;
+                    if (value.GameObject != null)
+                    {
+                        value.View.OnArmored -= AddArmor;
+                        value.View.OnHealing -= AddHealth;
+                        value.View.OnDamage -= AddDamage;
+                    }
                 }
             }
         }
 
-        private IEnemyModel GetEnemy(IUnitView unit)
+        private void AddHealth(GameObject healer, int id, float health)
         {
-            var enemy = unit as IEnemyView;
-            if (enemy == null)
-                throw new Exception("Unit не имеет интерфейса IEnemyView");
-            return enemy.Model;
-        }
-
-        private void AddHealth(GameObject healer, IUnitView unit, float health)
-        {
-            var enemy = GetEnemy(unit);
+            var enemy = _enemies[id];
             
             enemy.Health += health;
             if (enemy.Health > enemy.Data.MaxHealth)
                 enemy.Health = enemy.Data.MaxHealth;
         }
 
-        private void AddArmor(GameObject armorer, IUnitView unit, float armor)
+        private void AddArmor(GameObject armorer, int id, float armor)
         {
-            var enemy = GetEnemy(unit);
+            var enemy = _enemies[id];
             
             enemy.Armor += armor;
             if (enemy.Armor > enemy.Data.MaxArmor)
                 enemy.Armor = enemy.Data.MaxArmor;
         }
 
-        private void AddDamage(GameObject attacker, IUnitView unit, float damage)
+        private void AddDamage(GameObject attacker, int id, float damage)
         {
-            var enemy = GetEnemy(unit);
+            var enemy = _enemies[id];
             
             if (enemy.Armor > damage)
             {
@@ -94,14 +123,19 @@ namespace Code.Controllers
             if (enemy.Health <= 0)
             {
                 enemy.Health = 0;
-                Death(enemy);
+                Death(id, enemy);
             }
         }
         
-        private void Death(IEnemyModel enemy)
+        private void Death(int id, IEnemyModel enemy)
         {
-            _enemies.Remove(enemy);
-            Object.Destroy(enemy.GameObject);
+            // TODO: Добавить таймер с рандомом, чтобы не сразу спавнились черти.
+            enemy.Transform.position = enemy.SpawnPoint.position;
+            enemy.AudioSource.Stop();
+            enemy.Reset();
+            
+            //_enemies.Remove(id);
+            //Object.Destroy(enemy.GameObject);
         }
     }
 }

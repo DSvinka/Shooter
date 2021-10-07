@@ -1,5 +1,8 @@
 ﻿using System;
+using Code.Bridges.Attacks;
+using Code.Bridges.Movement;
 using Code.Data.DataStores;
+using Code.Interfaces.Bridges;
 using Code.Interfaces.Data;
 using Code.Interfaces.Factory;
 using Code.Interfaces.Models;
@@ -21,41 +24,11 @@ namespace Code.Factory
             _data = data;
         }
 
-        private (IEnemyView enemy, GameObject gameObject) SetupEnemy(GameObject prefab, IEnemyData data)
-        {
-            var gameObject = Object.Instantiate(prefab);
-            var enemy = gameObject.GetComponent<IEnemyView>();
-            if (enemy == null)
-                throw new Exception($"IEnemyView не найден в {gameObject.gameObject.name}");
-
-            return (enemy, gameObject);
-        }
-        
-        public IEnemyModel CreateEnemy(IEnemyData data, GameObject prefab, Transform spawnPoint)
+        public IEnemyModel CreateEnemy(IEnemyData data, GameObject prefab, IMove moveBridge, IAttack attackBridge, Transform spawnPoint)
         {
             var gameObject = Object.Instantiate(prefab, null, true);
             var enemyView = gameObject.GetComponent<IEnemyView>();
             if (enemyView == null)
-                throw new Exception($"IEnemyView не найден в {gameObject.gameObject.name}");
-
-            var enemyModel = new EnemyModel(enemyView, gameObject, data)
-            {
-                SpawnPoint = spawnPoint,
-                Health = data.MaxHealth,
-                Armor = data.MaxArmor
-            };
-            enemyView.Model = enemyModel;
-
-            gameObject.transform.position = spawnPoint.position;
-            gameObject.transform.rotation = spawnPoint.rotation;
-
-            return enemyModel;
-        }
-        public IEnemyMeleeModel CreateMeleeEnemy(IEnemyMeleeData data, GameObject prefab, Transform spawnPoint)
-        {
-            var gameObject = Object.Instantiate(prefab, null, true);
-            var enemyMeleeView = gameObject.GetComponent<IEnemyMeleeView>();
-            if (enemyMeleeView == null)
                 throw new Exception($"IEnemyMeleeView не найден в {gameObject.gameObject.name}!");
             
             var enemyNavMeshAgent = gameObject.GetComponent<NavMeshAgent>();
@@ -66,20 +39,19 @@ namespace Code.Factory
             if (enemyAudioSource == null)
                 throw new Exception($"AudioSource не найден в {gameObject.gameObject.name}!");
 
-            var enemyMeleeModel = new EnemyMeleeModel(enemyMeleeView, gameObject, enemyNavMeshAgent, enemyAudioSource, data)
+            var enemyModel = new EnemyModel(enemyView, gameObject, data)
             {
                 SpawnPoint = spawnPoint,
-                Health = data.MaxHealth,
-                Armor = data.MaxArmor,
-                Pitch = Random.Range(data.MinPitch, data.MaxPitch)
             };
-            enemyMeleeView.Model = enemyMeleeModel;
-            enemyAudioSource.pitch = enemyMeleeModel.Pitch;
+            enemyModel.SetComponents(enemyNavMeshAgent, enemyAudioSource);
+            enemyModel.SetBridges(moveBridge, attackBridge);
+            
+            enemyAudioSource.pitch = Random.Range(data.MinRandomSoundPitch, data.MaxRandomSoundPitch);
 
             gameObject.transform.position = spawnPoint.position;
             gameObject.transform.rotation = spawnPoint.rotation;
 
-            return enemyMeleeModel;
+            return enemyModel;
         }
     }
 }
