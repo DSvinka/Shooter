@@ -3,6 +3,7 @@ using Code.Controllers.ObjectPool;
 using Code.Data.DataStores;
 using Code.Factory;
 using Code.Markers;
+using Code.Services;
 using Object = UnityEngine.Object;
 
 namespace Code.Controllers.Initialization
@@ -21,25 +22,28 @@ namespace Code.Controllers.Initialization
             var playerSpawn = Object.FindObjectOfType<PlayerSpawnMarker>();
             if (playerSpawn == null)
                 throw new Exception("Спавнер игрока отсуствует!");
-
-            var poolServices = new PoolServices();
             
-            var playerFactory = new PlayerFactory(data);
-            var enemyFactory = new EnemyFactory(data);
+            ServiceLocator.SetService(new PoolService());
+
+            var playerFactory = new PlayerFactory(_data);
+            var enemyFactory = new EnemyFactory(_data);
+            var weaponFactory = new WeaponFactory();
 
             var inputInitialization = new InputInitialization();
-            var enemyInitialization = new EnemyInitialization(enemyFactory, enemySpawnMarkers);
-            var playerInitialization = new PlayerInitialization(playerFactory, playerSpawn.transform.position);
+            var enemyInitialization = new EnemyInitialization(_data, enemyFactory, enemySpawnMarkers);
+            var playerInitialization = new PlayerInitialization(data.PlayerData, playerFactory, playerSpawn.transform);
 
             var inputController = new InputController();
             var playerHudController = new PlayerHudController(playerInitialization);
-            var weaponController = new WeaponController(playerHudController, playerInitialization, poolServices);
+            var weaponController = new WeaponController(playerHudController, playerInitialization, weaponFactory);
+            
             var enemyController = new EnemyController(enemyInitialization);
             var enemyMeleeController = new EnemyMeleeController(enemyInitialization);
+            var enemyMeleeAttackController = new EnemyMeleeAttackController(enemyInitialization);
             var enemyMeleeMovementController = new EnemyMeleeMovementController(enemyInitialization, playerInitialization);
 
-            var playerController = new PlayerController(data.PlayerData, playerInitialization, weaponController, playerHudController);
-            var playerMovementController = new PlayerMovementController(_data.PlayerData, playerInitialization);
+            var playerController = new PlayerController(playerInitialization, weaponController, playerHudController, _data.StickGunData);
+            var playerMovementController = new PlayerMovementController(playerInitialization);
 
             controllers.Add(playerInitialization);
             controllers.Add(enemyInitialization);
@@ -47,8 +51,10 @@ namespace Code.Controllers.Initialization
             controllers.Add(inputController);
             controllers.Add(playerHudController);
             controllers.Add(weaponController);
+            
             controllers.Add(enemyController);
             controllers.Add(enemyMeleeController);
+            controllers.Add(enemyMeleeAttackController);
             controllers.Add(enemyMeleeMovementController);
             
             controllers.Add(playerController);

@@ -2,29 +2,26 @@
 using Code.Controllers.Initialization;
 using Code.Data;
 using Code.Interfaces;
-using Code.Interfaces.Controllers;
-using Code.Interfaces.Units;
-using Code.Views;
+using Code.Interfaces.Views;
+using Code.Models;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Code.Controllers
 {
-    internal sealed class PlayerController: IController, IInitialization, ICleanup, IUnitController
+    internal sealed class PlayerController: IController, IInitialization, ICleanup
     {
-        private readonly PlayerData _data;
         private readonly PlayerInitialization _initialization;
         private readonly WeaponController _weaponController;
         private readonly PlayerHudController _hudController;
-
-        private PlayerView _playerView;
         
-        public float Health { get; private set; }
-        public float Armor { get; private set; }
+        private PlayerModel _player;
 
-        public PlayerController(PlayerData data, PlayerInitialization initialization, WeaponController weaponController, PlayerHudController hudController)
+        // TODO: Убрать костыль с WeaponData, Это временная вещь, пока подбора оружия адекватного нету.
+        private readonly WeaponData _weaponData;
+        public PlayerController(PlayerInitialization initialization, WeaponController weaponController, PlayerHudController hudController, WeaponData weaponData)
         {
-            _data = data;
+            _weaponData = weaponData;
             _initialization = initialization;
             _weaponController = weaponController;
             _hudController = hudController;
@@ -32,74 +29,70 @@ namespace Code.Controllers
         
         public void Initialization()
         {
-            Health = _data.MaxHealth;
-            Armor = _data.MaxArmor;
-            _playerView = _initialization.GetPlayer();
-            
-            var weaponView = _playerView.Weapon;
-            if (weaponView == null)
-                throw new Exception("У игрока не найдено оружие.");
-            
-            // TODO: Заменить этот костыль на нормальный подбор оружия
-            _weaponController.ChangeWeapon(weaponView);
+            _player = _initialization.GetPlayer();
 
-            _playerView.OnArmored += AddArmor;
-            _playerView.OnHealing += AddHealth;
-            _playerView.OnDamage += AddDamage;
+            // TODO: Заменить этот костыль на нормальный подбор оружия
+            _weaponController.ChangeWeapon(_weaponData);
+
+            var view = _player.View;
+            view.OnArmored += AddArmor;
+            view.OnHealing += AddHealth;
+            view.OnDamage += AddDamage;
         }
 
         public void Cleanup()
         {
-            if (_playerView != null)
+            var view = _player.View;
+            if (view != null)
             {
-                _playerView.OnArmored -= AddArmor;
-                _playerView.OnHealing -= AddHealth;
-                _playerView.OnDamage -= AddDamage;
+                view.OnArmored -= AddArmor;
+                view.OnHealing -= AddHealth;
+                view.OnDamage -= AddDamage;
             }
         }
 
-        private void AddHealth(GameObject healer, IUnit _, float health)
+        private void AddHealth(GameObject healer, IUnitView _, float health)
         {
-            Health += health;
-            if (Health > _data.MaxHealth)
-                Health = _data.MaxHealth;
+            _player.Health += health;
+            if (_player.Health > _player.Data.MaxHealth)
+                _player.Health = _player.Data.MaxHealth;
         }
 
-        private void AddArmor(GameObject armorer, IUnit _, float armor)
+        private void AddArmor(GameObject armorer, IUnitView _, float armor)
         {
-            Armor += armor;
-            if (Armor > _data.MaxArmor)
-                Armor = _data.MaxArmor;
+            _player.Armor += armor;
+            if (_player.Armor > _player.Data.MaxArmor)
+                _player.Armor = _player.Data.MaxArmor;
         }
 
-        private void AddDamage(GameObject attacker, IUnit _, float damage)
+        private void AddDamage(GameObject attacker, IUnitView _, float damage)
         {
-            if (Armor > damage)
+            if (_player.Armor > damage)
             {
-                Armor -= damage;
-                _hudController.SetArmor((int) Armor);
+                _player.Armor -= damage;
+                _hudController.SetArmor((int) _player.Armor);
                 return;
             }
 
-            if (Armor != 0)
+            if (_player.Armor != 0)
             {
-                damage -= Armor;
-                Armor = 0;
+                damage -= _player.Armor;
+                _player.Armor = 0;
                 _hudController.SetArmor(0);
             }
 
-            Health -= damage;
-            if (Health <= 0)
+            _player.Health -= damage;
+            if (_player.Health <= 0)
             {
-                Health = 0;
+                _player.Health = 0;
                 Death();
             }
-            _hudController.SetHealth((int) Health);
+            _hudController.SetHealth((int) _player.Health);
         }
         
         private void Death()
         {
-            Object.Destroy(_initialization.GetPlayer());
+            Object.Destroy(_player.View);
         }
     }
 }

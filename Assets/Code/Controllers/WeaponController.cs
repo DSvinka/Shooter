@@ -4,10 +4,13 @@ using System.Collections.Generic;
 using Code.Controllers.Initialization;
 using Code.Controllers.ObjectPool;
 using Code.Data;
+using Code.Factory;
 using Code.Input.Inputs;
 using Code.Interfaces;
 using Code.Interfaces.Input;
-using Code.Interfaces.Units;
+using Code.Interfaces.Views;
+using Code.Models;
+using Code.Services;
 using Code.Views;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -18,20 +21,10 @@ namespace Code.Controllers
     {
         private readonly PlayerInitialization _initialization;
         private readonly PlayerHudController _hudController;
-        private readonly PoolServices _poolServices;
-        private PlayerView _player;
-        private WeaponView _weapon;
-        
-        private Camera _camera;
-        private ParticleSystem _particleSystem;
-        private AudioSource _audioSource;
-        private Transform _transform;
-        private WeaponData _data;
+        private readonly WeaponFactory _weaponFactory;
 
-        private int _bulletsLeft;
-        private float _fireCooldown;
-        private bool _isReloading;
-        private bool _isAiming;
+        private PlayerModel _player;
+        private WeaponModel _weapon;
 
         private bool _reloadInput;
         private bool _aimInput;
@@ -41,11 +34,12 @@ namespace Code.Controllers
         private Vector3 _gunInitialPosition;
         private List<GameObject> _bullets;
 
-        public WeaponController(PlayerHudController playerHudController, PlayerInitialization playerInitialization, PoolServices poolServices)
+        public WeaponController(PlayerHudController playerHudController, PlayerInitialization playerInitialization, WeaponFactory weaponFactory)
         {
+            _weaponFactory = weaponFactory;
+                
             _hudController = playerHudController;
             _initialization = playerInitialization;
-            _poolServices = poolServices;
 
             _reloadInputProxy = KeysInput.Reload;
             _fireInputProxy = MouseInput.Fire;
@@ -67,7 +61,6 @@ namespace Code.Controllers
         public void Initialization()
         {
             _player = _initialization.GetPlayer();
-            _camera = _player.GetComponentInChildren<Camera>();
             _screenCenter = new Vector3(0.5f, 0.5f, 0);
             _bullets = new List<GameObject>(32);
 
@@ -78,35 +71,35 @@ namespace Code.Controllers
         
         public void Cleanup()
         {
-            if (_weapon != null)
-                _weapon.StopAllCoroutines();
+            var weaponView = _player.Weapon.View;
+            if (weaponView != null)
+                weaponView.StopAllCoroutines();
             
             _reloadInputProxy.KeyOnDown -= OnReloadInput;
             _fireInputProxy.KeyOnChange -= OnFireInput;
             _aimInputProxy.KeyOnChange -= OnAimInput;
         }
         
-        public void ChangeWeapon(WeaponView weapon)
+        public void ChangeWeapon(WeaponData weaponData)
         {
-            if (_weapon != null)
-                _weapon.StopAllCoroutines();
+            if (_player.Weapon != null && _player.Weapon.View != null)
+                _player.Weapon.View.StopAllCoroutines();
 
-            _weapon = weapon;
-            _data = weapon.WeaponData;
-            _particleSystem = weapon.GetComponentInChildren<ParticleSystem>();
-            _audioSource = weapon.GetComponent<AudioSource>();
-            _transform = weapon.transform;
-
-            _bulletsLeft = _data.MagazineSize;
-            _gunInitialPosition = _transform.localPosition;
+            var weaponModel = _weaponFactory.CreateWeapon(weaponData);
             
-            _hudController.SetAmmo(_bulletsLeft);
-            _hudController.SetMaxAmmo(_data.MagazineSize);
+            _player.Weapon = weaponModel;
+            _weapon = _player.Weapon;
+            _weapon.Transform.parent = _player.CameraTransform;
+            _weapon.Transform.position = _player.View.WeaponPoint.position;
+            _gunInitialPosition = _weapon.Transform.localPosition;
+            
+            _hudController.SetAmmo(_weapon.BulletsLeft);
+            _hudController.SetMaxAmmo(_weapon.Data.MagazineSize);
         }
 
         public void Execute(float deltaTime)
         {
-            if (_weapon == null)
+            if (_weapon.View == null)
                 return;
 
             MoveBullets(deltaTime);
@@ -114,8 +107,8 @@ namespace Code.Controllers
             Reload();
             Shoot();
 
-            if (_fireCooldown >= 0f)
-                _fireCooldown -= deltaTime;
+            if (_weapon.FireCooldown >= 0f)
+                _weapon.FireCooldown -= deltaTime;
         }
         
         private void MoveBullets(float deltatime)
@@ -123,70 +116,70 @@ namespace Code.Controllers
             for (var index = 0; index < _bullets.Count; index++)
             {
                 var bullet = _bullets[index];
-                bullet.transform.position += bullet.transform.forward * _data.BulletForce * deltatime;
+                bullet.transform.position += bullet.transform.forward * _player.Weapon.Data.BulletForce * deltatime;
             }
         }
 
         private void Aim()
         {
-            if (_aimInput && !_isReloading)
+            if (_aimInput && !_weapon.IsReloading)
             {
-                _transform.localPosition = _player.AimPoint.localPosition;
-                _isAiming = true;
+                _weapon.Transform.localPosition = _player.View.AimPoint.localPosition;
+                _weapon.IsAiming = true;
             }
-            else if (_isAiming && (!_aimInput || _isReloading))
+            else if (_weapon.IsAiming && (!_aimInput || _weapon.IsReloading))
             {
-                _transform.localPosition = _gunInitialPosition;
-                _isAiming = false;
+                _weapon.Transform.localPosition = _gunInitialPosition;
+                _weapon.IsAiming = false;
             }
                 
         }
         
         private void Reload()
         {
-            if (_reloadInput && _bulletsLeft != _data.MagazineSize)
+            if (_reloadInput && _weapon.BulletsLeft != _weapon.Data.MagazineSize)
             {
-                _weapon.StartCoroutine(ReloadTimer());
+                _weapon.View.StartCoroutine(ReloadTimer());
             }
         }
 
         private void Shoot()
         {
-            if (_fireInput && _fireCooldown <= 0 && !_isReloading)
+            if (_fireInput && _weapon.FireCooldown <= 0 && !_weapon.IsReloading)
             {
-                if (_bulletsLeft == 0)
+                if (_weapon.BulletsLeft == 0)
                 {
-                    _audioSource.PlayOneShot(_data.NoAmmoClip);
-                    _fireCooldown = _data.FireRate;
+                    _weapon.AudioSource.PlayOneShot(_weapon.Data.NoAmmoClip);
+                    _weapon.FireCooldown = _weapon.Data.FireRate;
                     return;
                 }
 
-                _particleSystem.Play();
-                _audioSource.PlayOneShot(_data.FireClip);
+                _weapon.ParticleSystem.Play();
+                _weapon.AudioSource.PlayOneShot(_weapon.Data.FireClip);
 
                 var (origin, direction) = CalcDirection();
                 TryDamage(origin, direction);
                 CreateBullet(direction);
 
-                _bulletsLeft -= 1;
-                _hudController.SetAmmo(_bulletsLeft);
-                _fireCooldown = _data.FireRate;
+                _weapon.BulletsLeft -= 1;
+                _hudController.SetAmmo(_weapon.BulletsLeft);
+                _weapon.FireCooldown = _weapon.Data.FireRate;
             }
         }
 
         private (Vector3 origin, Vector3 direction) CalcDirection()
         {
-            var ray = _camera.ViewportPointToRay(_screenCenter);
-            var targetPoint = ray.GetPoint(_data.MaxDistance);
+            var ray = _player.Camera.ViewportPointToRay(_screenCenter);
+            var targetPoint = ray.GetPoint(_weapon.Data.MaxDistance);
 
-            var spread = _data.Spread;
-            if (_isAiming)
-                spread = _data.SpreadAim;
+            var spread = _weapon.Data.Spread;
+            if (_weapon.IsAiming)
+                spread = _weapon.Data.SpreadAim;
                     
             var x = Random.Range(-spread, spread);
             var y = Random.Range(-spread, spread);
 
-            var directionWithoutSpread = targetPoint - _weapon.ShotPoint.position;
+            var directionWithoutSpread = targetPoint - _weapon.View.ShotPoint.position;
             var directionWithSpread = directionWithoutSpread + new Vector3(x, y, 0);
 
             return (ray.origin, directionWithSpread);
@@ -194,21 +187,21 @@ namespace Code.Controllers
 
         private void TryDamage(Vector3 origin, Vector3 direction)
         {
-            if (Physics.Raycast(origin, direction, out var hit, _data.MaxDistance, _data.LayerMask))
+            if (Physics.Raycast(origin, direction, out var hit, _weapon.Data.MaxDistance, _weapon.Data.LayerMask))
             {
-                if (_player.gameObject.GetInstanceID() != hit.collider.gameObject.GetInstanceID())
+                if (_player.View.gameObject.GetInstanceID() != hit.collider.gameObject.GetInstanceID())
                 {
-                    var unit = hit.collider.gameObject.GetComponent<IUnit>();
-                    unit?.AddDamage(_player.gameObject, _data.Damage);
+                    var unit = hit.collider.gameObject.GetComponent<IUnitView>();
+                    unit?.AddDamage(_player.View.gameObject, _weapon.Data.Damage);
                 }
             }
         }
 
         private void CreateBullet(Vector3 direction)
         {
-            var bullet = _poolServices.Instantiate(_weapon.WeaponData.BulletPrefab);
+            var bullet = ServiceLocator.Resolve<PoolService>().Instantiate(_weapon.Data.BulletPrefab);
             var bulletTransform = bullet.transform;
-            bulletTransform.position = _weapon.ShotPoint.position;
+            bulletTransform.position = _weapon.View.ShotPoint.position;
             bulletTransform.forward = direction.normalized;
             bullet.SetActive(true);
 
@@ -218,7 +211,7 @@ namespace Code.Controllers
             bulletView.OnCollision += OnBulletHit;
                 
             _bullets.Add(bullet);
-            _weapon.StartCoroutine(BulletLifetime(bullet));
+            _weapon.View.StartCoroutine(BulletLifetime(bullet));
         }
 
         private void OnBulletHit(BulletView bullet, GameObject hit)
@@ -232,32 +225,31 @@ namespace Code.Controllers
         private void DestroyBullet(GameObject bullet)
         {
             bullet.SetActive(false);
-            _poolServices.Destroy(bullet);
+            ServiceLocator.Resolve<PoolService>().Destroy(bullet);
             _bullets.Remove(bullet);
         }
         
         private IEnumerator BulletLifetime(GameObject bullet)
         {
-            yield return new WaitForSeconds(_weapon.WeaponData.BulletLifetime);
+            yield return new WaitForSeconds(_weapon.Data.BulletLifetime);
             if (bullet != null)
                 DestroyBullet(bullet);
         }
         
         private IEnumerator ReloadTimer()
         {
+            _weapon.IsReloading = true;
+            _weapon.AudioSource.PlayOneShot(_weapon.Data.ReloadClip);
+            
+            _weapon.Transform.Rotate(_weapon.Data.ReloadMove);
 
-            _isReloading = true;
-            _audioSource.PlayOneShot(_data.ReloadClip);
+            yield return new WaitForSeconds(_weapon.Data.ReloadClip.length);
             
-            _transform.Rotate(_data.ReloadMove);
-
-            yield return new WaitForSeconds(_data.ReloadClip.length);
+            _weapon.Transform.Rotate(-_weapon.Data.ReloadMove);
             
-            _transform.Rotate(-_data.ReloadMove);
-            
-            _bulletsLeft = _data.MagazineSize;
-            _isReloading = false;
-            _hudController.SetAmmo(_bulletsLeft);
+            _weapon.BulletsLeft = _weapon.Data.MagazineSize;
+            _weapon.IsReloading = false;
+            _hudController.SetAmmo(_weapon.BulletsLeft);
         }
     }
 }

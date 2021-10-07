@@ -1,24 +1,16 @@
-﻿using System;
-using Code.Controllers.Initialization;
-using Code.Data;
+﻿using Code.Controllers.Initialization;
 using Code.Input.Inputs;
 using Code.Interfaces;
 using Code.Interfaces.Input;
-using Code.Views;
+using Code.Models;
 using UnityEngine;
 
 namespace Code.Controllers
 {
     internal sealed class PlayerMovementController: IController, IExecute, IInitialization, ICleanup
     {
-        private readonly PlayerData _data;
         private readonly PlayerInitialization _playerInitialization;
-        
-        private PlayerView _player;
-        private Camera _camera;
-        private CharacterController _characterController;
-        private Transform _transform;
-        private Transform _cameraTransform;
+        private PlayerModel _player;
 
         private Vector3 _moveDirection;
         private float _rotationX;
@@ -27,12 +19,9 @@ namespace Code.Controllers
         private Vector2 _mouseInput;
         private bool _jumpInput;
         private bool _runInput;
-        
-        public bool canMove = true;
 
-        public PlayerMovementController(PlayerData data, PlayerInitialization playerInitialization)
+        public PlayerMovementController(PlayerInitialization playerInitialization)
         {
-            _data = data;
             _playerInitialization = playerInitialization;
             
             _movementXInputProxy = AxisInput.Horizontal;
@@ -65,17 +54,6 @@ namespace Code.Controllers
         {
             _player = _playerInitialization.GetPlayer();
 
-            _characterController = _player.GetComponent<CharacterController>();
-            if (_characterController == null)
-                throw new Exception("Компонент CharacterController остуствует на префабе игрока");
-            
-            _camera = _player.GetComponentInChildren<Camera>();
-            if (_camera == null)
-                throw new Exception("Объект Camera остуствует на префабе игрока");
-            
-            _transform = _player.transform;
-            _cameraTransform = _camera.transform;
-
             _mouseXProxy.AxisOnChange += OnMouseXInput;
             _mouseYProxy.AxisOnChange += OnMouseYInput;
             
@@ -103,37 +81,42 @@ namespace Code.Controllers
 
         public void Execute(float deltaTime)
         {
-            var forward = _transform.TransformDirection(Vector3.forward);
-            var right = _transform.TransformDirection(Vector3.right);
+            var characterController = _player.CharacterController;
+            var transform = _player.Transform;
+            var canMove = _player.CanMove;
+            var data = _player.Data;
+            
+            var forward = transform.TransformDirection(Vector3.forward);
+            var right = transform.TransformDirection(Vector3.right);
 
             var isRunning = _runInput;
-            var curSpeedX = canMove ? (isRunning ? _data.RunningSpeed : _data.WalkingSpeed) * _movementInput.y : 0;
-            var curSpeedY = canMove ? (isRunning ? _data.RunningSpeed : _data.WalkingSpeed) * _movementInput.x : 0;
+            var curSpeedX = canMove ? (isRunning ? data.RunningSpeed : data.WalkingSpeed) * _movementInput.y : 0;
+            var curSpeedY = canMove ? (isRunning ? data.RunningSpeed : data.WalkingSpeed) * _movementInput.x : 0;
             var movementDirectionY = _moveDirection.y;
             _moveDirection = (forward * curSpeedX) + (right * curSpeedY);
 
-            if (_jumpInput && canMove && _characterController.isGrounded)
+            if (_jumpInput && canMove && characterController.isGrounded)
             {
-                _moveDirection.y = _data.JumpForce;
+                _moveDirection.y = data.JumpForce;
             }
             else
             {
                 _moveDirection.y = movementDirectionY;
             }
             
-            if (!_characterController.isGrounded)
+            if (!characterController.isGrounded)
             {
-                _moveDirection.y -= _data.JumpForce * deltaTime;
+                _moveDirection.y -= data.JumpForce * deltaTime;
             }
             
-            _characterController.Move(_moveDirection * deltaTime);
+            characterController.Move(_moveDirection * deltaTime);
             
             if (canMove)
             {
-                _rotationX += -_mouseInput.y * _data.LookSpeed;
-                _rotationX = Mathf.Clamp(_rotationX, -_data.LookXLimit, _data.LookXLimit);
-                _cameraTransform.localRotation = Quaternion.Euler(_rotationX, 0, 0);
-                _transform.rotation *= Quaternion.Euler(0, _mouseInput.x * _data.LookSpeed, 0);
+                _rotationX += -_mouseInput.y * data.LookSpeed;
+                _rotationX = Mathf.Clamp(_rotationX, -data.LookXLimit, data.LookXLimit);
+                _player.CameraTransform.localRotation = Quaternion.Euler(_rotationX, 0, 0);
+                transform.rotation *= Quaternion.Euler(0, _mouseInput.x * data.LookSpeed, 0);
             }
         }
     }

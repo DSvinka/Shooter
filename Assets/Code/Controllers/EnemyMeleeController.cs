@@ -2,66 +2,112 @@
 using System.Collections.Generic;
 using Code.Controllers.Initialization;
 using Code.Interfaces;
-using Code.Interfaces.Data;
-using Code.Interfaces.Units;
+using Code.Interfaces.Models;
+using Code.Interfaces.Views;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Code.Controllers
 {
-    internal sealed class EnemyMeleeController: IInitialization, IExecute
+    internal sealed class EnemyMeleeController: IController, IInitialization, ICleanup
     {
-        private readonly EnemyInitialization _enemyInitialization;
-        private List<IEnemyMelee> _enemies;
+        private readonly EnemyInitialization _initialization;
         
-        public EnemyMeleeController(EnemyInitialization enemyInitialization)
-        {
-            _enemyInitialization = enemyInitialization;
-        }
+        private List<IEnemyMeleeModel> _enemiesMelee;
 
+        public EnemyMeleeController(EnemyInitialization initialization)
+        {
+            _initialization = initialization;
+        }
+        
         public void Initialization()
         {
-            _enemies = _enemyInitialization.GetMeleeEnemies();
+            _enemiesMelee = _initialization.GetMeleeEnemies();
+
+            if (_enemiesMelee != null)
+            {
+                foreach (var enemy in _enemiesMelee)
+                {
+                    enemy.View.OnArmored += AddArmor;
+                    enemy.View.OnHealing += AddHealth;
+                    enemy.View.OnDamage += AddDamage;
+                }   
+            }
         }
 
-        public void Execute(float deltaTime)
+        public void Cleanup()
         {
-            if (Time.frameCount % 2 != 0) 
-                return;
-
-            for (var index = 0; index < _enemies.Count; index++)
+            foreach (var enemy in _enemiesMelee)
             {
-                var enemy = _enemies[index];
-                enemy.Cooldown -= deltaTime * 2;
-                if (enemy.Cooldown >= 0)
-                    continue;
-
-                var monoBehaviour = enemy as MonoBehaviour;
-                if (monoBehaviour == null)
-                    throw new Exception("MonoBehaviour не найден на объекте");
-
-                var meleeData = enemy.Data as IEnemyMeleeData;
-                if (meleeData == null)
-                    throw new Exception("IEnemyMeleeData не найден на объекте");
-
-                var position = enemy.AttackPoint.position;
-                var forward = enemy.AttackPoint.forward;
-
-                // TODO: Добавить звуки для зомби
-                //_particleSystem.Play();
-                //_audioSource.PlayOneShot(data.FireClip);
-
-                if (Physics.Raycast(position, forward, out var raycastHit, meleeData.AttackDistance))
+                if (enemy != null)
                 {
-                    var unit = raycastHit.collider.gameObject.GetComponent<IUnit>();
-                    if (unit != null)
-                    {
-                        if (unit is IEnemy)
-                            continue;
-                        unit.AddDamage(monoBehaviour.gameObject, meleeData.AttackDamage);
-                        enemy.Cooldown = meleeData.AttackRate;
-                    }
+                    enemy.View.OnArmored -= AddArmor;
+                    enemy.View.OnHealing -= AddHealth;
+                    enemy.View.OnDamage -= AddDamage;   
                 }
             }
+        }
+
+        private IEnemyMeleeModel GetEnemy(IUnitView unit)
+        {
+            var enemy = unit as IEnemyMeleeView;
+            if (enemy == null)
+                throw new Exception("Unit не имеет интерфейса IEnemyView");
+            return enemy.Model;
+        }
+
+        private void AddHealth(GameObject healer, IUnitView unit, float health)
+        {
+            var enemy = GetEnemy(unit);
+            
+            enemy.Health += health;
+            if (enemy.Health > enemy.Data.MaxHealth)
+                enemy.Health = enemy.Data.MaxHealth;
+        }
+
+        private void AddArmor(GameObject armorer, IUnitView unit, float armor)
+        {
+            var enemy = GetEnemy(unit);
+            
+            enemy.Armor += armor;
+            if (enemy.Armor > enemy.Data.MaxArmor)
+                enemy.Armor = enemy.Data.MaxArmor;
+        }
+
+        private void AddDamage(GameObject attacker, IUnitView unit, float damage)
+        {
+            var enemy = GetEnemy(unit);
+            
+            enemy.AudioSource.PlayOneShot(enemy.Data.GetDamageClip);
+
+            if (enemy.Armor > damage)
+            {
+                enemy.Armor -= damage;
+                return;
+            }
+
+            if (enemy.Armor != 0)
+            {
+                damage -= enemy.Armor;
+                enemy.Armor = 0;
+            }
+
+            enemy.Health -= damage;
+            if (enemy.Health <= 0)
+            {
+                enemy.Health = 0;
+                Death(enemy);
+            }
+        }
+        
+        private void Death(IEnemyMeleeModel enemyMelee)
+        {
+            // TODO: Добавить таймер с рандомом, чтобы не сразу спавнились черти.
+            enemyMelee.Transform.position = enemyMelee.SpawnPoint.position;
+            enemyMelee.AudioSource.Stop();
+            enemyMelee.Reset();
+            // _enemiesMelee.Remove(enemyMelee);
+            // UnityEngine.Object.Destroy(enemyMelee.GameObject);
         }
     }
 }

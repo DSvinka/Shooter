@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using Code.Controllers.Initialization;
 using Code.Interfaces;
-using Code.Interfaces.Units;
-using Code.Views;
+using Code.Interfaces.Models;
+using Code.Models;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -13,8 +13,9 @@ namespace Code.Controllers
     {
         private readonly EnemyInitialization _enemyInitialization;
         private readonly PlayerInitialization _playerInitialization;
-        private PlayerView _playerView;
-        private List<IEnemyMelee> _enemies;
+        
+        private List<IEnemyMeleeModel> _enemies;
+        private PlayerModel _player;
         
         public EnemyMeleeMovementController(EnemyInitialization enemyInitialization, PlayerInitialization playerInitialization)
         {
@@ -25,7 +26,7 @@ namespace Code.Controllers
         public void Initialization()
         {
             _enemies = _enemyInitialization.GetMeleeEnemies();
-            _playerView = _playerInitialization.GetPlayer();
+            _player = _playerInitialization.GetPlayer();
         }
 
         public void Execute(float deltaTime)
@@ -36,12 +37,8 @@ namespace Code.Controllers
             for (var index = 0; index < _enemies.Count; index++)
             {
                 var enemy = _enemies[index];
-                var monoBehaviour = enemy as MonoBehaviour;
-                if (monoBehaviour == null)
-                    throw new Exception("MonoBehaviour не найден на Enemy объекте");
-
-                var navMeshAgent = monoBehaviour.GetComponent<NavMeshAgent>();
-                navMeshAgent.SetDestination(_playerView.transform.position);
+                
+                enemy.NavMeshAgent.SetDestination(_player.Transform.position);
             }
         }
     }

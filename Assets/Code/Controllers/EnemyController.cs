@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using Code.Controllers.Initialization;
 using Code.Interfaces;
-using Code.Interfaces.Units;
+using Code.Interfaces.Models;
+using Code.Interfaces.Views;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -12,8 +13,7 @@ namespace Code.Controllers
     {
         private readonly EnemyInitialization _initialization;
 
-        private List<IEnemy> _enemies;
-        private List<IEnemyMelee> _enemiesMelee;
+        private List<IEnemyModel> _enemies;
 
         public EnemyController(EnemyInitialization initialization)
         {
@@ -23,15 +23,14 @@ namespace Code.Controllers
         public void Initialization()
         {
             _enemies = _initialization.GetEnemies();
-            _enemiesMelee = _initialization.GetMeleeEnemies();
 
             if (_enemies != null)
             {
                 foreach (var enemy in _enemies)
                 {
-                    enemy.OnArmored += AddArmor;
-                    enemy.OnHealing += AddHealth;
-                    enemy.OnDamage += AddDamage;
+                    enemy.View.OnArmored += AddArmor;
+                    enemy.View.OnHealing += AddHealth;
+                    enemy.View.OnDamage += AddDamage;
                 }   
             }
         }
@@ -42,22 +41,22 @@ namespace Code.Controllers
             {
                 if (enemy != null)
                 {
-                    enemy.OnArmored -= AddArmor;
-                    enemy.OnHealing -= AddHealth;
-                    enemy.OnDamage -= AddDamage;   
+                    enemy.View.OnArmored -= AddArmor;
+                    enemy.View.OnHealing -= AddHealth;
+                    enemy.View.OnDamage -= AddDamage;   
                 }
             }
         }
 
-        private IEnemy GetEnemy(IUnit unit)
+        private IEnemyModel GetEnemy(IUnitView unit)
         {
-            var enemy = unit as IEnemy;
+            var enemy = unit as IEnemyView;
             if (enemy == null)
-                throw new Exception("Unit не имеет интерфейса IEnemy");
-            return enemy;
+                throw new Exception("Unit не имеет интерфейса IEnemyView");
+            return enemy.Model;
         }
 
-        private void AddHealth(GameObject healer, IUnit unit, float health)
+        private void AddHealth(GameObject healer, IUnitView unit, float health)
         {
             var enemy = GetEnemy(unit);
             
@@ -66,7 +65,7 @@ namespace Code.Controllers
                 enemy.Health = enemy.Data.MaxHealth;
         }
 
-        private void AddArmor(GameObject armorer, IUnit unit, float armor)
+        private void AddArmor(GameObject armorer, IUnitView unit, float armor)
         {
             var enemy = GetEnemy(unit);
             
@@ -75,7 +74,7 @@ namespace Code.Controllers
                 enemy.Armor = enemy.Data.MaxArmor;
         }
 
-        private void AddDamage(GameObject attacker, IUnit unit, float damage)
+        private void AddDamage(GameObject attacker, IUnitView unit, float damage)
         {
             var enemy = GetEnemy(unit);
             
@@ -99,17 +98,10 @@ namespace Code.Controllers
             }
         }
         
-        private void Death(IEnemy enemy)
+        private void Death(IEnemyModel enemy)
         {
-            var monoBehaviour = enemy as MonoBehaviour;
-            if (monoBehaviour == null)
-                throw new Exception("Enemy не имеет класса MonoBehaviour");
-            
             _enemies.Remove(enemy);
-            if (enemy is IEnemyMelee enemyMelee)
-                _enemiesMelee.Remove(enemyMelee);
-            
-            Object.Destroy(monoBehaviour.gameObject);
+            Object.Destroy(enemy.GameObject);
         }
     }
 }

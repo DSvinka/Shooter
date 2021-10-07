@@ -2,13 +2,17 @@
 using Code.Data.DataStores;
 using Code.Interfaces.Data;
 using Code.Interfaces.Factory;
-using Code.Interfaces.Units;
+using Code.Interfaces.Models;
+using Code.Interfaces.Views;
+using Code.Models;
 using UnityEngine;
+using UnityEngine.AI;
 using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 namespace Code.Factory
 {
-    internal sealed class EnemyFactory: IFactory
+    internal sealed class EnemyFactory: IFactory, IEnemyFactory
     {
         private DataStore _data;
         
@@ -17,42 +21,65 @@ namespace Code.Factory
             _data = data;
         }
 
-        private (IEnemy enemy, GameObject gameObject) SetupEnemy(GameObject prefab, IEnemyData data)
+        private (IEnemyView enemy, GameObject gameObject) SetupEnemy(GameObject prefab, IEnemyData data)
         {
             var gameObject = Object.Instantiate(prefab);
-            var enemy = gameObject.GetComponent<IEnemy>();
+            var enemy = gameObject.GetComponent<IEnemyView>();
             if (enemy == null)
-                throw new Exception($"IEnemy не найден в {gameObject.gameObject.name}");
-            
-            enemy.Health = data.MaxHealth;
-            enemy.Armor = data.MaxArmor;
-            enemy.Data = data;
+                throw new Exception($"IEnemyView не найден в {gameObject.gameObject.name}");
 
             return (enemy, gameObject);
         }
         
-        public IEnemy CreateTarget(Transform spawnPoint)
+        public IEnemyModel CreateEnemy(IEnemyData data, GameObject prefab, Transform spawnPoint)
         {
-            var (enemy, gameObject) = SetupEnemy(_data.TargetData.Prefab, _data.TargetData);
-            gameObject.transform.SetParent(null);
+            var gameObject = Object.Instantiate(prefab, null, true);
+            var enemyView = gameObject.GetComponent<IEnemyView>();
+            if (enemyView == null)
+                throw new Exception($"IEnemyView не найден в {gameObject.gameObject.name}");
+
+            var enemyModel = new EnemyModel(enemyView, gameObject, data)
+            {
+                SpawnPoint = spawnPoint,
+                Health = data.MaxHealth,
+                Armor = data.MaxArmor
+            };
+            enemyView.Model = enemyModel;
+
             gameObject.transform.position = spawnPoint.position;
             gameObject.transform.rotation = spawnPoint.rotation;
 
-            return enemy;
+            return enemyModel;
         }
-        public IEnemyMelee CreateZombie(Transform spawnPoint)
+        public IEnemyMeleeModel CreateMeleeEnemy(IEnemyMeleeData data, GameObject prefab, Transform spawnPoint)
         {
-            var (enemy, gameObject) = SetupEnemy(_data.ZombieData.Prefab, _data.ZombieData);
-
-            var enemyMelee = gameObject.GetComponent<IEnemyMelee>();
-            if (enemy == null)
-                throw new Exception($"IEnemyMelee не найден в {gameObject.gameObject.name}");
+            var gameObject = Object.Instantiate(prefab, null, true);
+            var enemyMeleeView = gameObject.GetComponent<IEnemyMeleeView>();
+            if (enemyMeleeView == null)
+                throw new Exception($"IEnemyMeleeView не найден в {gameObject.gameObject.name}!");
             
-            gameObject.transform.SetParent(null);
+            var enemyNavMeshAgent = gameObject.GetComponent<NavMeshAgent>();
+            if (enemyNavMeshAgent == null)
+                throw new Exception($"NavMeshAgent не найден в {gameObject.gameObject.name}!");
+            
+            var enemyAudioSource = gameObject.GetComponent<AudioSource>();
+            if (enemyAudioSource == null)
+                throw new Exception($"AudioSource не найден в {gameObject.gameObject.name}!");
+
+            var enemyMeleeModel = new EnemyMeleeModel(enemyMeleeView, gameObject, enemyNavMeshAgent, enemyAudioSource, data)
+            {
+                SpawnPoint = spawnPoint,
+                Health = data.MaxHealth,
+                Armor = data.MaxArmor,
+                Pitch = Random.Range(data.MinPitch, data.MaxPitch)
+            };
+            enemyMeleeView.Model = enemyMeleeModel;
+            enemyAudioSource.pitch = enemyMeleeModel.Pitch;
+
             gameObject.transform.position = spawnPoint.position;
             gameObject.transform.rotation = spawnPoint.rotation;
 
-            return enemyMelee;
+            return enemyMeleeModel;
         }
     }
 }
