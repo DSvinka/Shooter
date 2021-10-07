@@ -13,8 +13,7 @@ namespace Code.Data.DataStores
         
         [Header("Data")]
         [SerializeField] [AssetPath.Attribute(typeof(PlayerData))] private string _playerDataPath;
-        [SerializeField] [AssetPath.Attribute(typeof(TargetData))] private string _targetDataPath;
-        [SerializeField] [AssetPath.Attribute(typeof(EnemyMeleeData))] private string _zombieDataPath;
+        [SerializeField] [AssetPath.Attribute(typeof(EnemyData))] private string _zombieDataPath;
         
         [SerializeField] [AssetPath.Attribute(typeof(WeaponData))] private string _stickGunPath;
 
@@ -23,8 +22,7 @@ namespace Code.Data.DataStores
         #region Объекты
 
         private PlayerData _player;
-        private TargetData _target;
-        private EnemyMeleeData _zombie;
+        private EnemyData _zombie;
         
         private GameObject _playerHudPrefab;
 
@@ -35,8 +33,7 @@ namespace Code.Data.DataStores
         #region Свойства
 
         public PlayerData PlayerData => GetData(_playerDataPath, _player);
-        public TargetData TargetData => GetData(_targetDataPath, _target);
-        public EnemyMeleeData ZombieData => GetData(_zombieDataPath, _zombie);
+        public EnemyData ZombieData => GetData(_zombieDataPath, _zombie);
         public GameObject PlayerHudPrefab => GetData(_playerHudPrefabPath, _playerHudPrefab);
         public WeaponData StickGunData => GetData(_stickGunPath, _stickGun);
 

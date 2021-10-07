@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Code.Data
 {
     [CreateAssetMenu(fileName = "Melee", menuName = "Data/Units/Enemy/Melee")]
-    public sealed class EnemyMeleeData : ScriptableObject, IData, IEnemyMeleeData
+    public sealed class EnemyData : ScriptableObject, IData, IEnemyData
     {
         public string Path { get; set; }
         
@@ -26,10 +26,11 @@ namespace Code.Data
         [Header("Звуки")]
         [SerializeField] [AssetPath.Attribute(typeof(AudioClip))] private string _attackClipPath;
         [SerializeField] [AssetPath.Attribute(typeof(AudioClip))] private string _getDamageClipPath;
-        [SerializeField] private float _maxPitch = 2f;
-        [SerializeField] private float _minPitch = 1f;
         
-        [Header("Метки")]
+        [SerializeField] private float _maxRandomSoundPitch = 2f;
+        [SerializeField] private float _minRandomSoundPitch = 1f;
+        
+        [Header("Прочее")]
         [SerializeField] private EnemyManager.EnemyType _enemyType;
 
         #endregion
@@ -56,10 +57,10 @@ namespace Code.Data
         
         public AudioClip AttackClip => GetData(_attackClipPath, _attackClip);
         public AudioClip GetDamageClip => GetData(_getDamageClipPath, _getDamageClip);
-        
-        public float MaxPitch => _maxPitch;
-        public float MinPitch => _minPitch;
-        
+
+        public float MaxRandomSoundPitch => _maxRandomSoundPitch;
+        public float MinRandomSoundPitch => _minRandomSoundPitch;
+
         public EnemyManager.EnemyType EnemyType => _enemyType;
 
         #endregion

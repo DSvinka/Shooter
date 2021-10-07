@@ -5,31 +5,28 @@ using UnityEngine;
 
 namespace Code.Views
 {
-    internal sealed class ZombieView: MonoBehaviour, IEnemyMeleeView
+    internal sealed class ZombieView: MonoBehaviour, IEnemyView
     {
-        public IEnemyMeleeModel Model { get; set; }
-        
         [SerializeField] private Transform _attackPoint;
-        private IEnemyModel _model;
         public Transform AttackPoint => _attackPoint;
 
-        public event Action<GameObject, IUnitView, float> OnDamage = delegate(GameObject attacker, IUnitView target, float damage) {  };
-        public event Action<GameObject, IUnitView, float> OnArmored = delegate(GameObject armorer, IUnitView target, float armor) {  };
-        public event Action<GameObject, IUnitView, float> OnHealing = delegate(GameObject healer, IUnitView target, float health) {  };
+        public event Action<GameObject, int, float> OnDamage = delegate(GameObject attacker, int id, float damage) {  };
+        public event Action<GameObject, int, float> OnArmored = delegate(GameObject armorer, int id, float armor) {  };
+        public event Action<GameObject, int, float> OnHealing = delegate(GameObject healer, int id, float health) {  };
 
         public void AddHealth(GameObject healer, float health)
         {
-            OnHealing.Invoke(healer, this, health);
+            OnHealing.Invoke(healer, gameObject.GetInstanceID(), health);
         }
 
         public void AddArmor(GameObject armorer, float armor)
         {
-            OnArmored.Invoke(armorer, this, armor);
+            OnArmored.Invoke(armorer, gameObject.GetInstanceID(), armor);
         }
 
         public void AddDamage(GameObject attacker, float damage)
         {
-            OnDamage.Invoke(attacker, this, damage);
+            OnDamage.Invoke(attacker, gameObject.GetInstanceID(), damage);
         }
     }
 }
