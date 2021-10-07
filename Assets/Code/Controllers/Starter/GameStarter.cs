@@ -21,6 +21,9 @@ namespace Code.Controllers.Starter
             
             var game = new GameInitialization(_controllers, _data);
             
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            
             _controllers.Initialization();
         }
 

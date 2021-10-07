@@ -3,26 +3,30 @@ using System.Collections.Generic;
 using Code.Data.DataStores;
 using Code.Factory;
 using Code.Interfaces;
-using Code.Interfaces.Units;
+using Code.Interfaces.Models;
 using Code.Managers;
 using Code.Markers;
+using UnityEngine;
 
 namespace Code.Controllers.Initialization
 {
     internal sealed class EnemyInitialization: IInitialization
     {
+        private readonly DataStore _data;
         private readonly EnemyFactory _enemyFactory;
         private readonly EnemySpawnMarker[] _enemySpawnMarkers;
-        private List<IEnemyMelee> _meleeEnemies;
-        private List<IEnemy> _enemies;
         
-        public EnemyInitialization(EnemyFactory enemyFactory, EnemySpawnMarker[] enemySpawnMarkers)
+        private List<IEnemyMeleeModel> _meleeEnemies;
+        private List<IEnemyModel> _enemies;
+        
+        public EnemyInitialization(DataStore data, EnemyFactory enemyFactory, EnemySpawnMarker[] enemySpawnMarkers)
         {
+            _data = data;
             _enemyFactory = enemyFactory;
             _enemySpawnMarkers = enemySpawnMarkers;
 
-            _enemies = new List<IEnemy>();
-            _meleeEnemies = new List<IEnemyMelee>();
+            _meleeEnemies = new List<IEnemyMeleeModel>();
+            _enemies = new List<IEnemyModel>();
         }
 
         public void Initialization()
@@ -32,53 +36,34 @@ namespace Code.Controllers.Initialization
             
             foreach (var enemySpawnMarker in _enemySpawnMarkers)
             {
-                IEnemy enemy;
-                switch (enemySpawnMarker.EnemyType)
-                {
-                    case EnemyManager.EnemyType.Target:
-                        enemy = _enemyFactory.CreateTarget(enemySpawnMarker.transform);
-                        break;
-                
-                    case EnemyManager.EnemyType.Zombie:
-                        var enemyMelee = _enemyFactory.CreateZombie(enemySpawnMarker.transform);
-                        enemy = enemyMelee as IEnemy;
-                        if (enemy == null)
-                            throw new Exception("Префаб зомби не имеет IEnemy интерфейса");
-                        break;
-                
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-                AddEnemy(enemy, enemy.Data.EnemyType);
+                AddEnemy(enemySpawnMarker.transform, enemySpawnMarker.EnemyType);
             }
         }
 
-        public void AddEnemy(IEnemy enemy, EnemyManager.EnemyType enemyType)
+        private void AddEnemy(Transform spawnPoint, EnemyManager.EnemyType enemyType)
         {
             switch (enemyType)
             {
                 case EnemyManager.EnemyType.Target:
+                    var enemyTarget = _enemyFactory.CreateEnemy(_data.TargetData, _data.TargetData.Prefab, spawnPoint);
+                    _enemies.Add(enemyTarget);
                     break;
                 
                 case EnemyManager.EnemyType.Zombie:
-                    var enemyMelee = enemy as IEnemyMelee;
-                    if (enemyMelee == null)
-                        throw new Exception("Zombie не имеет интерфейса IEnemyMelee");
-                    _meleeEnemies.Add(enemyMelee);
+                    var enemyZombie = _enemyFactory.CreateMeleeEnemy(_data.ZombieData, _data.ZombieData.Prefab, spawnPoint);
+                    _meleeEnemies.Add(enemyZombie);
                     break;
                 
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            _enemies.Add(enemy);
         }
 
-        public List<IEnemy> GetEnemies()
+        public List<IEnemyModel> GetEnemies()
         {
             return _enemies;
         }
-        public List<IEnemyMelee> GetMeleeEnemies()
+        public List<IEnemyMeleeModel> GetMeleeEnemies()
         {
             return _meleeEnemies;
         }

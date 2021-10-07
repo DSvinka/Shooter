@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Code.Data
 {
-    // TODO: Может разделить пулю от оружия на 2 класса?
     [CreateAssetMenu(fileName = "Weapon", menuName = "Data/Weapons/Weapon")]
     public sealed class WeaponData : ScriptableObject, IData
     {

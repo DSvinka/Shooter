@@ -23,6 +23,10 @@ namespace Code.Data
         [SerializeField] private float _attackDistance = 10f;
         [SerializeField] private float _attackRate = 2f;
         
+        [Header("Звуки")]
+        [SerializeField] [AssetPath.Attribute(typeof(AudioClip))] private string _attackClipPath;
+        [SerializeField] [AssetPath.Attribute(typeof(AudioClip))] private string _getDamageClipPath;
+        
         [Header("Метки")]
         [SerializeField] private EnemyManager.EnemyType _enemyType;
 
@@ -31,6 +35,9 @@ namespace Code.Data
         #region Объекты
         
         private GameObject _prefab;
+        
+        private AudioClip _attackClip;
+        private AudioClip _getDamageClip;
 
         #endregion
         
@@ -44,6 +51,10 @@ namespace Code.Data
         public float AttackDamage => _attackDamage;
         public float AttackDistance => _attackDistance;
         public float AttackRate => _attackRate;
+        
+        public AudioClip AttackClip => GetData(_attackClipPath, _attackClip);
+        public AudioClip GetDamageClip => GetData(_getDamageClipPath, _getDamageClip);
+        
         public EnemyManager.EnemyType EnemyType => _enemyType;
 
         #endregion

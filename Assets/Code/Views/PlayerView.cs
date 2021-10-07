@@ -1,21 +1,20 @@
 ﻿using System;
-using Code.Interfaces.Units;
+using Code.Interfaces.Views;
 using UnityEngine;
 
 namespace Code.Views
 {
-    internal sealed class PlayerView : MonoBehaviour, IUnit
+    internal sealed class PlayerView : MonoBehaviour, IPlayerView
     {
         [SerializeField] private Transform _aimPoint;
-
-        // TODO: Заменить этот костыль на нормальный подбор оружия
-        [SerializeField] private WeaponView _weapon;
-        public WeaponView Weapon => _weapon;
+        [SerializeField] private Transform _weaponPoint;
+        
         public Transform AimPoint => _aimPoint;
+        public Transform WeaponPoint => _weaponPoint;
 
-        public event Action<GameObject, IUnit, float> OnDamage = delegate(GameObject attacker, IUnit player, float damage) {  };
-        public event Action<GameObject, IUnit, float> OnArmored = delegate(GameObject armorer, IUnit player, float armor) {  };
-        public event Action<GameObject, IUnit, float> OnHealing = delegate(GameObject healer, IUnit player, float health) {  };
+        public event Action<GameObject, IUnitView, float> OnDamage = delegate(GameObject attacker, IUnitView player, float damage) {  };
+        public event Action<GameObject, IUnitView, float> OnArmored = delegate(GameObject armorer, IUnitView player, float armor) {  };
+        public event Action<GameObject, IUnitView, float> OnHealing = delegate(GameObject healer, IUnitView player, float health) {  };
 
         public void AddHealth(GameObject healer, float health)
         {
