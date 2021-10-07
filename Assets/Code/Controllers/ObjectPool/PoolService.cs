@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
+using Code.Services;
 using UnityEngine;
 
 namespace Code.Controllers.ObjectPool
 {
-    internal sealed class PoolServices
+    internal sealed class PoolService
     {
         private readonly Dictionary<string, ObjectPool> _cache;
 
-        public PoolServices()
+        public PoolService()
         { 
             _cache = new Dictionary<string, ObjectPool>(32);
         }

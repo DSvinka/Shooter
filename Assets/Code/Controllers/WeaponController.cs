@@ -10,6 +10,7 @@ using Code.Interfaces;
 using Code.Interfaces.Input;
 using Code.Interfaces.Views;
 using Code.Models;
+using Code.Services;
 using Code.Views;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -21,8 +22,7 @@ namespace Code.Controllers
         private readonly PlayerInitialization _initialization;
         private readonly PlayerHudController _hudController;
         private readonly WeaponFactory _weaponFactory;
-        private readonly PoolServices _poolServices;
-        
+
         private PlayerModel _player;
         private WeaponModel _weapon;
 
@@ -34,13 +34,12 @@ namespace Code.Controllers
         private Vector3 _gunInitialPosition;
         private List<GameObject> _bullets;
 
-        public WeaponController(PlayerHudController playerHudController, PlayerInitialization playerInitialization, WeaponFactory weaponFactory, PoolServices poolServices)
+        public WeaponController(PlayerHudController playerHudController, PlayerInitialization playerInitialization, WeaponFactory weaponFactory)
         {
             _weaponFactory = weaponFactory;
                 
             _hudController = playerHudController;
             _initialization = playerInitialization;
-            _poolServices = poolServices;
 
             _reloadInputProxy = KeysInput.Reload;
             _fireInputProxy = MouseInput.Fire;
@@ -200,7 +199,7 @@ namespace Code.Controllers
 
         private void CreateBullet(Vector3 direction)
         {
-            var bullet = _poolServices.Instantiate(_weapon.Data.BulletPrefab);
+            var bullet = ServiceLocator.Resolve<PoolService>().Instantiate(_weapon.Data.BulletPrefab);
             var bulletTransform = bullet.transform;
             bulletTransform.position = _weapon.View.ShotPoint.position;
             bulletTransform.forward = direction.normalized;
@@ -226,7 +225,7 @@ namespace Code.Controllers
         private void DestroyBullet(GameObject bullet)
         {
             bullet.SetActive(false);
-            _poolServices.Destroy(bullet);
+            ServiceLocator.Resolve<PoolService>().Destroy(bullet);
             _bullets.Remove(bullet);
         }
         
