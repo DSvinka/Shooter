@@ -26,6 +26,7 @@ namespace Code.Data
         
         [Header("Взаимодействие")] 
         [SerializeField] private float _maxInteractDistance = 15f;
+        [SerializeField] private float _dropItemForce = 200f;
         
         #endregion
         
@@ -49,6 +50,7 @@ namespace Code.Data
         public float LookXLimit => _lookXLimit;
         
         public float MaxInteractDistance => _maxInteractDistance;
+        public float DropItemForce => _dropItemForce;
 
         #endregion
     }

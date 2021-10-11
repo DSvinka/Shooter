@@ -26,20 +26,18 @@ namespace Code.Controllers.Initialization
 
         public void Initialization()
         {
-            var playerView = _playerFactory.CreatePlayer();
-            var playerCamera = playerView.GetComponentInChildren<Camera>();
-            if (playerCamera == null)
+            var view = _playerFactory.CreatePlayer();
+            var camera = view.GetComponentInChildren<Camera>();
+            if (camera == null)
                 throw new Exception("Компонент Camera не найден в детях объекта PlayerView");
             
-            var playerAudioSource = playerView.GetComponent<AudioSource>();
-            if (playerAudioSource == null)
+            if (!view.TryGetComponent(out AudioSource audioSource))
                 throw new Exception("Компонент AudioSource не найден на объекте PlayerView");
             
-            var playerCharacterController = playerView.GetComponent<CharacterController>();
-            if (playerCharacterController == null)
+            if (!view.TryGetComponent(out CharacterController characterController))
                 throw new Exception("Компонент CharacterController не найден на объекте PlayerView");
             
-            var playerModel = new PlayerModel(playerView, _data, playerAudioSource, playerCharacterController, playerCamera,  null)
+            var playerModel = new PlayerModel(view, _data, audioSource, characterController, camera,  null)
             {
                 SpawnPoint = _playerSpawnPosition
             };

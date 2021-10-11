@@ -62,8 +62,8 @@ namespace Code.Bridges.Shoots
                 spread = _weapon.Data.SpreadAim;
             
             var (origin, direction) = CalcDirection(spread, _weapon.BarrelPosition.position);
-            TryDamage(origin, direction, _weapon.Data.Damage);
-            CreateBullet(direction);
+            RaycastShoot(origin, direction, _weapon.Data.Damage);
+            BulletShoot(direction);
             
             _weapon.BulletsLeft -= 1;
             _hudController.SetAmmo(_weapon.BulletsLeft);
@@ -84,19 +84,19 @@ namespace Code.Bridges.Shoots
             return (ray.origin, directionWithSpread);
         }
 
-        private void TryDamage(Vector3 origin, Vector3 direction, float damage)
+        private void RaycastShoot(Vector3 origin, Vector3 direction, float damage)
         {
             if (Physics.Raycast(origin, direction, out var hit, _weapon.Data.MaxDistance, _weapon.Data.RayCastLayerMask))
             {
                 if (_player.View.gameObject.GetInstanceID() != hit.collider.gameObject.GetInstanceID())
                 {
-                    var unit = hit.collider.gameObject.GetComponent<IUnitView>();
-                    unit?.AddDamage(_player.View.gameObject, damage);
+                    if (hit.collider.gameObject.TryGetComponent(out IUnitView unitView))
+                        unitView.AddDamage(_player.View.gameObject, damage);
                 }
             }
         }
 
-        private void CreateBullet(Vector3 direction)
+        private void BulletShoot(Vector3 direction)
         {
             var bullet = _poolService.Instantiate(_weapon.Data.BulletPrefab);
             var bulletTransform = bullet.transform;

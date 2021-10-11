@@ -34,9 +34,14 @@ namespace Code.Decorators
             _weapon = AddModification(weapon);
         }
 
-        public void Aim(bool input)
+        public void OpenAim()
         {
-            _weapon.AimProxy.Aim(input);
+            _weapon.AimDefaultProxy.OpenAim();
+        }
+        
+        public void CloseAim()
+        {
+            _weapon.AimDefaultProxy.CloseAim();
         }
     }
 }

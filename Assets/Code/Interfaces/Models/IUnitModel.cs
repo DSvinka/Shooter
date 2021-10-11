@@ -10,6 +10,8 @@ namespace Code.Interfaces.Models
         public Transform SpawnPoint { get; set; }
         public Transform Transform { get; set; }
         public GameObject GameObject { get; set; }
+        
+        AudioSource AudioSource { get; }
 
         void Reset();
     }

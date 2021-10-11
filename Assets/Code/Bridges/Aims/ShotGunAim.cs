@@ -15,14 +15,18 @@ namespace Code.Bridges.Aims
             _weapon = weaponModel;
         }
         
-        public void Aim(bool input)
+        public void OpenAim()
         {
-            if (input && !_weapon.IsReloading)
+            if (!_weapon.IsReloading)
             {
                 _weapon.Transform.position = _player.View.AimPoint.position;
                 _weapon.IsAiming = true;
             }
-            else if (_weapon.IsAiming && (!input || _weapon.IsReloading))
+        }
+        
+        public void CloseAim()
+        {
+            if (_weapon.IsAiming || _weapon.IsReloading)
             {
                 _weapon.Transform.localPosition = Vector3.zero;
                 _weapon.IsAiming = false;

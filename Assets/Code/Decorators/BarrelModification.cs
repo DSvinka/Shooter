@@ -39,12 +39,12 @@ namespace Code.Decorators
         
         public void MoveBullets(float deltaTime)
         {
-            _weapon.ShootProxy.MoveBullets(deltaTime);
+            _weapon.ShootDefaultProxy.MoveBullets(deltaTime);
         }
 
         public void Shoot(float deltaTime)
         {
-            _weapon.ShootProxy.Shoot(deltaTime);
+            _weapon.ShootDefaultProxy.Shoot(deltaTime);
         }
     }
 }

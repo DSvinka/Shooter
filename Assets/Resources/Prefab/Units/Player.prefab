@@ -160,7 +160,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a8597dbef3996514281ed38b10d2bf6e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -243,7 +243,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _aimPoint: {fileID: 3264037247321206258}
-  _weaponPoint: {fileID: 4047190780196696961}
+  _handPoint: {fileID: 4047190780196696961}
 --- !u!82 &-6219731024036542525
 AudioSource:
   m_ObjectHideFlags: 0
@@ -350,7 +350,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4047190780196696961}
   m_Layer: 0
-  m_Name: WeaponPoint
+  m_Name: HandPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

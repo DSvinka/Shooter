@@ -16,6 +16,11 @@ namespace Code.Interfaces.Models
         Transform BarrelPosition { get; }
         Transform AimPosition { get; }
         
+        // TODO: Создать класс чтобы складировать прокси.
+        IReload ReloadDefaultProxy { get; }
+        IShoot ShootDefaultProxy { get; }
+        IAim AimDefaultProxy { get; }
+        
         IReload ReloadProxy { get; }
         IShoot ShootProxy { get; }
         IAim AimProxy { get; }
@@ -32,6 +37,9 @@ namespace Code.Interfaces.Models
         void SetAimPosition(Transform position);
         void SetAudioClip(AudioClip audioClip);
 
+        void ResetAllProxy();
+        void SetDefaultProxy(IReload reload, IShoot shoot, IAim aim);
+        
         void SetReloadProxy(IReload reload);
         void SetShootProxy(IShoot shoot);
         void SetAimProxy(IAim aim);

@@ -10,25 +10,31 @@ namespace Code.Factory
 {
     internal sealed class WeaponFactory: IFactory, IWeaponFactory
     {
-        public WeaponModel CreateWeapon(WeaponData weapon)
+        public WeaponModel CreateWeapon(WeaponView view, WeaponData data)
         {
-            var gameObject = Object.Instantiate(weapon.WeaponPrefab, null, true);
-            
-            var view = gameObject.GetComponent<WeaponView>();
-            if (view == null)
-                throw new Exception($"IEnemyView не найден в {gameObject.gameObject.name}");
-
+            var gameObject = view.gameObject;
             var particleSystem = gameObject.GetComponentInChildren<ParticleSystem>();
             if (particleSystem == null)
                 throw new Exception($"ParticleSystem не найден в {gameObject.gameObject.name}");
             
-            var audioSource = gameObject.GetComponent<AudioSource>();
-            if (audioSource == null)
+            if (!gameObject.TryGetComponent(out AudioSource audioSource))
                 throw new Exception($"AudioSource не найден в {gameObject.gameObject.name}");
 
-            var enemyModel = new WeaponModel(view, weapon, particleSystem, audioSource);
+            var model = new WeaponModel(view, data, particleSystem, audioSource);
 
-            return enemyModel;
+            return model;
+        }
+        
+        public WeaponModel CreateWeapon(WeaponData weapon)
+        {
+            var gameObject = Object.Instantiate(weapon.WeaponPrefab, null, true);
+            
+            if (!gameObject.TryGetComponent(out WeaponView view))
+                throw new Exception($"IEnemyView не найден в {gameObject.gameObject.name}");
+
+            var model = CreateWeapon(view, weapon);
+
+            return model;
         }
     }
 }

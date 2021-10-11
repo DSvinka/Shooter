@@ -17,6 +17,10 @@ namespace Code.Models
         public Transform BarrelPosition { get; private set; }
         public Transform AimPosition { get; private set; }
         
+        public IReload ReloadDefaultProxy { get; private set; }
+        public IShoot ShootDefaultProxy { get; private set; }
+        public IAim AimDefaultProxy { get; private set; }
+        
         public IReload ReloadProxy { get; private set; }
         public IShoot ShootProxy { get; private set; }
         public IAim AimProxy { get; private set; }
@@ -59,12 +63,26 @@ namespace Code.Models
         {
             FireClip = audioClip;
         }
+        
+        public void ResetAllProxy()
+        {
+            ReloadProxy = ReloadDefaultProxy;
+            ShootProxy = ShootDefaultProxy;
+            AimProxy = AimDefaultProxy;
+        }
+
+        public void SetDefaultProxy(IReload reload, IShoot shoot, IAim aim)
+        {
+            ReloadDefaultProxy = reload;
+            ShootDefaultProxy = shoot;
+            AimDefaultProxy = aim;
+        }
 
         public void SetReloadProxy(IReload reload)
         {
             ReloadProxy = reload;
         }
-
+        
         public void SetShootProxy(IShoot shoot)
         {
             ShootProxy = shoot;

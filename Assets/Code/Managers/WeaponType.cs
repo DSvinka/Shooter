@@ -6,7 +6,7 @@ namespace Code.Managers
     {
         [Flags] public enum WeaponType
         {
-            ShotGun
+            ShotGun = 0
         }
     }
 }

@@ -9,5 +9,6 @@ namespace Code.Managers
         public const KeyCode JUMP = KeyCode.Space;
         public const KeyCode RELOAD = KeyCode.R;
         public const KeyCode INTERACT = KeyCode.E;
+        public const KeyCode DROP = KeyCode.G;
     }
 }

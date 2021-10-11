@@ -5,6 +5,6 @@ namespace Code.Interfaces.Views
     public interface IPlayerView: IUnitView
     {
         Transform AimPoint { get; }
-        Transform WeaponPoint { get; }
+        Transform HandPoint { get; }
     }
 }

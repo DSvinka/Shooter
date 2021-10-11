@@ -7,10 +7,10 @@ namespace Code.Views
     internal sealed class PlayerView : MonoBehaviour, IPlayerView
     {
         [SerializeField] private Transform _aimPoint;
-        [SerializeField] private Transform _weaponPoint;
+        [SerializeField] private Transform _handPoint;
         
         public Transform AimPoint => _aimPoint;
-        public Transform WeaponPoint => _weaponPoint;
+        public Transform HandPoint => _handPoint;
 
         public event Action<GameObject, int, float> OnDamage = delegate(GameObject attacker, int id, float damage) {  };
         public event Action<GameObject, int, float> OnArmored = delegate(GameObject armorer, int id, float armor) {  };

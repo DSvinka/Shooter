@@ -72,8 +72,7 @@ namespace Code.Utils.Extensions
 
         public static T GetOrAddComponent<T>(this GameObject child) where T : Component
         {
-            var result = child.GetComponent<T>();
-            if (result == null)
+            if (!child.TryGetComponent(out T result))
             {
                 result = child.AddComponent<T>();
             }

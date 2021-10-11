@@ -44,7 +44,7 @@ namespace Code.Controllers.Initialization
             var inputController = new InputController();
             var playerHudController = new PlayerHudController(playerInitialization);
             var weaponController = new WeaponController(data, playerHudController, playerInitialization, poolService, weaponFactory);
-            var pickupController = new PickupController(weaponController, playerInitialization, interactDict);
+            var pickupController = new InteractController(weaponController, playerInitialization, interactDict);
             
             var enemyController = new EnemyController(enemyInitialization, playerInitialization);
 

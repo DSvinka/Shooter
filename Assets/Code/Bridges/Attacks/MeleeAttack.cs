@@ -18,16 +18,15 @@ namespace Code.Bridges.Attacks
 
             if (Physics.Raycast(position, forward, out var raycastHit, enemy.Data.AttackDistance))
             {
-                var unit = raycastHit.collider.gameObject.GetComponent<IUnitView>();
-                if (unit != null)
-                {
-                    if (unit is IEnemyView)
-                        return;
+                if (!raycastHit.collider.gameObject.TryGetComponent(out IUnitView unitView)) 
+                    return;
+                
+                if (unitView is IEnemyView)
+                    return;
                     
-                    enemy.AudioSource.PlayOneShot(enemy.Data.AttackClip);
-                    unit.AddDamage(enemy.GameObject, enemy.Data.AttackDamage);
-                    enemy.AttackCooldown = enemy.Data.AttackRate;
-                }
+                enemy.AudioSource.PlayOneShot(enemy.Data.AttackClip);
+                unitView.AddDamage(enemy.GameObject, enemy.Data.AttackDamage);
+                enemy.AttackCooldown = enemy.Data.AttackRate;
             }
         }
     }

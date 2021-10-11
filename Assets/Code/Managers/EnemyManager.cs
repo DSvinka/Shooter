@@ -4,7 +4,7 @@
     {
         public enum EnemyType
         {
-            Zombie
+            Zombie = 0
         }
     }
 }

@@ -2,6 +2,7 @@
 {
     public interface IAim
     {
-        void Aim(bool input);
+        void OpenAim();
+        void CloseAim();
     }
 }

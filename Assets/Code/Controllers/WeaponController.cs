@@ -14,6 +14,7 @@ using Code.Interfaces.Input;
 using Code.Managers;
 using Code.Models;
 using Code.Services;
+using Code.Views;
 using UnityEngine;
 
 namespace Code.Controllers
@@ -30,10 +31,6 @@ namespace Code.Controllers
         private bool _reloadInput;
         private bool _aimInput;
         private bool _fireInput;
-
-        private IReload _reloadProxy;
-        private IShoot _shootProxy;
-        private IAim _aimProxy;
 
         private Vector3 _defaultAimPosition;
         
@@ -88,7 +85,7 @@ namespace Code.Controllers
             _aimInputProxy.KeyOnChange -= OnAimInput;
         }
         
-        public void ChangeWeapon(WeaponManager.WeaponType weaponType)
+        public void ChangeWeapon(WeaponView view)
         {
             if (_player == null)
                 return;
@@ -96,45 +93,40 @@ namespace Code.Controllers
             if (_player.Weapon != null && _player.Weapon.View != null)
                 _player.Weapon.View.StopAllCoroutines();
 
-            var weaponPoint = _player.View.WeaponPoint;
+            var handPoint = _player.View.HandPoint;
             
             if (_defaultAimPosition != Vector3.zero)
-                weaponPoint.localPosition = _defaultAimPosition;
+                handPoint.localPosition = _defaultAimPosition;
             else
-                _defaultAimPosition = weaponPoint.localPosition;
+                _defaultAimPosition = handPoint.localPosition;
 
-            var weaponData = GetWeapon(weaponType);
+            var data = GetWeapon(view.WeaponType);
 
-            var weaponModel = _weaponFactory.CreateWeapon(weaponData);
-            _player.Weapon = weaponModel;
+            var model = _weaponFactory.CreateWeapon(view, data);
+            _player.Weapon = model;
 
-            weaponModel.Transform.parent = weaponPoint;
-            weaponModel.Transform.localPosition = Vector3.zero;
-            weaponModel.Transform.localRotation = Quaternion.identity;
+            model.Transform.parent = handPoint;
+            model.Transform.localPosition = Vector3.zero;
+            model.Transform.localRotation = Quaternion.identity;
 
-            var (reloadProxy, shootProxy, aimProxy) = GetProxy(weaponModel.Data.WeaponType);
-            weaponModel.SetShootProxy(shootProxy);
-            weaponModel.SetAimProxy(aimProxy);
-            weaponModel.SetReloadProxy(reloadProxy);
-            _reloadProxy = weaponModel.ReloadProxy;
-            _shootProxy = weaponModel.ShootProxy;
-            _aimProxy = weaponModel.AimProxy;
-
+            var (reloadProxy, shootProxy, aimProxy) = GetProxy(model.Data.WeaponType);
+            model.SetDefaultProxy(reloadProxy, shootProxy, aimProxy);
+            model.ResetAllProxy();
 
             // TODO: Сделать снятие и надевание модулей. (можно как в батле 2042)
-            var modificationBarrel = new BarrelModification(_data.MufflerModificator, weaponModel.View.BarrelPosition);
-            modificationBarrel.ApplyModification(weaponModel);
-            _shootProxy = modificationBarrel;
+            var modificationBarrel = new BarrelModification(_data.MufflerModificator, model.View.BarrelPosition);
+            modificationBarrel.ApplyModification(model);
+            model.SetShootProxy(modificationBarrel);
             
             // TODO: Сделать снятие и надевание модулей. (можно как в батле 2042)
-            var modificationAim = new AimModification(_data.OpticalAimModificator, weaponModel.View.AimPosition);
-            modificationAim.ApplyModification(weaponModel);
-            _aimProxy = modificationAim;
+            var modificationAim = new AimModification(_data.OpticalAimModificator, model.View.AimPosition);
+            modificationAim.ApplyModification(model);
+            model.SetAimProxy(modificationAim);
 
-            weaponPoint.localPosition += _data.OpticalAimModificator.AdditionalAimPosition;
+            handPoint.localPosition += _data.OpticalAimModificator.AdditionalAimPosition;
 
-            _hudController.SetAmmo(weaponModel.BulletsLeft);
-            _hudController.SetMaxAmmo(weaponModel.Data.MagazineSize);
+            _hudController.SetAmmo(model.BulletsLeft);
+            _hudController.SetMaxAmmo(model.Data.MagazineSize);
         }
 
         private WeaponData GetWeapon(WeaponManager.WeaponType weaponType)
@@ -175,18 +167,27 @@ namespace Code.Controllers
             if (_player == null || _player.Weapon == null || _player.Weapon.View == null)
                 return;
 
-            _shootProxy.MoveBullets(deltaTime);
+            var model = _player.Weapon;
             
-            _aimProxy.Aim(_aimInput);
+            model.ShootProxy.MoveBullets(deltaTime);
+            
+            if (_aimInput)
+                model.AimProxy.OpenAim();
+            
+            if (!_aimInput && model.IsAiming)
+                model.AimProxy.CloseAim();
 
             if (_fireInput)
-                _shootProxy.Shoot(deltaTime);
-            
-            if (_reloadInput)
-                _reloadProxy.Reload();
+                model.ShootProxy.Shoot(deltaTime);
 
-            if (_player.Weapon.FireCooldown >= 0f)
-                _player.Weapon.FireCooldown -= deltaTime;
+            if (_reloadInput)
+            {
+                model.AimProxy.CloseAim();
+                model.ReloadProxy.Reload();
+            }
+
+            if (model.FireCooldown >= 0f)
+                model.FireCooldown -= deltaTime;
         }
     }
 }
