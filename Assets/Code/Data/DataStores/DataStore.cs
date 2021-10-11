@@ -1,3 +1,4 @@
+using Code.Data.WeaponModifications;
 using static Code.Data.DataUtils;
 using UnityEngine;
 
@@ -11,12 +12,18 @@ namespace Code.Data.DataStores
         [Header("Объекты")]
         [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _playerHudPrefabPath;
         
-        [Header("Data")]
+        [Header("Units")]
         [SerializeField] [AssetPath.Attribute(typeof(PlayerData))] private string _playerDataPath;
         [SerializeField] [AssetPath.Attribute(typeof(EnemyData))] private string _zombieDataPath;
         
-        [SerializeField] [AssetPath.Attribute(typeof(WeaponData))] private string _stickGunPath;
+        [Header("Weapons")]
+        [SerializeField] [AssetPath.Attribute(typeof(WeaponData))] private string _shotGunPath;
 
+        [Header("Weapons Modificators")]
+        [SerializeField] [AssetPath.Attribute(typeof(BarrelModificatorData))] private string _mufflerPath;
+        [SerializeField] [AssetPath.Attribute(typeof(AimModificatorData))] private string _opticalAimPath;
+
+        
         #endregion
 
         #region Объекты
@@ -25,8 +32,11 @@ namespace Code.Data.DataStores
         private EnemyData _zombie;
         
         private GameObject _playerHudPrefab;
+        
+        private WeaponData _shotGun;
 
-        private WeaponData _stickGun;
+        private BarrelModificatorData _muffler;
+        private AimModificatorData _opticalAim;
 
         #endregion
 
@@ -35,7 +45,11 @@ namespace Code.Data.DataStores
         public PlayerData PlayerData => GetData(_playerDataPath, _player);
         public EnemyData ZombieData => GetData(_zombieDataPath, _zombie);
         public GameObject PlayerHudPrefab => GetData(_playerHudPrefabPath, _playerHudPrefab);
-        public WeaponData StickGunData => GetData(_stickGunPath, _stickGun);
+        
+        public WeaponData ShotGunData => GetData(_shotGunPath, _shotGun);
+
+        public BarrelModificatorData MufflerModificator => GetData(_mufflerPath, _muffler);
+        public AimModificatorData OpticalAimModificator => GetData(_opticalAimPath, _opticalAim);
 
         #endregion
     }

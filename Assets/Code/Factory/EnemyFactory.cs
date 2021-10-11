@@ -1,6 +1,4 @@
 ﻿using System;
-using Code.Bridges.Attacks;
-using Code.Bridges.Movement;
 using Code.Data.DataStores;
 using Code.Interfaces.Bridges;
 using Code.Interfaces.Data;

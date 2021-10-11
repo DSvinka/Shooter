@@ -1,5 +1,5 @@
-using Code.Controllers.Initialization;
 using Code.Data.DataStores;
+using Code.Services;
 using UnityEngine;
 
 namespace Code.Controllers.Starter
@@ -17,14 +17,8 @@ namespace Code.Controllers.Starter
 
         private void Start()
         {
-            _controllers = new Controllers();
-            
-            var game = new GameInitialization(_controllers, _data);
-            
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-            
-            _controllers.Initialization();
+            var gameService = new GameService();
+            _controllers = gameService.Start(_data);
         }
 
         private void Update()

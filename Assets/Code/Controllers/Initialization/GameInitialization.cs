@@ -1,9 +1,11 @@
 using System;
-using Code.Controllers.ObjectPool;
+using System.Collections.Generic;
+using System.Linq;
 using Code.Data.DataStores;
 using Code.Factory;
 using Code.Markers;
 using Code.Services;
+using Code.Views;
 using Object = UnityEngine.Object;
 
 namespace Code.Controllers.Initialization
@@ -19,11 +21,17 @@ namespace Code.Controllers.Initialization
             _data = data;
 
             var enemySpawnMarkers = Object.FindObjectsOfType<EnemySpawnMarker>();
+            
             var playerSpawn = Object.FindObjectOfType<PlayerSpawnMarker>();
             if (playerSpawn == null)
                 throw new Exception("Спавнер игрока отсуствует!");
-            
-            ServiceLocator.SetService(new PoolService());
+
+            var interactDict = new Dictionary<int, InteractView>();
+            var interactViews = Object.FindObjectsOfType<InteractView>();
+            if (interactViews.Length != 0)
+                interactDict = interactViews.ToDictionary(interactView => interactView.gameObject.GetInstanceID());
+
+            var poolService = new PoolService();
 
             var playerFactory = new PlayerFactory(_data);
             var enemyFactory = new EnemyFactory(_data);
@@ -35,11 +43,12 @@ namespace Code.Controllers.Initialization
 
             var inputController = new InputController();
             var playerHudController = new PlayerHudController(playerInitialization);
-            var weaponController = new WeaponController(playerHudController, playerInitialization, weaponFactory);
+            var weaponController = new WeaponController(data, playerHudController, playerInitialization, poolService, weaponFactory);
+            var pickupController = new PickupController(weaponController, playerInitialization, interactDict);
             
             var enemyController = new EnemyController(enemyInitialization, playerInitialization);
 
-            var playerController = new PlayerController(playerInitialization, weaponController, playerHudController, _data.StickGunData);
+            var playerController = new PlayerController(playerInitialization, playerHudController);
             var playerMovementController = new PlayerMovementController(playerInitialization);
 
             controllers.Add(playerInitialization);
@@ -48,6 +57,7 @@ namespace Code.Controllers.Initialization
             controllers.Add(inputController);
             controllers.Add(playerHudController);
             controllers.Add(weaponController);
+            controllers.Add(pickupController);
             
             controllers.Add(enemyController);
             controllers.Add(playerController);

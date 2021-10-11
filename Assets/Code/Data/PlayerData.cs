@@ -24,6 +24,9 @@ namespace Code.Data
         [SerializeField] private float _lookSpeed = 2.0f;
         [SerializeField] private float _lookXLimit = 45.0f;
         
+        [Header("Взаимодействие")] 
+        [SerializeField] private float _maxInteractDistance = 15f;
+        
         #endregion
         
         #region Объекты
@@ -44,6 +47,8 @@ namespace Code.Data
         public float JumpForce => _jumpForce;
         public float LookSpeed => _lookSpeed;
         public float LookXLimit => _lookXLimit;
+        
+        public float MaxInteractDistance => _maxInteractDistance;
 
         #endregion
     }

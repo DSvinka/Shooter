@@ -1,8 +1,6 @@
-﻿using System;
-using Code.Controllers.Initialization;
+﻿using Code.Controllers.Initialization;
 using Code.Data;
 using Code.Interfaces;
-using Code.Interfaces.Views;
 using Code.Models;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -12,27 +10,19 @@ namespace Code.Controllers
     internal sealed class PlayerController: IController, IInitialization, ICleanup
     {
         private readonly PlayerInitialization _initialization;
-        private readonly WeaponController _weaponController;
         private readonly PlayerHudController _hudController;
         
         private PlayerModel _player;
-
-        // TODO: Убрать костыль с WeaponData, Это временная вещь, пока подбора оружия адекватного нету.
-        private readonly WeaponData _weaponData;
-        public PlayerController(PlayerInitialization initialization, WeaponController weaponController, PlayerHudController hudController, WeaponData weaponData)
+        
+        public PlayerController(PlayerInitialization initialization, PlayerHudController hudController)
         {
-            _weaponData = weaponData;
             _initialization = initialization;
-            _weaponController = weaponController;
             _hudController = hudController;
         }
         
         public void Initialization()
         {
             _player = _initialization.GetPlayer();
-
-            // TODO: Заменить этот костыль на нормальный подбор оружия
-            _weaponController.ChangeWeapon(_weaponData);
 
             var view = _player.View;
             view.OnArmored += AddArmor;

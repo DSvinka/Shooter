@@ -15,7 +15,6 @@ namespace Code.Models
         public float Armor { get; set; }
         public float AttackCooldown { get; set; }
         
-        
         public Transform SpawnPoint { get; set; }
         public Transform Transform { get; set; }
         public GameObject GameObject { get; set; }

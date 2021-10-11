@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerHudPrefabPath: Assets/Resources/Prefab/UI/HUD.prefab
   _playerDataPath: Assets/Resources/Data/Player.asset
-  _targetDataPath: Assets/Resources/Data/Target.asset
   _zombieDataPath: Assets/Resources/Data/Zombie.asset
-  _stickGunPath: Assets/Resources/Data/Weapon.asset
+  _shotGunPath: Assets/Resources/Data/ShotGun.asset
+  _mufflerPath: Assets/Resources/Data/Weapons Modifications/Muffler.asset
+  _opticalAimPath: Assets/Resources/Data/Weapons Modifications/Optical Aim.asset

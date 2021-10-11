@@ -1,7 +1,6 @@
 ﻿using System;
 using Code.Data;
 using Code.Interfaces.Factory;
-using Code.Interfaces.Models;
 using Code.Models;
 using Code.Views;
 using UnityEngine;
@@ -20,11 +19,11 @@ namespace Code.Factory
                 throw new Exception($"IEnemyView не найден в {gameObject.gameObject.name}");
 
             var particleSystem = gameObject.GetComponentInChildren<ParticleSystem>();
-            if (view == null)
+            if (particleSystem == null)
                 throw new Exception($"ParticleSystem не найден в {gameObject.gameObject.name}");
             
             var audioSource = gameObject.GetComponent<AudioSource>();
-            if (view == null)
+            if (audioSource == null)
                 throw new Exception($"AudioSource не найден в {gameObject.gameObject.name}");
 
             var enemyModel = new WeaponModel(view, weapon, particleSystem, audioSource);

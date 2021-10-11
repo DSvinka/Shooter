@@ -8,5 +8,6 @@ namespace Code.Managers
         public const KeyCode RUN = KeyCode.LeftShift;
         public const KeyCode JUMP = KeyCode.Space;
         public const KeyCode RELOAD = KeyCode.R;
+        public const KeyCode INTERACT = KeyCode.E;
     }
 }

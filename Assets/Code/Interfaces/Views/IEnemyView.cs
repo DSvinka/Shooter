@@ -1,5 +1,4 @@
-﻿using Code.Interfaces.Models;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Code.Interfaces.Views
 {

@@ -13,9 +13,10 @@ namespace Code.Controllers.Initialization
             
             var inputEscape = new InputEscape();
             var inputReload = new InputReload();
+            var inputInteract = new InputInteract();
             var inputJump = new InputJump();
             var inputRun = new InputRun();
-            var keysInput = new KeysInput(inputEscape, inputReload, inputJump, inputRun);
+            var keysInput = new KeysInput(inputEscape, inputReload, inputInteract, inputJump, inputRun);
             
             var inputFire = new InputFireMouse();
             var inputAim = new InputAimMouse();

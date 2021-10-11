@@ -1,5 +1,4 @@
 ﻿using System;
-using Code.Interfaces.Models;
 using Code.Interfaces.Views;
 using UnityEngine;
 

@@ -1,5 +1,6 @@
 using static Code.Data.DataUtils;
 using Code.Interfaces.Data;
+using Code.Managers;
 using UnityEngine;
 
 namespace Code.Data
@@ -13,6 +14,9 @@ namespace Code.Data
         
         [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _weaponPrefabPath;
         [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _bulletPrefabPath;
+        
+        [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _defaultAimPath;
+        [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _defaultBarrelPath;
 
         [Header("Характеристики Оружия")]
         [SerializeField] private int _damage = 10;
@@ -24,7 +28,7 @@ namespace Code.Data
         private float _fireRate = 0.1f;
 
         [SerializeField] [Tooltip("Максимальное расстояние на которое может стрелять оружие")]
-        private float _maxDistance = 3f;
+        private float _maxDistance = 50f;
 
         [SerializeField] [Tooltip("Размер разброса пуль")]
         private float _spread = 10f;
@@ -32,9 +36,14 @@ namespace Code.Data
         [SerializeField] [Tooltip("Размер разброса пуль при прицеливании")]
         private float _spreadAim = 5f;
         
+        [SerializeField] [Tooltip("На каких объектах луч выстрела будет останавливаться")]
+        private LayerMask _rayCastLayerMask;
+
+        [SerializeField] private WeaponManager.WeaponType _weaponType;
+        
         [Header("Характеристики Пуль")]
         [SerializeField] [Tooltip("Скорость с которой будет лететь пуля")]
-        private float _bulletForce = 50f;
+        private float _bulletForce = 100f;
         
         [SerializeField] [Tooltip("Сколько времени пуля будет жить перед тем как исчезнет (в секундах)")]
         private float _bulletLifeTime = 3f;
@@ -46,8 +55,6 @@ namespace Code.Data
         
         [Header("Визуал")]
         [SerializeField] private Vector3 _reloadMove;
-        
-        [SerializeField] private LayerMask _layerMask;
 
         #endregion
         
@@ -77,10 +84,14 @@ namespace Code.Data
         public float SpreadAim => _spreadAim;
         
         public Vector3 ReloadMove => _reloadMove;
-        public LayerMask LayerMask => _layerMask;
+        public LayerMask RayCastLayerMask => _rayCastLayerMask;
+        public WeaponManager.WeaponType WeaponType => _weaponType;
 
         public GameObject WeaponPrefab => GetData(_weaponPrefabPath, _weaponPrefab);
         public GameObject BulletPrefab => GetData(_bulletPrefabPath, _bulletPrefab);
+        
+        public GameObject DefaultAimPrefab => GetData(_defaultAimPath, _weaponPrefab);
+        public GameObject DefaultBarrelPrefab => GetData(_defaultBarrelPath, _bulletPrefab);
         
         public AudioClip ReloadClip => GetData(_reloadClipPath, _reloadClip);
         public AudioClip FireClip => GetData(_fireClipPath, _fireClip);
