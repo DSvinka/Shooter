@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
 using Code.Data.WeaponModifications;
+using Code.Utils.Extensions;
+using UnityEditor;
 using static Code.Data.DataUtils;
 using UnityEngine;
 
@@ -23,7 +27,6 @@ namespace Code.Data.DataStores
         [SerializeField] [AssetPath.Attribute(typeof(BarrelModificatorData))] private string _mufflerPath;
         [SerializeField] [AssetPath.Attribute(typeof(AimModificatorData))] private string _opticalAimPath;
 
-        
         #endregion
 
         #region Объекты
