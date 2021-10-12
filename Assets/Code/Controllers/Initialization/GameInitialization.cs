@@ -6,6 +6,7 @@ using Code.Factory;
 using Code.Markers;
 using Code.Services;
 using Code.Views;
+using RSG;
 using Object = UnityEngine.Object;
 
 namespace Code.Controllers.Initialization
@@ -32,6 +33,7 @@ namespace Code.Controllers.Initialization
                 interactDict = interactViews.ToDictionary(interactView => interactView.gameObject.GetInstanceID());
 
             var poolService = new PoolService();
+            var promiseTimer = new PromiseTimer();
 
             var playerFactory = new PlayerFactory(_data);
             var enemyFactory = new EnemyFactory(_data);
@@ -41,9 +43,11 @@ namespace Code.Controllers.Initialization
             var enemyInitialization = new EnemyInitialization(_data, enemyFactory, enemySpawnMarkers);
             var playerInitialization = new PlayerInitialization(data.PlayerData, playerFactory, playerSpawn.transform);
 
+            var promiseTimerController = new PromiseTimerController(promiseTimer);
+            
             var inputController = new InputController();
             var playerHudController = new PlayerHudController(playerInitialization);
-            var weaponController = new WeaponController(data, playerHudController, playerInitialization, poolService, weaponFactory);
+            var weaponController = new WeaponController(data, playerHudController, playerInitialization, weaponFactory, poolService, promiseTimer);
             var pickupController = new InteractController(weaponController, playerInitialization, interactDict);
             
             var enemyController = new EnemyController(enemyInitialization, playerInitialization);
@@ -51,6 +55,8 @@ namespace Code.Controllers.Initialization
             var playerController = new PlayerController(playerInitialization, playerHudController);
             var playerMovementController = new PlayerMovementController(playerInitialization);
 
+            controllers.Add(promiseTimerController);
+            
             controllers.Add(playerInitialization);
             controllers.Add(enemyInitialization);
             
@@ -58,7 +64,7 @@ namespace Code.Controllers.Initialization
             controllers.Add(playerHudController);
             controllers.Add(weaponController);
             controllers.Add(pickupController);
-            
+
             controllers.Add(enemyController);
             controllers.Add(playerController);
             controllers.Add(playerMovementController);

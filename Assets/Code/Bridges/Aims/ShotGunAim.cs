@@ -1,5 +1,6 @@
 ﻿using Code.Interfaces.Bridges;
 using Code.Models;
+using DG.Tweening;
 using UnityEngine;
 
 namespace Code.Bridges.Aims
@@ -17,9 +18,9 @@ namespace Code.Bridges.Aims
         
         public void OpenAim()
         {
-            if (!_weapon.IsReloading)
+            if (!_weapon.IsAiming && !_weapon.IsReloading)
             {
-                _weapon.Transform.position = _player.View.AimPoint.position;
+                _weapon.Transform.DOLocalMove(_player.View.AimPoint.localPosition, 0.3f);
                 _weapon.IsAiming = true;
             }
         }
@@ -28,7 +29,7 @@ namespace Code.Bridges.Aims
         {
             if (_weapon.IsAiming || _weapon.IsReloading)
             {
-                _weapon.Transform.localPosition = Vector3.zero;
+                _weapon.Transform.DOLocalMove(Vector3.zero, 0.3f);
                 _weapon.IsAiming = false;
             }
         }

@@ -8,6 +8,7 @@ using Code.Managers;
 using Code.Models;
 using Code.Services;
 using Code.Views;
+using RSG;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -18,15 +19,19 @@ namespace Code.Bridges.Shoots
         private PlayerModel _player;
         private WeaponModel _weapon;
         private PoolService _poolService;
+        private IPromiseTimer _promiseTimer;
+        
         private PlayerHudController _hudController;
         private List<GameObject> _bullets;
         
-        public ShotGunShoot(PlayerModel playerModel, WeaponModel weaponModel, PlayerHudController hudController, PoolService poolService)
+        public ShotGunShoot(PlayerModel playerModel, WeaponModel weaponModel, PlayerHudController hudController, PoolService poolService, IPromiseTimer promiseTimer)
         {
             _player = playerModel;
             _weapon = weaponModel;
             _poolService = poolService;
             _hudController = hudController;
+
+            _promiseTimer = promiseTimer;
             
             _bullets = new List<GameObject>(_weapon.Data.MagazineSize);
         }
@@ -110,7 +115,7 @@ namespace Code.Bridges.Shoots
             bulletView.OnCollision += OnBulletHit;
                 
             _bullets.Add(bullet);
-            _weapon.View.StartCoroutine(BulletLifetime(bullet));
+            _promiseTimer.WaitFor(_weapon.Data.BulletLifetime).Then(() => DestroyBullet(bullet));
         }
         
         private void OnBulletHit(BulletView bullet, GameObject hit)
@@ -126,18 +131,12 @@ namespace Code.Bridges.Shoots
         
         private void DestroyBullet(GameObject bullet)
         {
+            if (bullet == null)
+                return;
+            
             bullet.SetActive(false);
             _poolService.Destroy(bullet);
             _bullets.Remove(bullet);
         }
-        
-        private IEnumerator BulletLifetime(GameObject bullet)
-        {
-            yield return new WaitForSeconds(_weapon.Data.BulletLifetime);
-            if (bullet != null)
-                DestroyBullet(bullet);
-        }
-        
-        
     }
 }

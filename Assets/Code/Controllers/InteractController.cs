@@ -87,7 +87,6 @@ namespace Code.Controllers
             if (interactView.Item.TryGetComponent(out WeaponView weaponView))
             {
                 _player.Weapon = null;
-                weaponView.StopAllCoroutines();
             }
 
             if (interactView.Item.TryGetComponent(out AudioSource audioSource))
@@ -119,7 +118,7 @@ namespace Code.Controllers
             var gameObject = interactView.gameObject;
             var transform = interactView.transform;
 
-            var disablePhysics = true;
+            bool disableCollision;
 
             if (_player.ObjectInHand != null)
                 return;
@@ -132,7 +131,7 @@ namespace Code.Controllers
 
                     _weaponController.ChangeWeapon(weaponView);
                     
-                    disablePhysics = true;
+                    disableCollision = true;
                     _player.SetObjectInHand(interactView);
 
                     break;
@@ -140,7 +139,7 @@ namespace Code.Controllers
                 case InteractManager.InteractType.PhysicItem:
                     transform.parent = _player.View.HandPoint;
                     
-                    disablePhysics = false;
+                    disableCollision = false;
                     _player.SetObjectInHand(interactView);
                     break;
                 
@@ -152,7 +151,7 @@ namespace Code.Controllers
             
             if (gameObject.TryGetComponent(out Rigidbody rigidbody))
             {
-                if (disablePhysics)
+                if (disableCollision)
                 {
                     rigidbody.isKinematic = true;
                 }
@@ -163,7 +162,7 @@ namespace Code.Controllers
                 }
             }
 
-            if (disablePhysics)
+            if (disableCollision)
             {
                 var colliders = gameObject.GetComponents<Collider>();
                 if (colliders.Length != 0)

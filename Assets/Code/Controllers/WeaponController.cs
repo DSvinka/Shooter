@@ -15,6 +15,7 @@ using Code.Managers;
 using Code.Models;
 using Code.Services;
 using Code.Views;
+using RSG;
 using UnityEngine;
 
 namespace Code.Controllers
@@ -25,6 +26,7 @@ namespace Code.Controllers
         private readonly PlayerHudController _hudController;
         private readonly WeaponFactory _weaponFactory;
         private readonly PoolService _poolService;
+        private readonly IPromiseTimer _promiseTimer;
 
         private PlayerModel _player;
 
@@ -36,11 +38,12 @@ namespace Code.Controllers
         
         private DataStore _data;
 
-        public WeaponController(DataStore data, PlayerHudController playerHudController, PlayerInitialization playerInitialization, PoolService poolService, WeaponFactory weaponFactory)
+        public WeaponController(DataStore data, PlayerHudController playerHudController, PlayerInitialization playerInitialization, WeaponFactory weaponFactory, PoolService poolService, PromiseTimer promiseTimer)
         {
             _data = data;
             _weaponFactory = weaponFactory;
             _poolService = poolService;
+            _promiseTimer = promiseTimer;
 
             _hudController = playerHudController;
             _initialization = playerInitialization;
@@ -75,11 +78,7 @@ namespace Code.Controllers
         {
             if (_player == null || _player.Weapon == null || _player.Weapon.View == null)
                 return;
-            
-            var weaponView = _player.Weapon.View;
-            if (weaponView != null)
-                weaponView.StopAllCoroutines();
-            
+
             _reloadInputProxy.KeyOnDown -= OnReloadInput;
             _fireInputProxy.KeyOnChange -= OnFireInput;
             _aimInputProxy.KeyOnChange -= OnAimInput;
@@ -89,9 +88,6 @@ namespace Code.Controllers
         {
             if (_player == null)
                 return;
-            
-            if (_player.Weapon != null && _player.Weapon.View != null)
-                _player.Weapon.View.StopAllCoroutines();
 
             var handPoint = _player.View.HandPoint;
             
@@ -150,8 +146,8 @@ namespace Code.Controllers
             switch (weaponType)
             {
                 case WeaponManager.WeaponType.ShotGun:
-                    reloadProxy = new ShotGunReload(weapon, _hudController);
-                    shootProxy = new ShotGunShoot(_player, weapon, _hudController, _poolService);
+                    reloadProxy = new ShotGunReload(weapon, _hudController, _promiseTimer);
+                    shootProxy = new ShotGunShoot(_player, weapon, _hudController, _poolService, _promiseTimer);
                     aimProxy = new ShotGunAim(_player, weapon);
                     break;
                 
