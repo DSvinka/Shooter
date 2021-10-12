@@ -11,9 +11,12 @@ namespace Code.Decorators
         private readonly AimModificatorData _data;
         private readonly Transform _spawnPoint;
         private GameObject _aim;
+        
+        public IWeaponModification WeaponModification { get; }
 
         public AimModification(AimModificatorData data, Transform mufflerPosition)
         {
+            WeaponModification = this;
             _spawnPoint = mufflerPosition;
             _data = data;
         }
@@ -24,9 +27,10 @@ namespace Code.Decorators
             _aim.transform.localPosition += _data.AdditionalPosition;
             return weapon;
         }
-        public WeaponModel RemoveModification(WeaponModel weapon)
+        public void RemoveModification()
         {
-            return weapon;
+            Object.Destroy(_aim);
+            _aim = null;
         }
         
         public void ApplyModification(WeaponModel weapon)

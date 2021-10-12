@@ -24,6 +24,7 @@ namespace Code.Data.DataStores
         [SerializeField] [AssetPath.Attribute(typeof(WeaponData))] private string _shotGunPath;
 
         [Header("Weapons Modificators")]
+        [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _iconPrefabPath;
         [SerializeField] [AssetPath.Attribute(typeof(BarrelModificatorData))] private string _mufflerPath;
         [SerializeField] [AssetPath.Attribute(typeof(AimModificatorData))] private string _opticalAimPath;
 
@@ -38,6 +39,7 @@ namespace Code.Data.DataStores
         
         private WeaponData _shotGun;
 
+        private GameObject _iconPrefab;
         private BarrelModificatorData _muffler;
         private AimModificatorData _opticalAim;
 
@@ -51,6 +53,7 @@ namespace Code.Data.DataStores
         
         public WeaponData ShotGunData => GetData(_shotGunPath, _shotGun);
 
+        public GameObject IconPrefab => GetData(_iconPrefabPath, _iconPrefab);
         public BarrelModificatorData MufflerModificator => GetData(_mufflerPath, _muffler);
         public AimModificatorData OpticalAimModificator => GetData(_opticalAimPath, _opticalAim);
 

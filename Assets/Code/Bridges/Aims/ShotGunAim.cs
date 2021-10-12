@@ -1,4 +1,5 @@
-﻿using Code.Interfaces.Bridges;
+﻿using Code.Decorators;
+using Code.Interfaces.Bridges;
 using Code.Models;
 using DG.Tweening;
 using UnityEngine;
@@ -7,6 +8,8 @@ namespace Code.Bridges.Aims
 {
     internal sealed class ShotGunAim: IAim
     {
+        public IWeaponModification WeaponModification { get; }
+        
         private PlayerModel _player;
         private WeaponModel _weapon;
 
@@ -14,8 +17,9 @@ namespace Code.Bridges.Aims
         {
             _player = playerModel;
             _weapon = weaponModel;
+            WeaponModification = null;
         }
-        
+
         public void OpenAim()
         {
             if (!_weapon.IsAiming && !_weapon.IsReloading)

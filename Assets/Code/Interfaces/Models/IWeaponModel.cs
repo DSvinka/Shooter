@@ -12,6 +12,7 @@ namespace Code.Interfaces.Models
 
         bool IsReloading { get; set; }
         bool IsAiming { get; set; }
+        public bool Blocking { get; set; }
 
         Transform BarrelPosition { get; }
         Transform AimPosition { get; }

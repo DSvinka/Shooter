@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Code.Controllers;
+using Code.Decorators;
 using Code.Interfaces.Bridges;
 using Code.Interfaces.Views;
 using Code.Managers;
@@ -21,6 +22,8 @@ namespace Code.Bridges.Shoots
         private PoolService _poolService;
         private IPromiseTimer _promiseTimer;
         
+        public IWeaponModification WeaponModification { get; }
+        
         private PlayerHudController _hudController;
         private List<GameObject> _bullets;
         
@@ -34,8 +37,10 @@ namespace Code.Bridges.Shoots
             _promiseTimer = promiseTimer;
             
             _bullets = new List<GameObject>(_weapon.Data.MagazineSize);
+
+            WeaponModification = null;
         }
-        
+
         public void MoveBullets(float deltatime)
         {
             for (var index = 0; index < _bullets.Count; index++)

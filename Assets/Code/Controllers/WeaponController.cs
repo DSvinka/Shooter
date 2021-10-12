@@ -108,16 +108,20 @@ namespace Code.Controllers
             var (reloadProxy, shootProxy, aimProxy) = GetProxy(model.Data.WeaponType);
             model.SetDefaultProxy(reloadProxy, shootProxy, aimProxy);
             model.ResetAllProxy();
-
-            // TODO: Сделать снятие и надевание модулей. (можно как в батле 2042)
-            var modificationBarrel = new BarrelModification(_data.MufflerModificator, model.View.BarrelPosition);
-            modificationBarrel.ApplyModification(model);
-            model.SetShootProxy(modificationBarrel);
             
-            // TODO: Сделать снятие и надевание модулей. (можно как в батле 2042)
-            var modificationAim = new AimModification(_data.OpticalAimModificator, model.View.AimPosition);
-            modificationAim.ApplyModification(model);
-            model.SetAimProxy(modificationAim);
+            if (_player.Weapon.Data.DefaultBarrelModificator.ModificatorPrefab != null)
+            {
+                var modificationBarrel = new BarrelModification(_player.Weapon.Data.DefaultBarrelModificator, model.View.BarrelPosition);
+                modificationBarrel.ApplyModification(model);
+                model.SetShootProxy(modificationBarrel); 
+            }
+
+            if (_player.Weapon.Data.DefaultAimModificator.ModificatorPrefab != null)
+            {
+                var modificationAim = new AimModification(_player.Weapon.Data.DefaultAimModificator, model.View.AimPosition);
+                modificationAim.ApplyModification(model);
+                model.SetAimProxy(modificationAim);
+            }
 
             handPoint.localPosition += _data.OpticalAimModificator.AdditionalAimPosition;
 
@@ -166,20 +170,23 @@ namespace Code.Controllers
             var model = _player.Weapon;
             
             model.ShootProxy.MoveBullets(deltaTime);
-            
-            if (_aimInput)
-                model.AimProxy.OpenAim();
-            
-            if (!_aimInput && model.IsAiming)
-                model.AimProxy.CloseAim();
 
-            if (_fireInput)
-                model.ShootProxy.Shoot(deltaTime);
-
-            if (_reloadInput)
+            if (!model.Blocking)
             {
-                model.AimProxy.CloseAim();
-                model.ReloadProxy.Reload();
+                if (_aimInput)
+                    model.AimProxy.OpenAim();
+            
+                if (!_aimInput && model.IsAiming)
+                    model.AimProxy.CloseAim();
+
+                if (_fireInput)
+                    model.ShootProxy.Shoot(deltaTime);
+                
+                if (_reloadInput)
+                {
+                    model.AimProxy.CloseAim();
+                    model.ReloadProxy.Reload();
+                }
             }
 
             if (model.FireCooldown >= 0f)

@@ -13,6 +13,7 @@ namespace Code.Models
         
         public bool IsReloading { get; set; }
         public bool IsAiming { get; set; }
+        public bool Blocking { get; set; }
         
         public Transform BarrelPosition { get; private set; }
         public Transform AimPosition { get; private set; }
@@ -29,7 +30,7 @@ namespace Code.Models
         public AudioSource AudioSource { get; set; }
         public AudioClip FireClip { get; private set; }
         public Transform Transform { get; }
-        
+
         public WeaponData Data { get; }
         public WeaponView View { get; }
 
@@ -37,7 +38,8 @@ namespace Code.Models
         {
             View = view;
             Data = data;
-            
+
+            Blocking = false;
             Transform = View.transform;
             
             SetBarrelPosition(view.BarrelPosition);
@@ -69,6 +71,16 @@ namespace Code.Models
             ReloadProxy = ReloadDefaultProxy;
             ShootProxy = ShootDefaultProxy;
             AimProxy = AimDefaultProxy;
+        }
+        
+        public void ResetBarrelPosition()
+        {
+            SetBarrelPosition(View.BarrelPosition);
+        }
+        
+        public void ResetAudioClip()
+        {
+            SetAudioClip(Data.FireClip);
         }
 
         public void SetDefaultProxy(IReload reload, IShoot shoot, IAim aim)

@@ -1,3 +1,4 @@
+using Code.Data.WeaponModifications;
 using static Code.Data.DataUtils;
 using Code.Interfaces.Data;
 using Code.Managers;
@@ -6,7 +7,7 @@ using UnityEngine;
 namespace Code.Data
 {
     [CreateAssetMenu(fileName = "Weapon", menuName = "Data/Weapons/Weapon")]
-    public sealed class WeaponData : ScriptableObject, IData
+    internal sealed class WeaponData : ScriptableObject, IData
     {
         public string Path { get; set; }
         
@@ -15,8 +16,8 @@ namespace Code.Data
         [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _weaponPrefabPath;
         [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _bulletPrefabPath;
         
-        [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _defaultAimPath;
-        [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _defaultBarrelPath;
+        [SerializeField] [AssetPath.Attribute(typeof(AimModificatorData))] private string _defaultAimPath;
+        [SerializeField] [AssetPath.Attribute(typeof(BarrelModificatorData))] private string _defaultBarrelPath;
 
         [Header("Характеристики Оружия")]
         [SerializeField] private int _damage = 10;
@@ -63,6 +64,9 @@ namespace Code.Data
         private GameObject _weaponPrefab;
         private GameObject _bulletPrefab;
         
+        private AimModificatorData _defaultAim;
+        private BarrelModificatorData _defaultBarrel;
+        
         private AudioClip _reloadClip;
         private AudioClip _fireClip;
         private AudioClip _noAmmoClip;
@@ -90,8 +94,8 @@ namespace Code.Data
         public GameObject WeaponPrefab => GetData(_weaponPrefabPath, _weaponPrefab);
         public GameObject BulletPrefab => GetData(_bulletPrefabPath, _bulletPrefab);
         
-        public GameObject DefaultAimPrefab => GetData(_defaultAimPath, _weaponPrefab);
-        public GameObject DefaultBarrelPrefab => GetData(_defaultBarrelPath, _bulletPrefab);
+        public AimModificatorData DefaultAimModificator => GetData(_defaultAimPath, _defaultAim);
+        public BarrelModificatorData DefaultBarrelModificator => GetData(_defaultBarrelPath, _defaultBarrel);
         
         public AudioClip ReloadClip => GetData(_reloadClipPath, _reloadClip);
         public AudioClip FireClip => GetData(_fireClipPath, _fireClip);

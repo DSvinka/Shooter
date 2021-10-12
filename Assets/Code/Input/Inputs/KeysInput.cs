@@ -10,8 +10,9 @@ namespace Code.Input.Inputs
         public static IUserKeyDownProxy Interact { get; private set; }
         public static IUserKeyDownProxy Drop { get; private set; }
         public static IUserKeyProxy Run { get; private set; }
+        public static IUserKeyProxy ModificationItemMenu { get; private set; }
 
-        public KeysInput(IUserKeyDownProxy escape, IUserKeyDownProxy reload, IUserKeyDownProxy interact, IUserKeyDownProxy drop, IUserKeyDownProxy jump, IUserKeyProxy run)
+        public KeysInput(IUserKeyDownProxy escape, IUserKeyDownProxy reload, IUserKeyDownProxy interact, IUserKeyDownProxy drop, IUserKeyDownProxy jump, IUserKeyProxy run, IUserKeyProxy modificationItemMenu)
         {
             Escape = escape;
             Jump = jump;
@@ -19,6 +20,7 @@ namespace Code.Input.Inputs
             Reload = reload;
             Interact = interact;
             Drop = drop;
+            ModificationItemMenu = modificationItemMenu;
         }
     }
 }

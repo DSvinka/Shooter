@@ -37,6 +37,8 @@ namespace Code.Bridges.Reloads
         private void ReloadStart(Vector3 startRotation)
         {
             _weapon.IsReloading = true;
+            _weapon.Blocking = true;
+            
             _weapon.AudioSource.PlayOneShot(_weapon.Data.ReloadClip);
             
             _weapon.Transform.DOLocalRotate(startRotation + _weapon.Data.ReloadMove, 0.5f);
@@ -44,11 +46,11 @@ namespace Code.Bridges.Reloads
         
         private void ReloadEnd(Vector3 startRotation)
         {
-            _weapon.Transform.DOLocalRotate(startRotation, 0.5f);
+            _weapon.Transform.DOLocalRotate(startRotation, 0.5f).OnComplete(() => _weapon.Blocking = false);
             
             _weapon.BulletsLeft = _weapon.Data.MagazineSize;
             _weapon.IsReloading = false;
-            
+
             _playerHudController.SetAmmo(_weapon.BulletsLeft);
         }
     }

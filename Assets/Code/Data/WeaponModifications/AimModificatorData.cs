@@ -10,6 +10,7 @@ namespace Code.Data.WeaponModifications
     {
         [Header("Объекты")]
         [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _modificatorPrefabPath;
+        [SerializeField] [AssetPath.Attribute(typeof(Sprite))] private string _iconPath;
         
         [Header("Координаты")]
         [SerializeField] [Tooltip("Добавочные координаты к тем которые устанавливаются оружием")] 
@@ -21,8 +22,10 @@ namespace Code.Data.WeaponModifications
         [SerializeField] private WeaponManager.WeaponType _weaponTypes;
         
         private GameObject _modificatorPrefab;
+        private Sprite _icon;
         
         public GameObject ModificatorPrefab => GetData(_modificatorPrefabPath, _modificatorPrefab);
+        public Sprite Icon => GetData(_iconPath, _icon);
         
         public WeaponManager.WeaponType WeaponTypes => _weaponTypes;
         public Vector3 AdditionalAimPosition => _additionalAimPosition;

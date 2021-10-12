@@ -11,9 +11,12 @@ namespace Code.Decorators
         private readonly BarrelModificatorData _data;
         private readonly Transform _spawnPoint;
         private GameObject _barrel;
+        
+        public IWeaponModification WeaponModification { get; }
 
         public BarrelModification(BarrelModificatorData data, Transform mufflerPosition)
         {
+            WeaponModification = this;
             _spawnPoint = mufflerPosition;
             _data = data;
         }
@@ -27,16 +30,19 @@ namespace Code.Decorators
             return weapon;
         }
 
-        public WeaponModel RemoveModification(WeaponModel weapon)
+        public void RemoveModification()
         {
-            return weapon;
+            Object.Destroy(_barrel);
+            _weapon.ResetAudioClip();
+            _weapon.ResetBarrelPosition();
+            _barrel = null;
         }
 
         public void ApplyModification(WeaponModel weapon)
         {
             _weapon = AddModification(weapon);
         }
-        
+
         public void MoveBullets(float deltaTime)
         {
             _weapon.ShootDefaultProxy.MoveBullets(deltaTime);

@@ -10,5 +10,6 @@ namespace Code.Managers
         public const KeyCode RELOAD = KeyCode.R;
         public const KeyCode INTERACT = KeyCode.E;
         public const KeyCode DROP = KeyCode.G;
+        public const KeyCode MODIFICATION_ITEM_MENU = KeyCode.C;
     }
 }
