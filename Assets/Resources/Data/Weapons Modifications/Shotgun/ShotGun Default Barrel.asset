@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _modificatorPrefabPath: 
   _fireClipPath: 
-  _iconPath: 
+  _iconPath: Assets/Resources/Textures/Weapon Modifications/Empty.png
   _additionalPosition: {x: 0, y: 0, z: 0}
   _weaponTypes: 0

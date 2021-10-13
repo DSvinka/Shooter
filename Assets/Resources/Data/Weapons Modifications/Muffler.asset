@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _modificatorPrefabPath: Assets/Resources/Prefab/Weapons/Modificators/BigMuffler.prefab
   _fireClipPath: Assets/Resources/Sounds/Weapons/ShotGun/MiffleSound.wav
+  _iconPath: Assets/Resources/Textures/Weapon Modifications/Miffler.png
   _additionalPosition: {x: 0, y: -0.66, z: 4.37}
   _weaponTypes: 2147483647

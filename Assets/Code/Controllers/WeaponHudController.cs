@@ -9,6 +9,7 @@ using Code.Interfaces;
 using Code.Interfaces.Data;
 using Code.Interfaces.Input;
 using Code.Models;
+using Code.Utils.Extensions;
 using Code.Views;
 using DG.Tweening;
 using UnityEngine;
@@ -19,8 +20,8 @@ namespace Code.Controllers
 {
     internal sealed class WeaponHudController: IController, IExecute, IInitialization, ICleanup
     {
-        private readonly List<BarrelModificatorData> _barrelModificators;
-        private readonly List<AimModificatorData> _aimModificators;
+        private BarrelModificatorData[] _barrelModificators;
+        private AimModificatorData[] _aimModificators;
         
         // TODO: Может сделать модельку данных?
         private Dictionary<int, IWeaponModificatorData> _modificators;
@@ -31,7 +32,6 @@ namespace Code.Controllers
         private GameObject _iconPrefab;
 
         private PlayerModel _player;
-        private DataStore _data;
 
         private IUserKeyProxy _modificationItemMenuInputProxy;
         private bool _modificationItemMenuInput;
@@ -46,10 +46,6 @@ namespace Code.Controllers
         {
             _playerInitialization = playerInitialization;
             _iconPrefab = data.IconPrefab;
-            _data = data;
-            
-            _barrelModificators = new List<BarrelModificatorData>(3);
-            _aimModificators = new List<AimModificatorData>(3);
 
             _weaponNull = true;
             _modificators = new Dictionary<int, IWeaponModificatorData>(6);
@@ -133,25 +129,19 @@ namespace Code.Controllers
         private void GenerateHud()
         {
             var weapon = _player.Weapon;
-            if (weapon.Data.DefaultAimModificator != null)
-                _aimModificators.Add(weapon.Data.DefaultAimModificator);
             
-            if (weapon.Data.DefaultBarrelModificator != null)
-                _barrelModificators.Add(weapon.Data.DefaultBarrelModificator);
-                
-            // TODO: Временный костыль, потом нужно будет придумать что нибудь по лучше.
-            _barrelModificators.Add(_data.MufflerModificator);
-            _aimModificators.Add(_data.OpticalAimModificator);
-            
+            _barrelModificators = weapon.Data.BarrelModifications;
+            _aimModificators = weapon.Data.AimModifications;
+
             // TODO: Не оптимизированно! Лучше менять Enabled вместо создания и удаления объектов. ПЕРЕДЕЛАТЬ!
-            for (var index = 0; index < _barrelModificators.Count; index++)
+            for (var index = 0; index < _barrelModificators.Length; index++)
             {
                 var modificator = _barrelModificators[index];
                 var button = ModificatorInit(modificator, _playerHudView.BarrelContent);
                 button.onClick.AddListener(delegate { OnModificatorClick(modificator); });
             }
 
-            for (var index = 0; index < _aimModificators.Count; index++)
+            for (var index = 0; index < _aimModificators.Length; index++)
             {
                 var modificator = _aimModificators[index];
                 var button = ModificatorInit(modificator, _playerHudView.AimContent);

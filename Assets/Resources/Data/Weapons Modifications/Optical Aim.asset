@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Optical Aim
   m_EditorClassIdentifier: 
   _modificatorPrefabPath: Assets/Resources/Prefab/Weapons/Modificators/OpticalAim.prefab
+  _iconPath: Assets/Resources/Textures/Weapon Modifications/Optical Aim.png
   _additionalPosition: {x: 0, y: 0, z: 0}
   _additionalAimPosition: {x: 0, y: 0, z: 0}
   _weaponTypes: 2147483647

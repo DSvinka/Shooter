@@ -19,6 +19,9 @@ namespace Code.Data
         [SerializeField] [AssetPath.Attribute(typeof(AimModificatorData))] private string _defaultAimPath;
         [SerializeField] [AssetPath.Attribute(typeof(BarrelModificatorData))] private string _defaultBarrelPath;
 
+        [SerializeField] [AssetPath.Attribute(typeof(AimModificatorData))] private string[] _aimsPaths;
+        [SerializeField] [AssetPath.Attribute(typeof(BarrelModificatorData))] private string[] _barrelsPaths;
+        
         [Header("Характеристики Оружия")]
         [SerializeField] private int _damage = 10;
         
@@ -67,6 +70,9 @@ namespace Code.Data
         private AimModificatorData _defaultAim;
         private BarrelModificatorData _defaultBarrel;
         
+        private AimModificatorData[] _aims;
+        private BarrelModificatorData[] _barrels;
+        
         private AudioClip _reloadClip;
         private AudioClip _fireClip;
         private AudioClip _noAmmoClip;
@@ -96,6 +102,9 @@ namespace Code.Data
         
         public AimModificatorData DefaultAimModificator => GetData(_defaultAimPath, _defaultAim);
         public BarrelModificatorData DefaultBarrelModificator => GetData(_defaultBarrelPath, _defaultBarrel);
+        
+        public AimModificatorData[] AimModifications => GetDataList(_aimsPaths, _aims);
+        public BarrelModificatorData[] BarrelModifications => GetDataList(_barrelsPaths, _barrels);
         
         public AudioClip ReloadClip => GetData(_reloadClipPath, _reloadClip);
         public AudioClip FireClip => GetData(_fireClipPath, _fireClip);

@@ -14,8 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _weaponPrefabPath: Assets/Resources/Prefab/Weapons/ShotGun.prefab
   _bulletPrefabPath: Assets/Resources/Prefab/Weapons/Bullet.prefab
-  _defaultAimPath: Assets/Resources/Prefab/Weapons/Modificators/Shotgun/Default Aim.prefab
-  _defaultBarrelPath: 
+  _defaultAimPath: Assets/Resources/Data/Weapons Modifications/Shotgun/ShotGun Default
+    Aim.asset
+  _defaultBarrelPath: Assets/Resources/Data/Weapons Modifications/Shotgun/ShotGun
+    Default Barrel.asset
+  _aimsPaths:
+  - Assets/Resources/Data/Weapons Modifications/Optical Aim.asset
+  - Assets/Resources/Data/Weapons Modifications/Shotgun/ShotGun Default Aim.asset
+  _barrelsPaths:
+  - Assets/Resources/Data/Weapons Modifications/Muffler.asset
+  - Assets/Resources/Data/Weapons Modifications/Shotgun/ShotGun Default Barrel.asset
   _damage: 60
   _magazineSize: 8
   _fireRate: 1.22

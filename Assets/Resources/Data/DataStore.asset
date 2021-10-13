@@ -16,5 +16,6 @@ MonoBehaviour:
   _playerDataPath: Assets/Resources/Data/Player.asset
   _zombieDataPath: Assets/Resources/Data/Zombie.asset
   _shotGunPath: Assets/Resources/Data/ShotGun.asset
+  _iconPrefabPath: Assets/Resources/Prefab/UI/Components/Icon Button.prefab
   _mufflerPath: Assets/Resources/Data/Weapons Modifications/Muffler.asset
   _opticalAimPath: Assets/Resources/Data/Weapons Modifications/Optical Aim.asset

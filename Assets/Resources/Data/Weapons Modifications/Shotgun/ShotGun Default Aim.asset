@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _modificatorPrefabPath: Assets/Resources/Prefab/Weapons/Modificators/Shotgun/Default
     Aim.prefab
+  _iconPath: Assets/Resources/Textures/Weapon Modifications/Defaul ShotGun Aim.png
   _additionalPosition: {x: 0, y: 0, z: 0}
   _additionalAimPosition: {x: 0, y: 0, z: 0}
   _weaponTypes: 0
