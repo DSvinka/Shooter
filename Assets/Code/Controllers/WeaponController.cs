@@ -105,8 +105,8 @@ namespace Code.Controllers
             model.Transform.localPosition = Vector3.zero;
             model.Transform.localRotation = Quaternion.identity;
 
-            var (reloadProxy, shootProxy, aimProxy) = GetProxy(model.Data.WeaponType);
-            model.SetDefaultProxy(reloadProxy, shootProxy, aimProxy);
+            var defaultProxy = GetProxy(model.Data.WeaponType);
+            model.SetDefaultProxy(defaultProxy);
             model.ResetAllProxy();
             
             if (_player.Weapon.Data.DefaultBarrelModificator.ModificatorPrefab != null)
@@ -140,7 +140,7 @@ namespace Code.Controllers
             return weaponData;
         }
         
-        private (IReload, IShoot, IAim) GetProxy(WeaponManager.WeaponType weaponType)
+        private WeaponProxiesModel GetProxy(WeaponManager.WeaponType weaponType)
         {
             var weapon = _player.Weapon;
             IReload reloadProxy;
@@ -159,7 +159,9 @@ namespace Code.Controllers
                     throw new ArgumentOutOfRangeException(nameof(weaponType), "Указанный тип оружия не привязан не к одному ShootProxy!");
             }
 
-            return (reloadProxy, shootProxy, aimProxy);
+            var weaponProxiesModel = new WeaponProxiesModel();
+            weaponProxiesModel.SetProxies(reloadProxy, shootProxy, aimProxy);
+            return weaponProxiesModel;
         }
 
         public void Execute(float deltaTime)
@@ -168,24 +170,25 @@ namespace Code.Controllers
                 return;
 
             var model = _player.Weapon;
+            var proxies = model.Proxies;
             
-            model.ShootProxy.MoveBullets(deltaTime);
+            proxies.ShootProxy.MoveBullets(deltaTime);
 
             if (!model.Blocking)
             {
                 if (_aimInput)
-                    model.AimProxy.OpenAim();
+                    proxies.AimProxy.OpenAim();
             
                 if (!_aimInput && model.IsAiming)
-                    model.AimProxy.CloseAim();
+                    proxies.AimProxy.CloseAim();
 
                 if (_fireInput)
-                    model.ShootProxy.Shoot(deltaTime);
+                    proxies.ShootProxy.Shoot(deltaTime);
                 
                 if (_reloadInput)
                 {
-                    model.AimProxy.CloseAim();
-                    model.ReloadProxy.Reload();
+                    proxies.AimProxy.CloseAim();
+                    proxies.ReloadProxy.Reload();
                 }
             }
 

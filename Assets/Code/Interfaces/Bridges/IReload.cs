@@ -1,6 +1,6 @@
 ﻿namespace Code.Interfaces.Bridges
 {
-    public interface IReload
+    internal interface IReload
     {
         void Reload();
     }

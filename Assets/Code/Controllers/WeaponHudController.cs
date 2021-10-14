@@ -23,7 +23,7 @@ namespace Code.Controllers
         private BarrelModificatorData[] _barrelModificators;
         private AimModificatorData[] _aimModificators;
         
-        // TODO: Может сделать модельку данных?
+        // TODO: Сделать модельку данных.
         private Dictionary<int, IWeaponModificatorData> _modificators;
         private Dictionary<int, Button> _buttons;
 
@@ -36,7 +36,9 @@ namespace Code.Controllers
         private IUserKeyProxy _modificationItemMenuInputProxy;
         private bool _modificationItemMenuInput;
         private bool _weaponNull;
+        private bool _inMove;
 
+        // TODO: Может перенести в Data оружия?
         private static readonly Vector3 MoveVector = new Vector3(-0.5f, 0.3f, -0.1f);
         private static readonly Vector3 RotateVector = new Vector3(-25f, -50f, -20f);
 
@@ -74,25 +76,29 @@ namespace Code.Controllers
                 return;
 
             var weaponTransform = _player.Weapon.Transform;
-            if (_modificationItemMenuInput && !menu.activeSelf && !_player.Weapon.Blocking)
+            if (_modificationItemMenuInput && !menu.activeSelf && !_player.Weapon.Blocking && !_inMove)
             {
+                _inMove = true;
+                
                 _playerHudView.ModificatorMenu.SetActive(true);
-                weaponTransform.DOLocalMove(MoveVector, 0.2f);
+                weaponTransform.DOLocalMove(MoveVector, 0.2f).OnComplete(() => { _inMove = false; });
                 weaponTransform.DOLocalRotate(RotateVector, 0.2f);
                 _player.Weapon.Blocking = true;
-
                 _player.CanMove = false;
+                
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
             }
-            else if (!_modificationItemMenuInput && menu.activeSelf)
+            else if (!_modificationItemMenuInput && menu.activeSelf && !_inMove)
             {
+                _inMove = true;
+                
                 _playerHudView.ModificatorMenu.SetActive(false);
                 weaponTransform.DOLocalMove(weaponTransform.localPosition - MoveVector, 0.2f);
-                weaponTransform.DOLocalRotate(weaponTransform.localRotation.eulerAngles - RotateVector, 0.2f);
+                weaponTransform.DOLocalRotate(weaponTransform.localRotation.eulerAngles - RotateVector, 0.2f).OnComplete(() => { _inMove = false; });;
                 _player.Weapon.Blocking = false;
-                
                 _player.CanMove = true;
+                
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
             }
@@ -101,8 +107,8 @@ namespace Code.Controllers
         private void OnModificatorClick(BarrelModificatorData modificatorData)
         {
             var weapon = _player.Weapon;
-            _player.Weapon.ShootProxy.WeaponModification?.RemoveModification();
-            weapon.SetShootProxy(weapon.ShootDefaultProxy);
+            _player.Weapon.Proxies.ShootProxy.WeaponModification?.RemoveModification();
+            weapon.SetShootProxy(weapon.DefaultProxies.ShootProxy);
 
             if (modificatorData.ModificatorPrefab == null)
                 return;
@@ -115,8 +121,8 @@ namespace Code.Controllers
         private void OnModificatorClick(AimModificatorData modificatorData)
         {
             var weapon = _player.Weapon;
-            _player.Weapon.AimProxy.WeaponModification?.RemoveModification();
-            weapon.SetAimProxy(weapon.AimDefaultProxy);
+            _player.Weapon.Proxies.AimProxy.WeaponModification?.RemoveModification();
+            weapon.SetAimProxy(weapon.DefaultProxies.AimProxy);
             
             if (modificatorData.ModificatorPrefab == null)
                 return;

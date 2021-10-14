@@ -18,13 +18,8 @@ namespace Code.Models
         public Transform BarrelPosition { get; private set; }
         public Transform AimPosition { get; private set; }
         
-        public IReload ReloadDefaultProxy { get; private set; }
-        public IShoot ShootDefaultProxy { get; private set; }
-        public IAim AimDefaultProxy { get; private set; }
-        
-        public IReload ReloadProxy { get; private set; }
-        public IShoot ShootProxy { get; private set; }
-        public IAim AimProxy { get; private set; }
+        public WeaponProxiesModel DefaultProxies { get; private set; }
+        public WeaponProxiesModel Proxies { get; }
 
         public ParticleSystem ParticleSystem { get; set; }
         public AudioSource AudioSource { get; set; }
@@ -41,6 +36,9 @@ namespace Code.Models
 
             Blocking = false;
             Transform = View.transform;
+
+            Proxies = new WeaponProxiesModel();
+            DefaultProxies = new WeaponProxiesModel();
             
             SetBarrelPosition(view.BarrelPosition);
             SetAimPosition(view.AimPosition);
@@ -60,49 +58,45 @@ namespace Code.Models
         {
             AimPosition = position;
         }
+        
+        public void ResetBarrelPosition()
+        {
+            SetBarrelPosition(View.BarrelPosition);
+        }
 
         public void SetAudioClip(AudioClip audioClip)
         {
             FireClip = audioClip;
         }
         
-        public void ResetAllProxy()
-        {
-            ReloadProxy = ReloadDefaultProxy;
-            ShootProxy = ShootDefaultProxy;
-            AimProxy = AimDefaultProxy;
-        }
-        
-        public void ResetBarrelPosition()
-        {
-            SetBarrelPosition(View.BarrelPosition);
-        }
-        
         public void ResetAudioClip()
         {
             SetAudioClip(Data.FireClip);
         }
-
-        public void SetDefaultProxy(IReload reload, IShoot shoot, IAim aim)
+        
+        public void SetDefaultProxy(WeaponProxiesModel weaponProxiesModel)
         {
-            ReloadDefaultProxy = reload;
-            ShootDefaultProxy = shoot;
-            AimDefaultProxy = aim;
+            DefaultProxies.SetProxies(weaponProxiesModel);
+        }
+
+        public void ResetAllProxy()
+        {
+            Proxies.SetProxies(DefaultProxies);
         }
 
         public void SetReloadProxy(IReload reload)
         {
-            ReloadProxy = reload;
+            Proxies.ReloadProxy = reload;
         }
         
         public void SetShootProxy(IShoot shoot)
         {
-            ShootProxy = shoot;
+            Proxies.ShootProxy = shoot;
         }
 
         public void SetAimProxy(IAim aim)
         {
-            AimProxy = aim;
+            Proxies.AimProxy = aim;
         }
     }
 }

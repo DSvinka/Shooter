@@ -9,6 +9,5 @@ namespace Code.Interfaces.Data
         Sprite Icon { get; }
         
         Vector3 AdditionalPosition { get; }
-        WeaponManager.WeaponType WeaponTypes { get; }
     }
 }

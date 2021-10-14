@@ -1,5 +1,6 @@
 ﻿using Code.Data;
 using Code.Interfaces.Bridges;
+using Code.Models;
 using Code.Views;
 using UnityEngine;
 
@@ -17,14 +18,8 @@ namespace Code.Interfaces.Models
         Transform BarrelPosition { get; }
         Transform AimPosition { get; }
         
-        // TODO: Создать класс чтобы складировать прокси.
-        IReload ReloadDefaultProxy { get; }
-        IShoot ShootDefaultProxy { get; }
-        IAim AimDefaultProxy { get; }
-        
-        IReload ReloadProxy { get; }
-        IShoot ShootProxy { get; }
-        IAim AimProxy { get; }
+        WeaponProxiesModel DefaultProxies { get; }
+        WeaponProxiesModel Proxies { get; }
 
         ParticleSystem ParticleSystem { get; set; }
         AudioSource AudioSource { get; set; }
@@ -39,7 +34,7 @@ namespace Code.Interfaces.Models
         void SetAudioClip(AudioClip audioClip);
 
         void ResetAllProxy();
-        void SetDefaultProxy(IReload reload, IShoot shoot, IAim aim);
+        void SetDefaultProxy(WeaponProxiesModel weaponProxiesModel);
         
         void SetReloadProxy(IReload reload);
         void SetShootProxy(IShoot shoot);

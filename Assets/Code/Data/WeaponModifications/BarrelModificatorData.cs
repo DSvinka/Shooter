@@ -16,9 +16,6 @@ namespace Code.Data.WeaponModifications
         [Header("Координаты")]
         [SerializeField] [Tooltip("Добавочные координаты к тем которые устанавливаются с помощью оружия")] 
         private Vector3 _additionalPosition;
-        
-        [Header("Прочее")]
-        [SerializeField] private WeaponManager.WeaponType _weaponTypes;
 
         private AudioClip _audioClip;
         private GameObject _modificatorPrefab;
@@ -27,8 +24,7 @@ namespace Code.Data.WeaponModifications
         public GameObject ModificatorPrefab => GetData(_modificatorPrefabPath, _modificatorPrefab);
         public AudioClip FireClip => GetData(_fireClipPath, _audioClip);
         public Sprite Icon => GetData(_iconPath, _icon);
-
-        public WeaponManager.WeaponType WeaponTypes => _weaponTypes;
+        
         public Vector3 AdditionalPosition => _additionalPosition;
     }
 }

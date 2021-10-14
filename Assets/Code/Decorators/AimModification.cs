@@ -40,12 +40,12 @@ namespace Code.Decorators
 
         public void OpenAim()
         {
-            _weapon.AimDefaultProxy.OpenAim();
+            _weapon.DefaultProxies.AimProxy.OpenAim();
         }
         
         public void CloseAim()
         {
-            _weapon.AimDefaultProxy.CloseAim();
+            _weapon.DefaultProxies.AimProxy.CloseAim();
         }
     }
 }
