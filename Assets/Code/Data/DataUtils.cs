@@ -25,7 +25,7 @@ namespace Code.Data
         public static T[] GetDataList<T>(string[] paths, T[] objs) where T : Object
         {
             var objsNull = false;
-            if (paths.Length != objs.Length)
+            if (objs == null)
             {
                 objs = new T[paths.Length];
                 objsNull = true;

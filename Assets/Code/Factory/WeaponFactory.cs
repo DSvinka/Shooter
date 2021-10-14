@@ -25,16 +25,14 @@ namespace Code.Factory
             return model;
         }
         
-        public WeaponModel CreateWeapon(WeaponData weapon)
+        public WeaponView CreateWeapon(WeaponData weapon)
         {
             var gameObject = Object.Instantiate(weapon.WeaponPrefab, null, true);
             
             if (!gameObject.TryGetComponent(out WeaponView view))
                 throw new Exception($"IEnemyView не найден в {gameObject.gameObject.name}");
 
-            var model = CreateWeapon(view, weapon);
-
-            return model;
+            return view;
         }
     }
 }

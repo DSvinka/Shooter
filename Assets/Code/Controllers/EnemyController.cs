@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Code.Controllers.Initialization;
 using Code.Interfaces;
 using Code.Interfaces.Models;
 using Code.Models;
+using Code.SaveData;
 using UnityEngine;
 
 namespace Code.Controllers
@@ -128,7 +130,7 @@ namespace Code.Controllers
         private void Death(int id, IEnemyModel enemy)
         {
             // TODO: Добавить таймер с рандомом, чтобы не сразу спавнились черти.
-            enemy.Transform.position = enemy.SpawnPoint.position;
+            enemy.Transform.position = enemy.SpawnPointPosition;
             enemy.AudioSource.Stop();
             enemy.Reset();
             

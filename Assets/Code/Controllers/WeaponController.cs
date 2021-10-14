@@ -18,6 +18,8 @@ using Code.Views;
 using RSG;
 using UnityEngine;
 
+using static Code.Utils.Extensions.Physic;
+
 namespace Code.Controllers
 {
     internal sealed class WeaponController: IController, IExecute, IInitialization, ICleanup
@@ -68,6 +70,13 @@ namespace Code.Controllers
         public void Initialization()
         {
             _player = _initialization.GetPlayer();
+            if (_player.DefaultWeapon != null)
+            {
+                var gameObject = _player.DefaultWeapon.gameObject;
+                gameObject.DisableAllPhysics(true);
+                gameObject.DisableAllCollision();
+                ChangeWeapon(_player.DefaultWeapon);
+            }
 
             _reloadInputProxy.KeyOnDown += OnReloadInput;
             _fireInputProxy.KeyOnChange += OnFireInput;

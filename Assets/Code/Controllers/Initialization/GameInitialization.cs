@@ -4,6 +4,7 @@ using System.Linq;
 using Code.Data.DataStores;
 using Code.Factory;
 using Code.Markers;
+using Code.SaveData;
 using Code.Services;
 using Code.Views;
 using RSG;
@@ -26,6 +27,17 @@ namespace Code.Controllers.Initialization
             var playerSpawn = Object.FindObjectOfType<PlayerSpawnMarker>();
             if (playerSpawn == null)
                 throw new Exception("Спавнер игрока отсуствует!");
+            
+            var playerFactory = new PlayerFactory(_data);
+            var enemyFactory = new EnemyFactory(_data);
+            var weaponFactory = new WeaponFactory();
+            var zombieFactory = new ZombieFactory(_data, enemyFactory);
+            
+            var playerInitialization = new PlayerInitialization(data.PlayerData, playerFactory, playerSpawn.transform);
+            playerInitialization.Initialization();
+            
+            var saveRepository = new SaveRepository();
+            var enemies = saveRepository.Load(playerInitialization, zombieFactory, weaponFactory);
 
             var interactDict = new Dictionary<int, InteractView>();
             var interactViews = Object.FindObjectsOfType<InteractView>();
@@ -35,13 +47,10 @@ namespace Code.Controllers.Initialization
             var poolService = new PoolService();
             var promiseTimer = new PromiseTimer();
 
-            var playerFactory = new PlayerFactory(_data);
-            var enemyFactory = new EnemyFactory(_data);
-            var weaponFactory = new WeaponFactory();
-
             var inputInitialization = new InputInitialization();
             var enemyInitialization = new EnemyInitialization(_data, enemyFactory, enemySpawnMarkers);
-            var playerInitialization = new PlayerInitialization(data.PlayerData, playerFactory, playerSpawn.transform);
+            if (enemies != null)
+                enemyInitialization.SetEnemies(enemies);
 
             var promiseTimerController = new PromiseTimerController(promiseTimer);
             
@@ -57,9 +66,11 @@ namespace Code.Controllers.Initialization
             var playerController = new PlayerController(playerInitialization, playerHudController);
             var playerMovementController = new PlayerMovementController(playerInitialization);
 
+            var savesController = new SavesController(saveRepository, playerInitialization, enemyInitialization);
+            controllers.Add(savesController);
+
             controllers.Add(promiseTimerController);
             
-            controllers.Add(playerInitialization);
             controllers.Add(enemyInitialization);
             
             controllers.Add(inputController);

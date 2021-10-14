@@ -146,33 +146,11 @@ namespace Code.Controllers
                 default:
                     throw new ArgumentOutOfRangeException(nameof(interactType), "Указанный тип интерактивного объекта не предусмотрен в коде");
             }
-
-            transform.localRotation = _player.View.HandPoint.localRotation;
             
-            if (gameObject.TryGetComponent(out Rigidbody rigidbody))
-            {
-                if (disableCollision)
-                {
-                    rigidbody.isKinematic = true;
-                }
-                else
-                {
-                    rigidbody.useGravity = false;
-                    rigidbody.constraints = RigidbodyConstraints.FreezeAll;
-                }
-            }
-
+            transform.localRotation = _player.View.HandPoint.localRotation;
+            gameObject.DisableAllPhysics(disableCollision);
             if (disableCollision)
-            {
-                var colliders = gameObject.GetComponents<Collider>();
-                if (colliders.Length != 0)
-                {
-                    foreach (var collider in colliders)
-                    {
-                        collider.enabled = false;
-                    }
-                }
-            }
+                gameObject.DisableAllCollision();
         }
 
         public void Cleanup()

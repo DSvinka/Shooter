@@ -1,6 +1,11 @@
-﻿using Code.Controllers.Initialization;
+﻿using System;
+using Code.Controllers.Initialization;
 using Code.Data.DataStores;
+using Code.Factory;
+using Code.Markers;
+using Code.SaveData;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Code.Services
 {
@@ -11,7 +16,8 @@ namespace Code.Services
             var controllers = CreateControllers();
             
             InitGame(controllers, data);
-            StartGame(controllers);
+            
+            controllers.Initialization();
 
             return controllers;
         }
@@ -22,11 +28,6 @@ namespace Code.Services
             Cursor.lockState = CursorLockMode.Locked;
             
             return new GameInitialization(controllers, data);
-        }
-        
-        private void StartGame(Controllers.Starter.Controllers controllers)
-        {
-            controllers.Initialization();
         }
 
         private Controllers.Starter.Controllers CreateControllers()

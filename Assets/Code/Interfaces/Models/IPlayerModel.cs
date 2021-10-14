@@ -15,6 +15,7 @@ namespace Code.Interfaces.Models
         PlayerData Data { get; }
         
         WeaponModel Weapon { get; set; }
+        WeaponView DefaultWeapon { get; set; }
 
         void SetObjectInHand(InteractView item);
     }
