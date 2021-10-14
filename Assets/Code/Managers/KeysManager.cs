@@ -11,5 +11,6 @@ namespace Code.Managers
         public const KeyCode INTERACT = KeyCode.E;
         public const KeyCode DROP = KeyCode.G;
         public const KeyCode MODIFICATION_ITEM_MENU = KeyCode.C;
+        public const KeyCode SAVEGAME = KeyCode.Delete;
     }
 }
