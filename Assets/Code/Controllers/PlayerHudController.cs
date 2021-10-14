@@ -10,10 +10,10 @@ namespace Code.Controllers
         
         private PlayerHudView _hud;
         
-        private int _health;
-        private int _armor;
-        private int _ammo;
-        private int _maxAmmo;
+        private int _health = -1;
+        private int _armor = -1;
+        private int _ammo = -1;
+        private int _maxAmmo = -1;
 
         public PlayerHudController(PlayerInitialization playerInitialization)
         {
@@ -23,6 +23,9 @@ namespace Code.Controllers
         public void Initialization()
         {
             _hud = _initialization.GetPlayerHud();
+            
+            SetMaxAmmo(0);
+            SetAmmo(0);
         }
     
         public void SetMaxAmmo(int maxAmmo)

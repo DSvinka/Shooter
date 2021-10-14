@@ -18,19 +18,17 @@ namespace Code.Factory
         public PlayerView CreatePlayer()
         {
             var gameObject = Object.Instantiate(_data.PlayerData.PlayerPrefab);
-            var player = gameObject.GetComponent<PlayerView>();
-            if (player == null)
+            if (!gameObject.TryGetComponent(out PlayerView view))
                 throw new Exception("У префаба игрока не найден компонент PlayerView!");
-            return player;
+            return view;
         }
 
         public PlayerHudView CreatePlayerHud()
         {
             var gameObject = Object.Instantiate(_data.PlayerHudPrefab);
-            var playerHud = gameObject.GetComponent<PlayerHudView>();
-            if (playerHud == null)
+            if (!gameObject.TryGetComponent(out PlayerHudView view))
                 throw new Exception("У префаба игрока не найден компонент PlayerHudView!");
-            return playerHud;
+            return view;
         }
     }
 }

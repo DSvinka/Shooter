@@ -103,14 +103,14 @@ namespace Code.Controllers
             {
                 _moveDirection.y = movementDirectionY;
             }
-            
+
             if (!characterController.isGrounded)
             {
                 _moveDirection.y -= data.JumpForce * deltaTime;
             }
             
             characterController.Move(_moveDirection * deltaTime);
-            
+
             if (canMove)
             {
                 _rotationX += -_mouseInput.y * data.LookSpeed;

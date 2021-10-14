@@ -8,6 +8,8 @@ using Code.Interfaces;
 using Code.Interfaces.Models;
 using Code.Managers;
 using Code.Markers;
+using Code.SaveData;
+using Code.Utils.Extensions;
 using UnityEngine;
 
 namespace Code.Controllers.Initialization
@@ -29,9 +31,17 @@ namespace Code.Controllers.Initialization
             _enemies = new Dictionary<int, IEnemyModel>();
         }
 
+        public void SetEnemies(Dictionary<int, IEnemyModel> enemies)
+        {
+            _enemies = enemies;
+        }
+
         public void Initialization()
         {
             if (_enemySpawnMarkers.Length == 0)
+                return;
+            
+            if (_enemies.Count != 0)
                 return;
             
             foreach (var enemySpawnMarker in _enemySpawnMarkers)
@@ -42,9 +52,9 @@ namespace Code.Controllers.Initialization
 
         private void AddEnemy(Transform spawnPoint, EnemyManager.EnemyType enemyType)
         {
-            IEnemyModel enemy = enemyType switch
+            var enemy = enemyType switch
             {
-                EnemyManager.EnemyType.Zombie => _enemyFactory.CreateEnemy(_data.ZombieData, _data.ZombieData.Prefab, new WalkMove(), new MeleeAttack(), spawnPoint),
+                EnemyManager.EnemyType.Zombie => _enemyFactory.CreateEnemy(_data.ZombieData, _data.ZombieData.Prefab, new WalkMove(), new MeleeAttack(), spawnPoint.position, spawnPoint.rotation.eulerAngles),
                 _ => throw new ArgumentOutOfRangeException()
             };
             _enemies.Add(enemy.GameObject.GetInstanceID(), enemy);

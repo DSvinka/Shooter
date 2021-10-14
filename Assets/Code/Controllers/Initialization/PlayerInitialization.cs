@@ -8,40 +8,39 @@ using UnityEngine;
 
 namespace Code.Controllers.Initialization
 {
-    internal sealed class PlayerInitialization: IInitialization
+    internal sealed class PlayerInitialization
     {
         private readonly PlayerFactory _playerFactory;
-        private readonly Transform _playerSpawnPosition;
+        private readonly Transform _playerSpawnPoint;
 
         private PlayerData _data;
         private PlayerModel _player;
         private PlayerHudView _playerHud;
 
-        public PlayerInitialization(PlayerData data, PlayerFactory playerFactory, Transform playerSpawnPosition)
+        public PlayerInitialization(PlayerData data, PlayerFactory playerFactory, Transform playerSpawnPoint)
         {
             _data = data;
             _playerFactory = playerFactory;
-            _playerSpawnPosition = playerSpawnPosition;
+            _playerSpawnPoint = playerSpawnPoint;
         }
 
-        public void Initialization()
+        public PlayerModel Initialization()
         {
-            var playerView = _playerFactory.CreatePlayer();
-            var playerCamera = playerView.GetComponentInChildren<Camera>();
-            if (playerCamera == null)
+            var view = _playerFactory.CreatePlayer();
+            var camera = view.GetComponentInChildren<Camera>();
+            if (camera == null)
                 throw new Exception("Компонент Camera не найден в детях объекта PlayerView");
             
-            var playerAudioSource = playerView.GetComponent<AudioSource>();
-            if (playerAudioSource == null)
+            if (!view.TryGetComponent(out AudioSource audioSource))
                 throw new Exception("Компонент AudioSource не найден на объекте PlayerView");
             
-            var playerCharacterController = playerView.GetComponent<CharacterController>();
-            if (playerCharacterController == null)
+            if (!view.TryGetComponent(out CharacterController characterController))
                 throw new Exception("Компонент CharacterController не найден на объекте PlayerView");
             
-            var playerModel = new PlayerModel(playerView, _data, playerAudioSource, playerCharacterController, playerCamera,  null)
+            var playerModel = new PlayerModel(view, _data, audioSource, characterController, camera,  null)
             {
-                SpawnPoint = _playerSpawnPosition
+                SpawnPointPosition = _playerSpawnPoint.position,
+                SpawnPointRotation = _playerSpawnPoint.rotation.eulerAngles,
             };
 
             _player = playerModel;
@@ -49,7 +48,10 @@ namespace Code.Controllers.Initialization
 
             _playerHud.transform.SetParent(null);
             _player.Transform.SetParent(null);
-            _player.Transform.position = _playerSpawnPosition.position;
+            _player.Transform.position = _playerSpawnPoint.position;
+            _player.Transform.rotation = _playerSpawnPoint.rotation;
+
+            return _player;
         }
 
         public PlayerModel GetPlayer()

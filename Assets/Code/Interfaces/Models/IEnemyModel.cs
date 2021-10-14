@@ -17,7 +17,6 @@ namespace Code.Interfaces.Models
         IMove MoveBridge { get; }
         
         NavMeshAgent NavMeshAgent { get; }
-        AudioSource AudioSource { get; }
 
         void SetComponents(NavMeshAgent navMeshAgent, AudioSource audioSource);
         void SetBridges(IMove move, IAttack attack);

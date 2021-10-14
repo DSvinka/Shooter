@@ -1,6 +1,4 @@
 ﻿using System;
-using Code.Bridges.Attacks;
-using Code.Bridges.Movement;
 using Code.Data.DataStores;
 using Code.Interfaces.Bridges;
 using Code.Interfaces.Data;
@@ -24,32 +22,30 @@ namespace Code.Factory
             _data = data;
         }
 
-        public IEnemyModel CreateEnemy(IEnemyData data, GameObject prefab, IMove moveBridge, IAttack attackBridge, Transform spawnPoint)
+        public IEnemyModel CreateEnemy(IEnemyData data, GameObject prefab, IMove moveBridge, IAttack attackBridge, Vector3 position, Vector3 rotation)
         {
             var gameObject = Object.Instantiate(prefab, null, true);
-            var enemyView = gameObject.GetComponent<IEnemyView>();
-            if (enemyView == null)
+            if (!gameObject.TryGetComponent(out IEnemyView view))
                 throw new Exception($"IEnemyMeleeView не найден в {gameObject.gameObject.name}!");
             
-            var enemyNavMeshAgent = gameObject.GetComponent<NavMeshAgent>();
-            if (enemyNavMeshAgent == null)
+            if (!gameObject.TryGetComponent(out NavMeshAgent navMeshAgent))
                 throw new Exception($"NavMeshAgent не найден в {gameObject.gameObject.name}!");
             
-            var enemyAudioSource = gameObject.GetComponent<AudioSource>();
-            if (enemyAudioSource == null)
+            if (!gameObject.TryGetComponent(out AudioSource audioSource))
                 throw new Exception($"AudioSource не найден в {gameObject.gameObject.name}!");
 
-            var enemyModel = new EnemyModel(enemyView, gameObject, data)
+            var enemyModel = new EnemyModel(view, gameObject, data)
             {
-                SpawnPoint = spawnPoint,
+                SpawnPointPosition = position,
+                SpawnPointRotation = rotation
             };
-            enemyModel.SetComponents(enemyNavMeshAgent, enemyAudioSource);
+            enemyModel.SetComponents(navMeshAgent, audioSource);
             enemyModel.SetBridges(moveBridge, attackBridge);
             
-            enemyAudioSource.pitch = Random.Range(data.MinRandomSoundPitch, data.MaxRandomSoundPitch);
+            audioSource.pitch = Random.Range(data.MinRandomSoundPitch, data.MaxRandomSoundPitch);
 
-            gameObject.transform.position = spawnPoint.position;
-            gameObject.transform.rotation = spawnPoint.rotation;
+            gameObject.transform.position = position;
+            gameObject.transform.eulerAngles = rotation;
 
             return enemyModel;
         }

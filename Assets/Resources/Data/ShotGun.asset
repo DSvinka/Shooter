@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0898139a6b08b4c40abe00b43e7d0541, type: 3}
+  m_Name: ShotGun
+  m_EditorClassIdentifier: 
+  _weaponPrefabPath: Assets/Resources/Prefab/Weapons/ShotGun.prefab
+  _bulletPrefabPath: Assets/Resources/Prefab/Weapons/Bullet.prefab
+  _defaultAimPath: Assets/Resources/Data/Weapons Modifications/Shotgun/ShotGun Default
+    Aim.asset
+  _defaultBarrelPath: Assets/Resources/Data/Weapons Modifications/Shotgun/ShotGun
+    Default Barrel.asset
+  _aimsPaths:
+  - Assets/Resources/Data/Weapons Modifications/Optical Aim.asset
+  - Assets/Resources/Data/Weapons Modifications/Shotgun/ShotGun Default Aim.asset
+  _barrelsPaths:
+  - Assets/Resources/Data/Weapons Modifications/Muffler.asset
+  - Assets/Resources/Data/Weapons Modifications/Shotgun/ShotGun Default Barrel.asset
+  _damage: 60
+  _magazineSize: 8
+  _fireRate: 1.22
+  _maxDistance: 100
+  _spread: 10
+  _spreadAim: 2
+  _rayCastLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  _weaponType: 0
+  _bulletForce: 150
+  _bulletLifeTime: 3
+  _reloadClipPath: Assets/Resources/Sounds/Weapons/ShotGun/Reload.wav
+  _fireClipPath: Assets/Resources/Sounds/Weapons/ShotGun/Shoot.wav
+  _noAmmoClipPath: Assets/Resources/Sounds/Weapons/NoAmmo.wav
+  _reloadMove: {x: -45, y: 0, z: 0}

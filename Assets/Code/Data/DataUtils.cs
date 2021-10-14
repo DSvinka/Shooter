@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Code.Interfaces.Data;
+using Code.Utils.Extensions;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -20,8 +21,33 @@ namespace Code.Data
 
             return obj;
         }
+        
+        public static T[] GetDataList<T>(string[] paths, T[] objs) where T : Object
+        {
+            var objsNull = false;
+            if (objs == null)
+            {
+                objs = new T[paths.Length];
+                objsNull = true;
+            }
 
-        public static Dictionary<string, T> GetDatasDict<T>(string path, Dictionary<string, T> obj) where T : Object
+            if (objsNull)
+            {
+                for (var i = 0; i < paths.Length; i++)
+                {
+                    var path = paths[i];
+                    var obj = AssetPath.Load<T>(path);
+                    objs[i] = obj;
+
+                    if (obj is IData item)
+                        item.Path = path;
+                }
+            }
+
+            return objs;
+        }
+
+        public static Dictionary<string, T> GetDataDict<T>(string path, Dictionary<string, T> obj) where T : Object
         {
             if (obj != null)
                 return obj;

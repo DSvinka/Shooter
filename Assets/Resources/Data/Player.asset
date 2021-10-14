@@ -19,4 +19,6 @@ MonoBehaviour:
   _runningSpeed: 11.5
   _jumpForce: 3
   _lookSpeed: 2
-  _lookXLimit: 45
+  _lookXLimit: 65
+  _maxInteractDistance: 2.5
+  _dropItemForce: 65

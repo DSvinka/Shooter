@@ -7,6 +7,6 @@ namespace Code.Interfaces.Factory
 {
     internal interface IEnemyFactory
     {
-        IEnemyModel CreateEnemy(IEnemyData data, GameObject prefab, IMove moveBridge, IAttack attackBridge, Transform spawnPoint);
+        IEnemyModel CreateEnemy(IEnemyData data, GameObject prefab, IMove moveBridge, IAttack attackBridge, Vector3 position, Vector3 rotation);
     }
 }
