@@ -43,7 +43,7 @@ namespace Code.SaveData
                 weaponSave = new Weapon()
                 {
                     PathToData = weapon.Data.Path,
-                    AmmoInClip = weapon.BulletsLeft
+                    AmmoInClip = weapon.BulletsLeft // TODO: Нужно использовать это поле.
                 };
             }
             else
@@ -70,8 +70,12 @@ namespace Code.SaveData
                     Health = enemyModel.Health,
                     Armor = enemyModel.Armor,
                     EnemyType = enemyModel.Data.EnemyType,
+                    
                     Position = enemyModel.Transform.position,
                     Rotation = enemyModel.Transform.rotation.eulerAngles,
+                    
+                    SpawnPosition = enemyModel.SpawnPointPosition,
+                    SpawnRotation = enemyModel.SpawnPointRotation,
                 };
             }
 
@@ -105,7 +109,9 @@ namespace Code.SaveData
                     switch (enemySaveData.EnemyType)
                     {
                         case EnemyManager.EnemyType.Zombie:
-                            var zombie = zombieFactory.CreateZombie(enemySaveData.Position, enemySaveData.Rotation);
+                            var zombie = zombieFactory.CreateZombie(enemySaveData.SpawnPosition, enemySaveData.SpawnRotation);
+                            zombie.Transform.position = enemySaveData.Position;
+                            zombie.Transform.eulerAngles = enemySaveData.Rotation;
                             enemies.Add(zombie.GameObject.GetInstanceID(), zombie);
                             break;
                         default:

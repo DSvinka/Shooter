@@ -14,6 +14,9 @@ namespace Code.SaveData.Data
 
         public Vector3Serializable Position;
         public Vector3Serializable Rotation;
+        
+        public Vector3Serializable SpawnPosition;
+        public Vector3Serializable SpawnRotation;
 
         public override string ToString() =>
             $"<color=green>EnemyType</color> {EnemyType}\n " +

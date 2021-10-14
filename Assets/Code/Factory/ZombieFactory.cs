@@ -1,18 +1,9 @@
-﻿using System;
-using Code.Bridges.Attacks;
+﻿using Code.Bridges.Attacks;
 using Code.Bridges.Movement;
 using Code.Data.DataStores;
-using Code.Interfaces.Bridges;
-using Code.Interfaces.Data;
 using Code.Interfaces.Factory;
 using Code.Interfaces.Models;
-using Code.Interfaces.Views;
-using Code.Managers;
-using Code.Models;
 using UnityEngine;
-using UnityEngine.AI;
-using Object = UnityEngine.Object;
-using Random = UnityEngine.Random;
 
 namespace Code.Factory
 {
