@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0af43d7e086489dab5849dfa726180b, type: 3}
   m_Name: UnitStore
   m_EditorClassIdentifier: 
-  _playerDataPath: Assets/Resources/Data/Units/Friends/Player.asset
+  _playerDataPath: Assets/Resources/Data/Units/Player.asset
   _zombieDataPath: Assets/Resources/Data/Units/Enemy/Zombie.asset

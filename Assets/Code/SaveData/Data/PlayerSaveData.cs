@@ -13,6 +13,8 @@ namespace Code.SaveData.Data
     [Serializable]
     internal sealed class PlayerSaveData
     {
+        public int Score;
+        
         public float Health;
         public float Armor;
         

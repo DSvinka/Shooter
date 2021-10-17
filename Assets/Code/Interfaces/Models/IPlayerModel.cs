@@ -7,6 +7,8 @@ namespace Code.Interfaces.Models
 {
     internal interface IPlayerModel: IUnitModel
     {
+        int Score { get; set; }
+        
         InteractView ObjectInHand { get; }
         
         Camera Camera { get; }

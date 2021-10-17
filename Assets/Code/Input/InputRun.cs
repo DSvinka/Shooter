@@ -10,7 +10,7 @@ namespace Code.Input
 
         public void GetKey()
         {
-            KeyOnChange.Invoke(UnityEngine.Input.GetKeyDown(KeysManager.RUN));
+            KeyOnChange.Invoke(UnityEngine.Input.GetKey(KeysManager.RUN));
         }
     }
 }

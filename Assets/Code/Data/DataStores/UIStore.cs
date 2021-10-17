@@ -11,9 +11,7 @@ namespace Code.Data.DataStores
         [Header("Префабы")]
         [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _hudPrefabPath;
         [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _escapeMenuPrefabPath;
-        
-        [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _settingsWindowPrefabPath;
-        
+
         [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _weaponModificationIconPrefabPath;
         [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _notifyMessagePrefabPath;
         
@@ -36,8 +34,6 @@ namespace Code.Data.DataStores
         public GameObject HudPrefab => GetData(_hudPrefabPath, _hudPrefab);
         public GameObject EscapeMenuPrefab => GetData(_escapeMenuPrefabPath, _escapeMenuPrefab);
 
-        public GameObject SettingsWindowPrefab => GetData(_settingsWindowPrefabPath, _settingsWindowPrefab);
-        
         public GameObject WeaponModificationIconPrefab => GetData(_weaponModificationIconPrefabPath, _weaponModificationIconPrefab);
         public GameObject NotifyMessagePrefabPath => GetData(_notifyMessagePrefabPath, _notifyMessagePrefab);
 

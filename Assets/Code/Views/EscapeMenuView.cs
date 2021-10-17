@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using Code.UI;
+using Code.UI.EscapeMenu;
+using Code.UI.EscapeMenu.Windows;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Code.Views
@@ -13,8 +16,7 @@ namespace Code.Views
         [SerializeField] private Button _exitGameButton;
         
         [Header("Окна")] 
-        [SerializeField] private Transform _mainWindow;
-        [SerializeField] private Transform _buttonsWindow;
+        [SerializeField] private GameObject _settingsPanel;
 
         public Button RestartGameButton => _restartGameButton;
         public Button SaveGameButton => _saveGameButton;
@@ -22,7 +24,6 @@ namespace Code.Views
         public Button SettingsGameButton => _settingsGameButton;
         public Button ExitGameButton => _exitGameButton;
 
-        public Transform MainWindow => _mainWindow;
-        public Transform ButtonsWindow => _buttonsWindow;
+        public GameObject SettingsPanel => _settingsPanel;
     }
 }

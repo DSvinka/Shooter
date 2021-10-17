@@ -28,12 +28,7 @@ namespace Code.Controllers.Initialization
             
             _enemies = new Dictionary<int, IEnemyModel>();
         }
-
-        public void SetEnemies(Dictionary<int, IEnemyModel> enemies)
-        {
-            _enemies = enemies;
-        }
-
+        
         public void Initialization()
         {
             if (_enemySpawnMarkers.Length == 0)

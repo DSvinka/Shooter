@@ -1,5 +1,6 @@
 ﻿using Code.Data;
 using Code.Interfaces.Bridges;
+using Code.Interfaces.Bridges.Weapon.Shoots;
 using Code.Models;
 using Code.Views;
 using UnityEngine;

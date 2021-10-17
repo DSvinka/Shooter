@@ -21,7 +21,7 @@ namespace Code.Controllers.Initialization
             _playerSpawnPoint = playerSpawnPoint;
         }
 
-        public PlayerModel Initialization()
+        public PlayerModel Initialization(bool saveLoaded)
         {
             var view = _playerFactory.CreatePlayer();
             var camera = view.GetComponentInChildren<Camera>();
@@ -43,8 +43,11 @@ namespace Code.Controllers.Initialization
             _player = playerModel;
             
             _player.Transform.SetParent(null);
-            _player.Transform.position = _playerSpawnPoint.position;
-            _player.Transform.rotation = _playerSpawnPoint.rotation;
+            if (!saveLoaded)
+            {
+                _player.Transform.position = _playerSpawnPoint.position;
+                _player.Transform.rotation = _playerSpawnPoint.rotation;
+            }
 
             return _player;
         }

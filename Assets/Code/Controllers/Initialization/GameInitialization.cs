@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Code.Controllers.Player;
 using Code.Data.DataStores;
 using Code.Factory;
 using Code.Markers;
@@ -34,11 +35,12 @@ namespace Code.Controllers.Initialization
             var zombieFactory = new ZombieFactory(_data.UnitStore, enemyFactory);
             var uiFactory = new UIFactory(_data.UIStore);
             
+            var enemyInitialization = new EnemyInitialization(_data.UnitStore, enemyFactory, enemySpawnMarkers);
             var playerInitialization = new PlayerInitialization(_data.UnitStore.PlayerData, playerFactory, playerSpawn.transform);
-            playerInitialization.Initialization();
+            var saveRepository = new SaveRepository(playerInitialization, zombieFactory, weaponFactory, enemyInitialization);
             
-            var saveRepository = new SaveRepository();
-            var enemies = saveRepository.Load(playerInitialization, zombieFactory, weaponFactory);
+            playerInitialization.Initialization(saveRepository.CheckSaveFile());
+            saveRepository.TryLoad();
 
             var interactDict = new Dictionary<int, InteractView>();
             var interactViews = Object.FindObjectsOfType<InteractView>();
@@ -51,9 +53,6 @@ namespace Code.Controllers.Initialization
 
             var inputInitialization = new InputInitialization();
             var uiInitialization = new UIInitialization(uiFactory);
-            var enemyInitialization = new EnemyInitialization(_data.UnitStore, enemyFactory, enemySpawnMarkers);
-            if (enemies != null)
-                enemyInitialization.SetEnemies(enemies);
 
             var promiseTimerController = new PromiseTimerController(promiseTimer);
             
