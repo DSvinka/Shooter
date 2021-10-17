@@ -9,7 +9,7 @@ using Code.Interfaces;
 using Code.Interfaces.Data;
 using Code.Interfaces.Input;
 using Code.Models;
-using Code.Utils.Extensions;
+using Code.Services;
 using Code.Views;
 using DG.Tweening;
 using UnityEngine;
@@ -28,7 +28,9 @@ namespace Code.Controllers
         private Dictionary<int, Button> _buttons;
 
         private readonly PlayerInitialization _playerInitialization;
-        private PlayerHudView _playerHudView;
+        private readonly UIInitialization _uiInitialization;
+        
+        private HudView _hudView;
         private GameObject _iconPrefab;
 
         private PlayerModel _player;
@@ -44,10 +46,12 @@ namespace Code.Controllers
 
         private void OnModificationItemMenuInput(bool value) => _modificationItemMenuInput = value;
 
-        public WeaponHudController(PlayerInitialization playerInitialization, DataStore data)
+        public WeaponHudController(PlayerInitialization playerInitialization, UIInitialization uiInitialization, UIStore uiStore)
         {
             _playerInitialization = playerInitialization;
-            _iconPrefab = data.IconPrefab;
+            _uiInitialization = uiInitialization;
+            
+            _iconPrefab = uiStore.WeaponModificationIconPrefab;
 
             _weaponNull = true;
             _modificators = new Dictionary<int, IWeaponModificatorData>(6);
@@ -58,7 +62,7 @@ namespace Code.Controllers
         
         public void Initialization()
         {
-            _playerHudView = _playerInitialization.GetPlayerHud();
+            _hudView = _uiInitialization.GetHud();
             _player = _playerInitialization.GetPlayer();
 
             _modificationItemMenuInputProxy.KeyOnChange += OnModificationItemMenuInput;
@@ -71,7 +75,7 @@ namespace Code.Controllers
             else if (_player.Weapon == null && !_weaponNull)
                 ClearHud();
 
-            var menu = _playerHudView.ModificatorMenu;
+            var menu = _hudView.ModificatorMenu;
             if (_player.View == null || _player.Weapon == null)
                 return;
 
@@ -80,7 +84,7 @@ namespace Code.Controllers
             {
                 _inMove = true;
                 
-                _playerHudView.ModificatorMenu.SetActive(true);
+                _hudView.ModificatorMenu.SetActive(true);
                 weaponTransform.DOLocalMove(MoveVector, 0.2f).OnComplete(() => { _inMove = false; });
                 weaponTransform.DOLocalRotate(RotateVector, 0.2f);
                 _player.Weapon.Blocking = true;
@@ -93,7 +97,7 @@ namespace Code.Controllers
             {
                 _inMove = true;
                 
-                _playerHudView.ModificatorMenu.SetActive(false);
+                _hudView.ModificatorMenu.SetActive(false);
                 weaponTransform.DOLocalMove(weaponTransform.localPosition - MoveVector, 0.2f);
                 weaponTransform.DOLocalRotate(weaponTransform.localRotation.eulerAngles - RotateVector, 0.2f).OnComplete(() => { _inMove = false; });;
                 _player.Weapon.Blocking = false;
@@ -143,14 +147,14 @@ namespace Code.Controllers
             for (var index = 0; index < _barrelModificators.Length; index++)
             {
                 var modificator = _barrelModificators[index];
-                var button = ModificatorInit(modificator, _playerHudView.BarrelContent);
+                var button = ModificatorInit(modificator, _hudView.BarrelContent);
                 button.onClick.AddListener(delegate { OnModificatorClick(modificator); });
             }
 
             for (var index = 0; index < _aimModificators.Length; index++)
             {
                 var modificator = _aimModificators[index];
-                var button = ModificatorInit(modificator, _playerHudView.AimContent);
+                var button = ModificatorInit(modificator, _hudView.AimContent);
                 button.onClick.AddListener(delegate { OnModificatorClick(modificator); });
             }
 
@@ -177,10 +181,10 @@ namespace Code.Controllers
             var gameObject = Object.Instantiate(_iconPrefab, placePoint);
             if (!gameObject.TryGetComponent(out Button button))
                 throw new Exception("Button отсуствует у IconPrefab");
-                    
+
             button.image.sprite = modificator.Icon;
             var gameObjectID = gameObject.GetInstanceID();
-                
+
             _buttons.Add(gameObjectID, button);
             _modificators.Add(gameObjectID, modificator);
             return button;

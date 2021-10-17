@@ -8,27 +8,21 @@ namespace Code.Factory
 {
     internal sealed class PlayerFactory: IFactory, IPlayerFactory
     {
-        private DataStore _data;
-        
-        public PlayerFactory(DataStore data)
+        private readonly UnitStore _unitStore;
+
+        public PlayerFactory(UnitStore unitStore, UIStore uiStore)
         {
-            _data = data;
+            _unitStore = unitStore;
         }
 
         public PlayerView CreatePlayer()
         {
-            var gameObject = Object.Instantiate(_data.PlayerData.PlayerPrefab);
+            var gameObject = Object.Instantiate(_unitStore.PlayerData.PlayerPrefab);
             if (!gameObject.TryGetComponent(out PlayerView view))
                 throw new Exception("У префаба игрока не найден компонент PlayerView!");
             return view;
         }
 
-        public PlayerHudView CreatePlayerHud()
-        {
-            var gameObject = Object.Instantiate(_data.PlayerHudPrefab);
-            if (!gameObject.TryGetComponent(out PlayerHudView view))
-                throw new Exception("У префаба игрока не найден компонент PlayerHudView!");
-            return view;
-        }
+        
     }
 }

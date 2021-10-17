@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Code.Interfaces.Data;
-using Code.Utils.Extensions;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Code.Data
+namespace Code.Utils.Extensions
 {
     internal static class DataUtils
     {
@@ -25,7 +24,7 @@ namespace Code.Data
         public static T[] GetDataList<T>(string[] paths, T[] objs) where T : Object
         {
             var objsNull = false;
-            if (objs == null)
+            if (objs == null || objs.Length == 0)
             {
                 objs = new T[paths.Length];
                 objsNull = true;

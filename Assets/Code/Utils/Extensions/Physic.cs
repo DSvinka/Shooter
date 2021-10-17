@@ -2,7 +2,7 @@
 
 namespace Code.Utils.Extensions
 {
-    internal static class Physic
+    public static class Physic
     {
         public static void DisableAllPhysics(this GameObject gameObject, bool disableCollision)
         {

@@ -1,31 +1,85 @@
 ﻿using Code.Controllers.Initialization;
+using Code.Data.DataStores;
 using Code.Interfaces;
+using Code.Services;
+using Code.Utils.Extensions;
 using Code.Views;
+using DG.Tweening;
+using RSG;
+using TMPro;
+using UnityEngine;
 
 namespace Code.Controllers
 {
-    internal sealed class PlayerHudController: IController, IInitialization
+    internal sealed class PlayerHudController: IController, IInitialization, ICleanup
     {
-        private readonly PlayerInitialization _initialization;
+        private readonly UIInitialization _uiInitialization;
         
-        private PlayerHudView _hud;
-        
+        private readonly MessageBrokerService<string> _messageBrokerService;
+        private readonly IPromiseTimer _promiseTimer;
+        private readonly UIStore _uiStore;
+
+        private HudView _hud;
+
+        private const float MESSAGE_ANIMATION_TIME = 0.5f;
+        private const float MESSAGE_ALIVE_TIME = 5f;
+        private const float MESSAGE_MOVE_X = 500f;
+
         private int _health = -1;
         private int _armor = -1;
         private int _ammo = -1;
         private int _maxAmmo = -1;
+        private int _score = -1;
 
-        public PlayerHudController(PlayerInitialization playerInitialization)
+        public PlayerHudController(UIInitialization uiInitialization, UIStore uiStore, MessageBrokerService<string> messageBrokerService, IPromiseTimer promiseTimer)
         {
-            _initialization = playerInitialization;
+            _uiInitialization = uiInitialization;
+            
+            _messageBrokerService = messageBrokerService;
+            _promiseTimer = promiseTimer;
+            _uiStore = uiStore;
         }
 
         public void Initialization()
         {
-            _hud = _initialization.GetPlayerHud();
+            _hud = _uiInitialization.GetHud();
+            _messageBrokerService.OnPublish += NewNotifyMessage;
             
             SetMaxAmmo(0);
             SetAmmo(0);
+            SetScore(0);
+        }
+        
+        public void Cleanup()
+        {
+            _messageBrokerService.OnPublish -= NewNotifyMessage;
+        }
+
+        private void NewNotifyMessage(object source, string messageText)
+        {
+            var message = Object.Instantiate(_uiStore.NotifyMessagePrefabPath, _hud.NotifyContent);
+            var transform = message.transform;
+
+            message.GetComponentInChildren<TMP_Text>().text = messageText;
+
+            transform.localScale = Vector3.zero;
+            transform.DOScale(Vector3.one, MESSAGE_ANIMATION_TIME);
+            _promiseTimer.WaitFor(MESSAGE_ALIVE_TIME)
+                .Then(() => transform.DOScale(Vector3.zero, MESSAGE_ANIMATION_TIME).OnComplete(() => Object.Destroy(message)));
+        }
+        
+        public void SetScore(int score)
+        {
+            if (_score == score)
+                return;
+            
+            _score = score;
+            _hud.ScoreText.text = FormatNumbers.Cut(_score);
+        }
+        public void AddScore(int score)
+        {
+            _score += score;
+            _hud.ScoreText.text = FormatNumbers.Cut(_score);
         }
     
         public void SetMaxAmmo(int maxAmmo)

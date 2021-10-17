@@ -1,5 +1,5 @@
 using Code.Interfaces.Data;
-using static Code.Data.DataUtils;
+using static Code.Utils.Extensions.DataUtils;
 using UnityEngine;
 
 namespace Code.Data
@@ -9,9 +9,17 @@ namespace Code.Data
     {
         public string Path { get; set; }
         
-        #region Поля
-        [Header("Объекты")]
+        #region Пути
+        
+        [Header("Префабы")]
         [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _playerPrefabPath;
+        
+        #endregion
+        
+        #region Поля
+
+        [Header("Информация")] 
+        [SerializeField] private string _name = "Игрок";
         
         [Header("Характеристики")] 
         [SerializeField] private float _maxHealth = 100f;
@@ -36,9 +44,11 @@ namespace Code.Data
 
         #endregion
         
-        #region Свойства
+        #region Публичные Свойства
         
         public GameObject PlayerPrefab => GetData(_playerPrefabPath, _playerPrefab);
+
+        public string Name => _name;
 
         public float MaxHealth => _maxHealth;
         public float MaxArmor => _maxArmor;

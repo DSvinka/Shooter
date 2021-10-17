@@ -38,11 +38,11 @@ namespace Code.Controllers
 
         private Vector3 _defaultAimPosition;
         
-        private DataStore _data;
+        private WeaponStore _weaponStore;
 
-        public WeaponController(DataStore data, PlayerHudController playerHudController, PlayerInitialization playerInitialization, WeaponFactory weaponFactory, PoolService poolService, PromiseTimer promiseTimer)
+        public WeaponController(WeaponStore weaponStore, PlayerHudController playerHudController, PlayerInitialization playerInitialization, WeaponFactory weaponFactory, PoolService poolService, PromiseTimer promiseTimer)
         {
-            _data = data;
+            _weaponStore = weaponStore;
             _weaponFactory = weaponFactory;
             _poolService = poolService;
             _promiseTimer = promiseTimer;
@@ -132,8 +132,6 @@ namespace Code.Controllers
                 model.SetAimProxy(modificationAim);
             }
 
-            handPoint.localPosition += _data.OpticalAimModificator.AdditionalAimPosition;
-
             _hudController.SetAmmo(model.BulletsLeft);
             _hudController.SetMaxAmmo(model.Data.MagazineSize);
         }
@@ -142,7 +140,7 @@ namespace Code.Controllers
         {
             var weaponData = weaponType switch
             {
-                WeaponManager.WeaponType.ShotGun => _data.ShotGunData,
+                WeaponManager.WeaponType.ShotGun => _weaponStore.ShotGunData,
                 _ => throw new ArgumentOutOfRangeException(nameof(WeaponManager.WeaponType),
                     "Указанный тип оружия не предусмотрен в этом коде")
             };

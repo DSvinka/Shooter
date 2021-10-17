@@ -14,16 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _weaponPrefabPath: Assets/Resources/Prefab/Weapons/ShotGun.prefab
   _bulletPrefabPath: Assets/Resources/Prefab/Weapons/Bullet.prefab
-  _defaultAimPath: Assets/Resources/Data/Weapons Modifications/Shotgun/ShotGun Default
-    Aim.asset
-  _defaultBarrelPath: Assets/Resources/Data/Weapons Modifications/Shotgun/ShotGun
+  _defaultAimPath: Assets/Resources/Data/Weapons/Weapons Modifications/Shotgun/ShotGun
+    Default Aim.asset
+  _defaultBarrelPath: Assets/Resources/Data/Weapons/Weapons Modifications/Shotgun/ShotGun
     Default Barrel.asset
   _aimsPaths:
-  - Assets/Resources/Data/Weapons Modifications/Optical Aim.asset
-  - Assets/Resources/Data/Weapons Modifications/Shotgun/ShotGun Default Aim.asset
+  - Assets/Resources/Data/Weapons/Weapons Modifications/Shotgun/ShotGun Default Aim.asset
+  - Assets/Resources/Data/Weapons/Weapons Modifications/Optical Aim.asset
   _barrelsPaths:
-  - Assets/Resources/Data/Weapons Modifications/Muffler.asset
-  - Assets/Resources/Data/Weapons Modifications/Shotgun/ShotGun Default Barrel.asset
+  - Assets/Resources/Data/Weapons/Weapons Modifications/Shotgun/ShotGun Default Barrel.asset
+  - Assets/Resources/Data/Weapons/Weapons Modifications/Muffler.asset
+  _reloadClipPath: Assets/Resources/Sounds/Weapons/ShotGun/Reload.wav
+  _fireClipPath: Assets/Resources/Sounds/Weapons/ShotGun/Shoot.wav
+  _noAmmoClipPath: Assets/Resources/Sounds/Weapons/NoAmmo.wav
   _damage: 60
   _magazineSize: 8
   _fireRate: 1.22
@@ -36,7 +39,4 @@ MonoBehaviour:
   _weaponType: 0
   _bulletForce: 150
   _bulletLifeTime: 3
-  _reloadClipPath: Assets/Resources/Sounds/Weapons/ShotGun/Reload.wav
-  _fireClipPath: Assets/Resources/Sounds/Weapons/ShotGun/Shoot.wav
-  _noAmmoClipPath: Assets/Resources/Sounds/Weapons/NoAmmo.wav
   _reloadMove: {x: -45, y: 0, z: 0}

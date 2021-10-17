@@ -1,5 +1,4 @@
 ﻿using Code.Controllers.Initialization;
-using Code.Data;
 using Code.Interfaces;
 using Code.Models;
 using UnityEngine;
@@ -23,6 +22,8 @@ namespace Code.Controllers
         public void Initialization()
         {
             _player = _initialization.GetPlayer();
+            _hudController.SetHealth((int) _player.Health);
+            _hudController.SetArmor((int) _player.Armor);
 
             var view = _player.View;
             view.OnArmored += AddArmor;
@@ -46,6 +47,7 @@ namespace Code.Controllers
             _player.Health += health;
             if (_player.Health > _player.Data.MaxHealth)
                 _player.Health = _player.Data.MaxHealth;
+            _hudController.SetHealth((int) _player.Health);
         }
 
         private void AddArmor(GameObject armorer, int _, float armor)
@@ -53,6 +55,7 @@ namespace Code.Controllers
             _player.Armor += armor;
             if (_player.Armor > _player.Data.MaxArmor)
                 _player.Armor = _player.Data.MaxArmor;
+            _hudController.SetArmor((int) _player.Armor);
         }
 
         private void AddDamage(GameObject attacker, int _, float damage)
@@ -82,7 +85,14 @@ namespace Code.Controllers
         
         private void Death()
         {
-            Object.Destroy(_player.View);
+            _player.CanMove = false;
+            if (_player.Weapon != null)
+            {
+                Object.Destroy(_player.Weapon.GameObject);
+                _player.Weapon = null;
+            }
+            
+            _player.GameObject.GetComponent<Rigidbody>().freezeRotation = false;
         }
     }
 }

@@ -1,5 +1,5 @@
 using Code.Data.WeaponModifications;
-using static Code.Data.DataUtils;
+using static Code.Utils.Extensions.DataUtils;
 using Code.Interfaces.Data;
 using Code.Managers;
 using UnityEngine;
@@ -11,17 +11,29 @@ namespace Code.Data
     {
         public string Path { get; set; }
         
-        #region Поля
+        #region Пути
         
+        [Header("Префабы")]
         [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _weaponPrefabPath;
         [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _bulletPrefabPath;
         
+        [Header("Модификации по умолчанию")]
         [SerializeField] [AssetPath.Attribute(typeof(AimModificatorData))] private string _defaultAimPath;
         [SerializeField] [AssetPath.Attribute(typeof(BarrelModificatorData))] private string _defaultBarrelPath;
 
+        [Header("Модификации")]
         [SerializeField] [AssetPath.Attribute(typeof(AimModificatorData))] private string[] _aimsPaths;
         [SerializeField] [AssetPath.Attribute(typeof(BarrelModificatorData))] private string[] _barrelsPaths;
         
+        [Header("Аудио Клипы")]
+        [SerializeField] [AssetPath.Attribute(typeof(AudioClip))] private string _reloadClipPath;
+        [SerializeField] [AssetPath.Attribute(typeof(AudioClip))] private string _fireClipPath;
+        [SerializeField] [AssetPath.Attribute(typeof(AudioClip))] private string _noAmmoClipPath;
+        
+        #endregion
+
+        #region Поля
+
         [Header("Характеристики Оружия")]
         [SerializeField] private int _damage = 10;
         
@@ -52,11 +64,6 @@ namespace Code.Data
         [SerializeField] [Tooltip("Сколько времени пуля будет жить перед тем как исчезнет (в секундах)")]
         private float _bulletLifeTime = 3f;
 
-        [Header("Аудио")]
-        [SerializeField] [AssetPath.Attribute(typeof(AudioClip))] private string _reloadClipPath;
-        [SerializeField] [AssetPath.Attribute(typeof(AudioClip))] private string _fireClipPath;
-        [SerializeField] [AssetPath.Attribute(typeof(AudioClip))] private string _noAmmoClipPath;
-        
         [Header("Визуал")]
         [SerializeField] private Vector3 _reloadMove;
 
@@ -79,7 +86,7 @@ namespace Code.Data
         
         #endregion
         
-        #region Свойства
+        #region Публичные Свойства
 
         // Характеристики Оружия
         public int Damage => _damage;

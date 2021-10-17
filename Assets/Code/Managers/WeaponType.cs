@@ -4,7 +4,7 @@ namespace Code.Managers
 {
     public static class WeaponManager
     {
-        [Flags] public enum WeaponType
+        public enum WeaponType
         {
             ShotGun = 0
         }

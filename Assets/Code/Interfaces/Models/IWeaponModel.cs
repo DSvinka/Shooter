@@ -24,7 +24,9 @@ namespace Code.Interfaces.Models
         ParticleSystem ParticleSystem { get; set; }
         AudioSource AudioSource { get; set; }
         AudioClip FireClip { get; }
+        
         Transform Transform { get; }
+        GameObject GameObject { get; }
 
         WeaponData Data { get; }
         WeaponView View { get; }

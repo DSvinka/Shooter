@@ -21,7 +21,7 @@ public partial class AssetPath
         }
 
         // Get the index of the resources folder
-        int folderIndex = projectPath.IndexOf(RESOURCES_FOLDER_NAME);
+        int folderIndex = projectPath.IndexOf(RESOURCES_FOLDER_NAME, StringComparison.Ordinal);
 
         // If it's -1 we this asset is not in a resource folder
         if (folderIndex == -1)

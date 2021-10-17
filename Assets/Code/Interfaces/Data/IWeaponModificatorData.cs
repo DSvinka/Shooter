@@ -1,9 +1,8 @@
-﻿using Code.Managers;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Code.Interfaces.Data
 {
-    public interface IWeaponModificatorData
+    public interface IWeaponModificatorData: IData
     {
         GameObject ModificatorPrefab { get; }
         Sprite Icon { get; }

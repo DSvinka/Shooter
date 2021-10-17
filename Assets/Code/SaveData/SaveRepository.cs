@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
-using Code.Controllers;
 using Code.Controllers.Initialization;
 using Code.Data;
 using Code.Factory;
@@ -20,7 +18,7 @@ namespace Code.SaveData
         private readonly IData<GameSaveData> _data;
 
         private const string _folderName = "Saves";
-        private const string _fileName = "data.bat";
+        private const string _fileName = "save.dat";
         private readonly string _path;
 
         public SaveRepository()
@@ -130,7 +128,7 @@ namespace Code.SaveData
             player.Transform.eulerAngles = loadedPlayer.Rotation;
             
             player.Health = loadedPlayer.Health;
-            player.Armor = loadedPlayer.Health;
+            player.Armor = loadedPlayer.Armor;
             
             var weapon = loadedPlayer.Weapon;
             if (!string.IsNullOrEmpty(weapon.PathToData))
