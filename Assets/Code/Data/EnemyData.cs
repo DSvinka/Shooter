@@ -1,6 +1,6 @@
 ﻿using Code.Interfaces.Data;
 using Code.Managers;
-using static Code.Data.DataUtils;
+using static Code.Utils.Extensions.DataUtils;
 using UnityEngine;
 
 namespace Code.Data
@@ -10,9 +10,20 @@ namespace Code.Data
     {
         public string Path { get; set; }
         
-        #region Поля
-        [Header("Объекты")]
+        #region Пути
+        [Header("Префабы")]
         [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _prefabPath;
+        
+        [Header("Аудио Клипы")]
+        [SerializeField] [AssetPath.Attribute(typeof(AudioClip))] private string _attackClipPath;
+        [SerializeField] [AssetPath.Attribute(typeof(AudioClip))] private string _getDamageClipPath;
+        
+        #endregion
+        
+        #region Поля
+        
+        [Header("Информация")] 
+        [SerializeField] private string _name = "Противник";
         
         [Header("Характеристики")] 
         [SerializeField] private float _maxHealth = 50f;
@@ -22,15 +33,13 @@ namespace Code.Data
         [SerializeField] private float _attackDamage = 25f;
         [SerializeField] private float _attackDistance = 10f;
         [SerializeField] private float _attackRate = 2f;
-        
-        [Header("Звуки")]
-        [SerializeField] [AssetPath.Attribute(typeof(AudioClip))] private string _attackClipPath;
-        [SerializeField] [AssetPath.Attribute(typeof(AudioClip))] private string _getDamageClipPath;
-        
+
+        [Header("Аудио")]
         [SerializeField] private float _maxRandomSoundPitch = 2f;
         [SerializeField] private float _minRandomSoundPitch = 1f;
         
         [Header("Прочее")]
+        [SerializeField] private int _scoreOnDeath;
         [SerializeField] private EnemyManager.EnemyType _enemyType;
 
         #endregion
@@ -44,9 +53,11 @@ namespace Code.Data
 
         #endregion
         
-        #region Свойства
+        #region Публичные Свойства
         
         public GameObject Prefab => GetData(_prefabPath, _prefab);
+
+        public string Name => _name;
 
         public float MaxHealth => _maxHealth;
         public float MaxArmor => _maxArmor;
@@ -60,6 +71,7 @@ namespace Code.Data
 
         public float MaxRandomSoundPitch => _maxRandomSoundPitch;
         public float MinRandomSoundPitch => _minRandomSoundPitch;
+        public int ScoreOnDeath => _scoreOnDeath;
 
         public EnemyManager.EnemyType EnemyType => _enemyType;
 

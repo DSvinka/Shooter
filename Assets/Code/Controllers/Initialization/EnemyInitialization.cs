@@ -8,34 +8,27 @@ using Code.Interfaces;
 using Code.Interfaces.Models;
 using Code.Managers;
 using Code.Markers;
-using Code.SaveData;
-using Code.Utils.Extensions;
 using UnityEngine;
 
 namespace Code.Controllers.Initialization
 {
     internal sealed class EnemyInitialization: IInitialization
     {
-        private readonly DataStore _data;
+        private readonly UnitStore _unitStore;
         private readonly EnemyFactory _enemyFactory;
         private readonly EnemySpawnMarker[] _enemySpawnMarkers;
         
         private Dictionary<int, IEnemyModel> _enemies;
         
-        public EnemyInitialization(DataStore data, EnemyFactory enemyFactory, EnemySpawnMarker[] enemySpawnMarkers)
+        public EnemyInitialization(UnitStore unitStore, EnemyFactory enemyFactory, EnemySpawnMarker[] enemySpawnMarkers)
         {
-            _data = data;
+            _unitStore = unitStore;
             _enemyFactory = enemyFactory;
             _enemySpawnMarkers = enemySpawnMarkers;
             
             _enemies = new Dictionary<int, IEnemyModel>();
         }
-
-        public void SetEnemies(Dictionary<int, IEnemyModel> enemies)
-        {
-            _enemies = enemies;
-        }
-
+        
         public void Initialization()
         {
             if (_enemySpawnMarkers.Length == 0)
@@ -54,7 +47,7 @@ namespace Code.Controllers.Initialization
         {
             var enemy = enemyType switch
             {
-                EnemyManager.EnemyType.Zombie => _enemyFactory.CreateEnemy(_data.ZombieData, _data.ZombieData.Prefab, new WalkMove(), new MeleeAttack(), spawnPoint.position, spawnPoint.rotation.eulerAngles),
+                EnemyManager.EnemyType.Zombie => _enemyFactory.CreateEnemy(_unitStore.ZombieData, _unitStore.ZombieData.Prefab, new WalkMove(), new MeleeAttack(), spawnPoint.position, spawnPoint.rotation.eulerAngles),
                 _ => throw new ArgumentOutOfRangeException()
             };
             _enemies.Add(enemy.GameObject.GetInstanceID(), enemy);

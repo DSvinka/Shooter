@@ -1,5 +1,6 @@
 ﻿using Code.Data;
 using Code.Interfaces.Bridges;
+using Code.Interfaces.Bridges.Weapon.Shoots;
 using Code.Models;
 using Code.Views;
 using UnityEngine;
@@ -24,7 +25,9 @@ namespace Code.Interfaces.Models
         ParticleSystem ParticleSystem { get; set; }
         AudioSource AudioSource { get; set; }
         AudioClip FireClip { get; }
+        
         Transform Transform { get; }
+        GameObject GameObject { get; }
 
         WeaponData Data { get; }
         WeaponView View { get; }

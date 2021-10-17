@@ -9,18 +9,18 @@ namespace Code.Factory
 {
     internal sealed class ZombieFactory: IFactory, IZombieFactory
     {
-        private readonly DataStore _data;
+        private readonly UnitStore _unitStore;
         private readonly EnemyFactory _enemyFactory;
         
-        public ZombieFactory(DataStore data, EnemyFactory enemyFactory)
+        public ZombieFactory(UnitStore unitStore, EnemyFactory enemyFactory)
         {
-            _data = data;
+            _unitStore = unitStore;
             _enemyFactory = enemyFactory;
         }
 
         public IEnemyModel CreateZombie(Vector3 position, Vector3 rotation)
         {
-            var zombieData = _data.ZombieData;
+            var zombieData = _unitStore.ZombieData;
             return _enemyFactory.CreateEnemy(zombieData, zombieData.Prefab, new WalkMove(), new MeleeAttack(), position, rotation);
         }
     }

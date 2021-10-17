@@ -1,6 +1,6 @@
 namespace Code.Utils.Extensions
 {
-    internal static class Crypto
+    public static class Crypto
     {
         public static string CryptoXOR(string text, int key = 42)
         {

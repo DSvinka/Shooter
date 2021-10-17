@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Code.Utils.Extensions
 {
     [Serializable]
-    internal struct Vector3Serializable
+    public struct Vector3Serializable
     {
         public float X;
         public float Y;

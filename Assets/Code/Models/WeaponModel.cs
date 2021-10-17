@@ -1,5 +1,6 @@
 ﻿using Code.Data;
 using Code.Interfaces.Bridges;
+using Code.Interfaces.Bridges.Weapon.Shoots;
 using Code.Interfaces.Models;
 using Code.Views;
 using UnityEngine;
@@ -24,7 +25,9 @@ namespace Code.Models
         public ParticleSystem ParticleSystem { get; set; }
         public AudioSource AudioSource { get; set; }
         public AudioClip FireClip { get; private set; }
+        
         public Transform Transform { get; }
+        public GameObject GameObject { get; }
 
         public WeaponData Data { get; }
         public WeaponView View { get; }
@@ -36,6 +39,7 @@ namespace Code.Models
 
             Blocking = false;
             Transform = View.transform;
+            GameObject = View.gameObject;
 
             Proxies = new WeaponProxiesModel();
             DefaultProxies = new WeaponProxiesModel();

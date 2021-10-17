@@ -7,8 +7,13 @@ namespace Code.Models
 {
     internal sealed class PlayerModel: IPlayerModel, IPlayerMovementModel
     {
+        public int Score { get; set; }
         public float Health { get; set; }
         public float Armor { get; set; }
+        
+        public float WalkingSpeed { get; set; }
+        public float RunningSpeed { get; set; }
+        public float JumpForce { get; set; }
         
         public Vector3 SpawnPointPosition { get; set; }
         public Vector3 SpawnPointRotation { get; set; }
@@ -38,9 +43,8 @@ namespace Code.Models
             
             Weapon = weapon;
             
-            CanMove = true;
-            Health = data.MaxHealth;
-            Armor = data.MaxArmor;
+            Reset();
+            ResetMovement();
 
             Transform = view.transform;
             GameObject = view.gameObject;
@@ -52,9 +56,16 @@ namespace Code.Models
         
         public void Reset()
         {
-            CanMove = true;
             Health = Data.MaxHealth;
             Armor = Data.MaxArmor;
+        }
+        
+        public void ResetMovement()
+        {
+            CanMove = true;
+            WalkingSpeed = Data.WalkingSpeed;
+            RunningSpeed = Data.RunningSpeed;
+            JumpForce = Data.JumpForce;
         }
         
         public void SetObjectInHand(InteractView item)

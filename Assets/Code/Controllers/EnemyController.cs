@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Code.Controllers.Initialization;
+using Code.Controllers.Player;
 using Code.Interfaces;
 using Code.Interfaces.Models;
+using Code.Managers;
 using Code.Models;
-using Code.SaveData;
+using Code.Services;
 using UnityEngine;
 
 namespace Code.Controllers
@@ -13,14 +14,18 @@ namespace Code.Controllers
     {
         private readonly EnemyInitialization _initialization;
         private readonly PlayerInitialization _playerInitialization;
+        private readonly PlayerHudController _playerHudController;
+        private readonly MessageBrokerService<string> _messageBrokerService;
 
         private Dictionary<int, IEnemyModel> _enemies;
         private PlayerModel _player;
 
-        public EnemyController(EnemyInitialization initialization, PlayerInitialization playerInitialization)
+        public EnemyController(EnemyInitialization initialization, PlayerInitialization playerInitialization, PlayerHudController playerHudController, MessageBrokerService<string> messageBrokerService)
         {
             _initialization = initialization;
             _playerInitialization = playerInitialization;
+            _playerHudController = playerHudController;
+            _messageBrokerService = messageBrokerService;
         }
         
         public void Initialization()
@@ -129,6 +134,10 @@ namespace Code.Controllers
         
         private void Death(int id, IEnemyModel enemy)
         {
+            var scoreOnDeath = enemy.Data.ScoreOnDeath;
+            _playerHudController.AddScore(scoreOnDeath);
+            _messageBrokerService.Publish(enemy.View, string.Format(MessagesManager.Enemy.DEATH, enemy.Data.Name, scoreOnDeath));
+            
             // TODO: Добавить таймер с рандомом, чтобы не сразу спавнились черти.
             enemy.Transform.position = enemy.SpawnPointPosition;
             enemy.AudioSource.Stop();

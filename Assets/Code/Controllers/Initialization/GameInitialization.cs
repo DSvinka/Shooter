@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Code.Controllers.Player;
 using Code.Data.DataStores;
 using Code.Factory;
 using Code.Markers;
@@ -28,16 +29,18 @@ namespace Code.Controllers.Initialization
             if (playerSpawn == null)
                 throw new Exception("Спавнер игрока отсуствует!");
             
-            var playerFactory = new PlayerFactory(_data);
-            var enemyFactory = new EnemyFactory(_data);
+            var playerFactory = new PlayerFactory(_data.UnitStore, _data.UIStore);
+            var enemyFactory = new EnemyFactory();
             var weaponFactory = new WeaponFactory();
-            var zombieFactory = new ZombieFactory(_data, enemyFactory);
+            var zombieFactory = new ZombieFactory(_data.UnitStore, enemyFactory);
+            var uiFactory = new UIFactory(_data.UIStore);
             
-            var playerInitialization = new PlayerInitialization(data.PlayerData, playerFactory, playerSpawn.transform);
-            playerInitialization.Initialization();
+            var enemyInitialization = new EnemyInitialization(_data.UnitStore, enemyFactory, enemySpawnMarkers);
+            var playerInitialization = new PlayerInitialization(_data.UnitStore.PlayerData, playerFactory, playerSpawn.transform);
+            var saveRepository = new SaveRepository(playerInitialization, zombieFactory, weaponFactory, enemyInitialization);
             
-            var saveRepository = new SaveRepository();
-            var enemies = saveRepository.Load(playerInitialization, zombieFactory, weaponFactory);
+            playerInitialization.Initialization(saveRepository.CheckSaveFile());
+            saveRepository.TryLoad();
 
             var interactDict = new Dictionary<int, InteractView>();
             var interactViews = Object.FindObjectsOfType<InteractView>();
@@ -45,33 +48,31 @@ namespace Code.Controllers.Initialization
                 interactDict = interactViews.ToDictionary(interactView => interactView.gameObject.GetInstanceID());
 
             var poolService = new PoolService();
+            var notifyMessageBroker = new MessageBrokerService<string>();
             var promiseTimer = new PromiseTimer();
 
             var inputInitialization = new InputInitialization();
-            var enemyInitialization = new EnemyInitialization(_data, enemyFactory, enemySpawnMarkers);
-            if (enemies != null)
-                enemyInitialization.SetEnemies(enemies);
+            var uiInitialization = new UIInitialization(uiFactory);
 
             var promiseTimerController = new PromiseTimerController(promiseTimer);
             
             var inputController = new InputController();
-            var playerHudController = new PlayerHudController(playerInitialization);
-            var weaponHudController = new WeaponHudController(playerInitialization, data);
+            var playerHudController = new PlayerHudController(uiInitialization, _data.UIStore, notifyMessageBroker, promiseTimer);
+            var weaponHudController = new WeaponHudController(playerInitialization, uiInitialization, _data.UIStore);
             
-            var weaponController = new WeaponController(data, playerHudController, playerInitialization, weaponFactory, poolService, promiseTimer);
+            var weaponController = new WeaponController(_data.WeaponStore, playerHudController, playerInitialization, weaponFactory, poolService, promiseTimer);
             var pickupController = new InteractController(weaponController, playerInitialization, interactDict);
             
-            var enemyController = new EnemyController(enemyInitialization, playerInitialization);
-
+            var enemyController = new EnemyController(enemyInitialization, playerInitialization, playerHudController, notifyMessageBroker);
+            var escapeMenuController = new EscapeMenuController(saveRepository, playerInitialization, uiInitialization, enemyInitialization);
+            
             var playerController = new PlayerController(playerInitialization, playerHudController);
             var playerMovementController = new PlayerMovementController(playerInitialization);
-
-            var savesController = new SavesController(saveRepository, playerInitialization, enemyInitialization);
-            controllers.Add(savesController);
 
             controllers.Add(promiseTimerController);
             
             controllers.Add(enemyInitialization);
+            controllers.Add(uiInitialization);
             
             controllers.Add(inputController);
             controllers.Add(playerHudController);
@@ -82,6 +83,7 @@ namespace Code.Controllers.Initialization
             controllers.Add(enemyController);
             controllers.Add(playerController);
             controllers.Add(playerMovementController);
+            controllers.Add(escapeMenuController);
         }
     }
 }

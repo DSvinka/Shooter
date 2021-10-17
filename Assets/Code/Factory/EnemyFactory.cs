@@ -15,13 +15,6 @@ namespace Code.Factory
 {
     internal sealed class EnemyFactory: IFactory, IEnemyFactory
     {
-        private DataStore _data;
-        
-        public EnemyFactory(DataStore data)
-        {
-            _data = data;
-        }
-
         public IEnemyModel CreateEnemy(IEnemyData data, GameObject prefab, IMove moveBridge, IAttack attackBridge, Vector3 position, Vector3 rotation)
         {
             var gameObject = Object.Instantiate(prefab, null, true);

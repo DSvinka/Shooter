@@ -15,6 +15,7 @@ namespace Code.Interfaces.Data
         public float MaxRandomSoundPitch { get; }
         public float MinRandomSoundPitch { get; }
         
+        public int ScoreOnDeath { get; }
         public EnemyManager.EnemyType EnemyType { get; }
     }
 }

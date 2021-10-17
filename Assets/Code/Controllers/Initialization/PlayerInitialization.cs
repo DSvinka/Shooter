@@ -1,9 +1,7 @@
 ﻿using System;
 using Code.Data;
 using Code.Factory;
-using Code.Interfaces;
 using Code.Models;
-using Code.Views;
 using UnityEngine;
 
 namespace Code.Controllers.Initialization
@@ -15,7 +13,6 @@ namespace Code.Controllers.Initialization
 
         private PlayerData _data;
         private PlayerModel _player;
-        private PlayerHudView _playerHud;
 
         public PlayerInitialization(PlayerData data, PlayerFactory playerFactory, Transform playerSpawnPoint)
         {
@@ -24,7 +21,7 @@ namespace Code.Controllers.Initialization
             _playerSpawnPoint = playerSpawnPoint;
         }
 
-        public PlayerModel Initialization()
+        public PlayerModel Initialization(bool saveLoaded)
         {
             var view = _playerFactory.CreatePlayer();
             var camera = view.GetComponentInChildren<Camera>();
@@ -44,12 +41,13 @@ namespace Code.Controllers.Initialization
             };
 
             _player = playerModel;
-            _playerHud = _playerFactory.CreatePlayerHud();
-
-            _playerHud.transform.SetParent(null);
+            
             _player.Transform.SetParent(null);
-            _player.Transform.position = _playerSpawnPoint.position;
-            _player.Transform.rotation = _playerSpawnPoint.rotation;
+            if (!saveLoaded)
+            {
+                _player.Transform.position = _playerSpawnPoint.position;
+                _player.Transform.rotation = _playerSpawnPoint.rotation;
+            }
 
             return _player;
         }
@@ -57,11 +55,6 @@ namespace Code.Controllers.Initialization
         public PlayerModel GetPlayer()
         {
             return _player;
-        }
-
-        public PlayerHudView GetPlayerHud()
-        {
-            return _playerHud;
         }
     }
 }

@@ -1,7 +1,4 @@
-﻿using Code.Interfaces.Bridges;
-using Code.Interfaces.Data;
-using Code.Interfaces.Models;
-using Code.Managers;
+﻿using Code.Interfaces.Models;
 using UnityEngine;
 
 namespace Code.Interfaces.Factory
