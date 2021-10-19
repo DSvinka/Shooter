@@ -3,7 +3,7 @@ using Code.Interfaces.Models;
 using Code.Interfaces.Views;
 using UnityEngine;
 
-namespace Code.Bridges.Attacks
+namespace Code.Bridges.Enemy.Attacks
 {
     internal sealed class MeleeAttack: IAttack
     {
