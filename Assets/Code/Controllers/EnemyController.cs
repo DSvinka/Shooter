@@ -3,6 +3,7 @@ using Code.Controllers.Initialization;
 using Code.Controllers.Player;
 using Code.Interfaces;
 using Code.Interfaces.Models;
+using Code.Listeners;
 using Code.Managers;
 using Code.Models;
 using Code.Services;
@@ -17,8 +18,11 @@ namespace Code.Controllers
         private readonly PlayerHudController _playerHudController;
         private readonly MessageBrokerService<string> _messageBrokerService;
 
+        private UnitLogListener _unitLogListener;
         private Dictionary<int, IEnemyModel> _enemies;
         private PlayerModel _player;
+        
+        private const bool DEBUG = true;
 
         public EnemyController(EnemyInitialization initialization, PlayerInitialization playerInitialization, PlayerHudController playerHudController, MessageBrokerService<string> messageBrokerService)
         {
@@ -30,6 +34,7 @@ namespace Code.Controllers
         
         public void Initialization()
         {
+            _unitLogListener = new UnitLogListener();
             _enemies = _initialization.GetEnemies();
             _player = _playerInitialization.GetPlayer();
 
@@ -43,6 +48,9 @@ namespace Code.Controllers
                         value.View.OnArmored += AddArmor;
                         value.View.OnHealing += AddHealth;
                         value.View.OnDamage += AddDamage;
+                        
+                        if (DEBUG)
+                            _unitLogListener.Add(value.View);
                     }
                 }   
             }
@@ -85,6 +93,8 @@ namespace Code.Controllers
                         value.View.OnArmored -= AddArmor;
                         value.View.OnHealing -= AddHealth;
                         value.View.OnDamage -= AddDamage;
+                        if (DEBUG)
+                            _unitLogListener.Remove(value.View);
                     }
                 }
             }
