@@ -27,16 +27,20 @@ MonoBehaviour:
   _reloadClipPath: Assets/Resources/Sounds/Weapons/ShotGun/Reload.wav
   _fireClipPath: Assets/Resources/Sounds/Weapons/ShotGun/Shoot.wav
   _noAmmoClipPath: Assets/Resources/Sounds/Weapons/NoAmmo.wav
-  _damage: 60
+  _damage: 10
   _magazineSize: 8
   _fireRate: 1.22
   _maxDistance: 100
-  _spread: 10
-  _spreadAim: 2
+  _spread: 20
+  _spreadAim: 10
   _rayCastLayerMask:
     serializedVersion: 2
     m_Bits: 1
   _weaponType: 0
-  _bulletForce: 150
+  _bulletForce: 250
   _bulletLifeTime: 3
+  _damageZoneSize: 0
+  _shootingType: 1
+  _damageType: 0
+  _castType: 0
   _reloadMove: {x: -45, y: 0, z: 0}

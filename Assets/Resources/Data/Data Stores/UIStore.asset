@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hudPrefabPath: Assets/Resources/Prefab/UI/HUD.prefab
   _escapeMenuPrefabPath: Assets/Resources/Prefab/UI/EscapeMenu.prefab
-  _settingsWindowPrefabPath: Assets/Resources/Prefab/UI/Components/Escape Menu/Settings.prefab
   _weaponModificationIconPrefabPath: Assets/Resources/Prefab/UI/Components/Icon Button.prefab
   _notifyMessagePrefabPath: Assets/Resources/Prefab/UI/Components/Message.prefab
+  _hitMessagePrefabPath: Assets/Resources/Prefab/UI/Components/Enemy/HitMessage.prefab

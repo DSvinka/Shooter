@@ -16,10 +16,10 @@ MonoBehaviour:
   _attackClipPath: Assets/Resources/Sounds/Units/Zombie/Zombie Attack.wav
   _getDamageClipPath: Assets/Resources/Sounds/Units/Zombie/Zombie Damaged.wav
   _name: "\u0417\u043E\u043C\u0431\u0438"
-  _maxHealth: 50
+  _maxHealth: 20
   _maxArmor: 0
   _attackDamage: 25
-  _attackDistance: 0.25
+  _attackDistance: 0.35
   _attackRate: 1
   _maxRandomSoundPitch: 2
   _minRandomSoundPitch: 1
