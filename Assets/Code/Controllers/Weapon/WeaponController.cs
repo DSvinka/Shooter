@@ -191,9 +191,6 @@ namespace Code.Controllers.Weapon
                 case DamageType.Normal:
                     shootDamageProxy = new NormalDamage(_player, weapon);
                     break;
-                case DamageType.Explosion:
-                    shootDamageProxy = new ExplosionDamage();
-                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(weapon.Data.DamageType), "Указаный тип урона не предусмотрен!");
             }

@@ -63,7 +63,7 @@ namespace Code.Controllers.Initialization
             var inputController = new InputController();
             var playerHudController = new PlayerHudController(uiInitialization, _data.UIStore, notifyMessageBroker, promiseTimer);
             var weaponHudController = new WeaponHudController(playerInitialization, uiInitialization, _data.UIStore);
-            var enemyHudController = new EnemyHudController(_data.UIStore, playerInitialization, unitListener, promiseTimer);
+            var enemyHudController = new EnemyHudController(_data.UIStore, playerInitialization, unitListener, poolService, promiseTimer);
             
             var weaponController = new WeaponController(_data.WeaponStore, playerHudController, playerInitialization, weaponFactory, poolService, promiseTimer);
             var pickupController = new InteractController(weaponController, playerInitialization, interactDict);

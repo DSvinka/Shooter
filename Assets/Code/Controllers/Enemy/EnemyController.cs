@@ -147,7 +147,7 @@ namespace Code.Controllers.Enemy
             _playerHudController.AddScore(scoreOnDeath);
             _messageBrokerService.Publish(enemy.View, string.Format(MessagesManager.Enemy.DEATH, enemy.Data.Name, scoreOnDeath));
             
-            // TODO: Добавить отдельный
+            // TODO: Добавить отдельный звук
             AudioSource.PlayClipAtPoint(enemy.Data.GetDamageClip, enemy.Transform.position);
             
             // TODO: Добавить таймер с рандомом, чтобы не сразу спавнились черти.

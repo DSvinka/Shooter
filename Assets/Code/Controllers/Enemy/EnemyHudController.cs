@@ -4,6 +4,7 @@ using Code.Data.DataStores;
 using Code.Interfaces;
 using Code.Listeners;
 using Code.Models;
+using Code.Services;
 using DG.Tweening;
 using RSG;
 using TMPro;
@@ -17,15 +18,17 @@ namespace Code.Controllers.Enemy
         private readonly IPromiseTimer _promiseTimer;
         private readonly UnitListener _unitListener;
         private readonly UIStore _uiStore;
-        
+        private readonly PoolService _poolService;
+
         private List<GameObject> _messages;
         private PlayerModel _player;
         
-        private const float HIT_MESSAGE_LIVETIME = 1f;
+        private const float HIT_MESSAGE_LIFETIME = 1f;
         
-        public EnemyHudController(UIStore uiStore, PlayerInitialization playerInitialization, UnitListener unitListener, IPromiseTimer promiseTimer)
+        public EnemyHudController(UIStore uiStore, PlayerInitialization playerInitialization, UnitListener unitListener, PoolService poolService, IPromiseTimer promiseTimer)
         {
             _uiStore = uiStore;
+            _poolService = poolService;
             _promiseTimer = promiseTimer;
             _unitListener = unitListener;
             _playerInitialization = playerInitialization;
@@ -61,15 +64,15 @@ namespace Code.Controllers.Enemy
             var message = CreateHitDisplay(damagePosition, damage);
             
             _messages.Add(message);
-            _promiseTimer.WaitFor(HIT_MESSAGE_LIVETIME)
+            _promiseTimer.WaitFor(HIT_MESSAGE_LIFETIME)
                 .Then(() => RemoveMessage(message));
         }
 
         private GameObject CreateHitDisplay(Vector3 position, float damage)
         {
-            var hitMessage = Object.Instantiate(_uiStore.HitMessagePrefab);
+            var hitMessage = _poolService.Instantiate(_uiStore.HitMessagePrefab);
             hitMessage.transform.position = position;
-            hitMessage.transform.DOScale(Vector3.zero, HIT_MESSAGE_LIVETIME);
+            hitMessage.transform.DOScale(Vector3.zero, HIT_MESSAGE_LIFETIME);
             var text = hitMessage.GetComponentInChildren<TMP_Text>();
             text.text = $"-{damage}";
 
@@ -78,7 +81,7 @@ namespace Code.Controllers.Enemy
 
         private void RemoveMessage(GameObject message)
         {
-            Object.Destroy(message);
+            _poolService.Destroy(message);
             _messages.Remove(message);
         }
     }
