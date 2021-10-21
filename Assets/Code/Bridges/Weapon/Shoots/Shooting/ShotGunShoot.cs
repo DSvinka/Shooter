@@ -62,10 +62,14 @@ namespace Code.Bridges.Weapon.Shoots
             var spread = _weapon.Data.Spread;
             if (_weapon.IsAiming)
                 spread = _weapon.Data.SpreadAim;
-            
-            var (origin, direction) = CalcDirection(spread, _weapon.BarrelPosition.position);
-            _weapon.Proxies.ShootCastProxy.Cast(origin, direction);
 
+            // TODO: Добавить количество выпускаемых пуль в DATA
+            for (var i = 0; i < 6f; i++)
+            {
+                var (origin, direction) = CalcDirection(spread, _weapon.BarrelPosition.position);
+                _weapon.Proxies.ShootCastProxy.Cast(origin, direction);
+            }
+            
             _weapon.BulletsLeft -= 1;
             _hudController.SetAmmo(_weapon.BulletsLeft);
             _weapon.FireCooldown = _weapon.Data.FireRate;

@@ -9,7 +9,7 @@ using Code.Models;
 using Code.Services;
 using UnityEngine;
 
-namespace Code.Controllers
+namespace Code.Controllers.Enemy
 {
     internal sealed class EnemyController: IController, IInitialization, ICleanup, IExecute
     {
@@ -132,6 +132,7 @@ namespace Code.Controllers
                 enemy.Armor = 0;
             }
 
+            enemy.AudioSource.PlayOneShot(enemy.Data.GetDamageClip);
             enemy.Health -= damage;
             if (enemy.Health <= 0)
             {
@@ -145,6 +146,9 @@ namespace Code.Controllers
             var scoreOnDeath = enemy.Data.ScoreOnDeath;
             _playerHudController.AddScore(scoreOnDeath);
             _messageBrokerService.Publish(enemy.View, string.Format(MessagesManager.Enemy.DEATH, enemy.Data.Name, scoreOnDeath));
+            
+            // TODO: Добавить отдельный
+            AudioSource.PlayClipAtPoint(enemy.Data.GetDamageClip, enemy.Transform.position);
             
             // TODO: Добавить таймер с рандомом, чтобы не сразу спавнились черти.
             enemy.Transform.position = enemy.SpawnPointPosition;

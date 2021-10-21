@@ -166,7 +166,7 @@ namespace Code.Controllers.Weapon
             {
                 case WeaponManager.WeaponType.ShotGun:
                     reloadProxy = new ShotGunReload(weapon, _hudController, _promiseTimer);
-                    aimProxy = new ShotGunAim(_player, weapon);
+                    aimProxy = new DefaultAim(_player, weapon);
 
                     break;
                 
