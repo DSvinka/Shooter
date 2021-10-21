@@ -25,7 +25,6 @@ namespace Code.States.Player
             characterController.Move(direction * context.DeltaTime);
             context.MovementDirection = direction;
             
-            Debug.Log("run");
             if (context.RunInput)
                 return;
 

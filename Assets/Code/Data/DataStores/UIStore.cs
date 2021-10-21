@@ -15,6 +15,8 @@ namespace Code.Data.DataStores
         [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _weaponModificationIconPrefabPath;
         [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _notifyMessagePrefabPath;
         
+        [SerializeField] [AssetPath.Attribute(typeof(GameObject))] private string _hitMessagePrefabPath;
+        
         #endregion
  
         #region Объекты
@@ -27,6 +29,8 @@ namespace Code.Data.DataStores
         private GameObject _weaponModificationIconPrefab;
         private GameObject _notifyMessagePrefab;
 
+        private GameObject _hitMessagePrefab;
+
         #endregion
         
         #region Публичные Свойства
@@ -35,7 +39,9 @@ namespace Code.Data.DataStores
         public GameObject EscapeMenuPrefab => GetData(_escapeMenuPrefabPath, _escapeMenuPrefab);
 
         public GameObject WeaponModificationIconPrefab => GetData(_weaponModificationIconPrefabPath, _weaponModificationIconPrefab);
-        public GameObject NotifyMessagePrefabPath => GetData(_notifyMessagePrefabPath, _notifyMessagePrefab);
+        public GameObject NotifyMessagePrefab => GetData(_notifyMessagePrefabPath, _notifyMessagePrefab);
+
+        public GameObject HitMessagePrefab => GetData(_hitMessagePrefabPath, _hitMessagePrefab);
 
         #endregion
     }

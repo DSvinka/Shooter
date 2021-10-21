@@ -18,23 +18,22 @@ namespace Code.Controllers
         private readonly PlayerHudController _playerHudController;
         private readonly MessageBrokerService<string> _messageBrokerService;
 
-        private UnitLogListener _unitLogListener;
+        private UnitListener _unitListener;
         private Dictionary<int, IEnemyModel> _enemies;
-        private PlayerModel _player;
         
-        private const bool DEBUG = true;
+        private PlayerModel _player;
 
-        public EnemyController(EnemyInitialization initialization, PlayerInitialization playerInitialization, PlayerHudController playerHudController, MessageBrokerService<string> messageBrokerService)
+        public EnemyController(EnemyInitialization initialization, PlayerInitialization playerInitialization, PlayerHudController playerHudController, UnitListener unitLogListener, MessageBrokerService<string> messageBrokerService)
         {
             _initialization = initialization;
             _playerInitialization = playerInitialization;
             _playerHudController = playerHudController;
             _messageBrokerService = messageBrokerService;
+            _unitListener = unitLogListener;
         }
         
         public void Initialization()
         {
-            _unitLogListener = new UnitLogListener();
             _enemies = _initialization.GetEnemies();
             _player = _playerInitialization.GetPlayer();
 
@@ -48,9 +47,8 @@ namespace Code.Controllers
                         value.View.OnArmored += AddArmor;
                         value.View.OnHealing += AddHealth;
                         value.View.OnDamage += AddDamage;
-                        
-                        if (DEBUG)
-                            _unitLogListener.Add(value.View);
+
+                        _unitListener.Add(value.View);
                     }
                 }   
             }
@@ -93,8 +91,8 @@ namespace Code.Controllers
                         value.View.OnArmored -= AddArmor;
                         value.View.OnHealing -= AddHealth;
                         value.View.OnDamage -= AddDamage;
-                        if (DEBUG)
-                            _unitLogListener.Remove(value.View);
+                        
+                        _unitListener.Remove(value.View);
                     }
                 }
             }
@@ -118,10 +116,10 @@ namespace Code.Controllers
                 enemy.Armor = enemy.Data.MaxArmor;
         }
 
-        private void AddDamage(GameObject attacker, int id, float damage)
+        private void AddDamage(GameObject attacker, Vector3 damagePosition, int id, float damage)
         {
             var enemy = _enemies[id];
-            
+
             if (enemy.Armor > damage)
             {
                 enemy.Armor -= damage;

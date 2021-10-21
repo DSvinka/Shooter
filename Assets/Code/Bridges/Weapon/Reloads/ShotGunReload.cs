@@ -1,12 +1,11 @@
-﻿using Code.Controllers;
-using Code.Controllers.Player;
+﻿using Code.Controllers.Player;
 using Code.Interfaces.Bridges;
 using Code.Models;
 using DG.Tweening;
 using RSG;
 using UnityEngine;
 
-namespace Code.Bridges.Reloads
+namespace Code.Bridges.Weapon.Reloads
 {
     internal sealed class ShotGunReload: IReload
     {

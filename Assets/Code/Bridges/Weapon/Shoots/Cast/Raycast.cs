@@ -34,7 +34,7 @@ namespace Code.Bridges.Weapon.Shoots.Cast
             {
                 if (_player.View.gameObject.GetInstanceID() != hit.collider.gameObject.GetInstanceID())
                 {
-                    _weapon.Proxies.ShootDamageProxy.Damage(hit.collider.gameObject);
+                    _weapon.Proxies.ShootDamageProxy.Damage(hit.collider.gameObject, hit.point);
                 }
             }
             BulletShoot(direction);

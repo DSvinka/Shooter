@@ -57,7 +57,7 @@ namespace Code.Controllers.Player
 
         private void NewNotifyMessage(object source, string messageText)
         {
-            var message = Object.Instantiate(_uiStore.NotifyMessagePrefabPath, _hud.NotifyContent);
+            var message = Object.Instantiate(_uiStore.NotifyMessagePrefab, _hud.NotifyContent);
             var transform = message.transform;
 
             message.GetComponentInChildren<TMP_Text>().text = messageText;
@@ -67,7 +67,7 @@ namespace Code.Controllers.Player
             _promiseTimer.WaitFor(MESSAGE_ALIVE_TIME)
                 .Then(() => transform.DOScale(Vector3.zero, MESSAGE_ANIMATION_TIME).OnComplete(() => Object.Destroy(message)));
         }
-        
+
         public void SetScore(int score)
         {
             if (_score == score)

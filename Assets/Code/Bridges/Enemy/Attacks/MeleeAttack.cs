@@ -25,7 +25,7 @@ namespace Code.Bridges.Enemy.Attacks
                     return;
                     
                 enemy.AudioSource.PlayOneShot(enemy.Data.AttackClip);
-                unitView.AddDamage(enemy.GameObject, enemy.Data.AttackDamage);
+                unitView.AddDamage(enemy.GameObject, raycastHit.point, enemy.Data.AttackDamage);
                 enemy.AttackCooldown = enemy.Data.AttackRate;
             }
         }

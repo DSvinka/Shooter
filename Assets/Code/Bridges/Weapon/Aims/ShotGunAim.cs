@@ -4,7 +4,7 @@ using Code.Models;
 using DG.Tweening;
 using UnityEngine;
 
-namespace Code.Bridges.Aims
+namespace Code.Bridges.Weapon.Aims
 {
     internal sealed class ShotGunAim: IAim
     {

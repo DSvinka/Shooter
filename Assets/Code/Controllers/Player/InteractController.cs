@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Code.Controllers.Initialization;
+using Code.Controllers.Weapon;
 using Code.Input.Inputs;
 using Code.Interfaces;
 using Code.Interfaces.Input;
