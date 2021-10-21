@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using Code.Bridges.Aims;
-using Code.Bridges.Reloads;
+using Code.Bridges.Weapon.Aims;
+using Code.Bridges.Weapon.Reloads;
 using Code.Bridges.Weapon.Shoots;
 using Code.Bridges.Weapon.Shoots.Cast;
 using Code.Bridges.Weapon.Shoots.Damage;
@@ -24,10 +23,9 @@ using Code.Services;
 using Code.Views;
 using RSG;
 using UnityEngine;
-
 using static Code.Utils.Extensions.Physic;
 
-namespace Code.Controllers
+namespace Code.Controllers.Weapon
 {
     internal sealed class WeaponController: IController, IExecute, IInitialization, ICleanup
     {
@@ -168,7 +166,7 @@ namespace Code.Controllers
             {
                 case WeaponManager.WeaponType.ShotGun:
                     reloadProxy = new ShotGunReload(weapon, _hudController, _promiseTimer);
-                    aimProxy = new ShotGunAim(_player, weapon);
+                    aimProxy = new DefaultAim(_player, weapon);
 
                     break;
                 

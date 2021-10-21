@@ -59,7 +59,7 @@ namespace Code.Bridges.Weapon.Shoots.Shooting
             if (_weapon.IsAiming)
                 spread = _weapon.Data.SpreadAim;
             
-            var (origin, direction) = CalcDirection(spread, _weapon.BarrelPosition.position);
+            var (origin, direction) = CalcDirection(spread, _weapon.BarrelPosition);
             _weapon.Proxies.ShootCastProxy.Cast(origin, direction);
 
             _weapon.BulletsLeft -= 1;
@@ -67,7 +67,7 @@ namespace Code.Bridges.Weapon.Shoots.Shooting
             _weapon.FireCooldown = _weapon.Data.FireRate;
         }
         
-        private (Vector3 origin, Vector3 direction) CalcDirection(float spread, Vector3 barrelPosition)
+        private (Vector3 origin, Vector3 direction) CalcDirection(float spread, Transform barrel)
         {
             var ray = _player.Camera.ViewportPointToRay(VectorManager.ScreenCenter);
             var targetPoint = ray.GetPoint(_weapon.Data.MaxDistance);
@@ -75,7 +75,7 @@ namespace Code.Bridges.Weapon.Shoots.Shooting
             var x = Random.Range(-spread, spread);
             var y = Random.Range(-spread, spread);
 
-            var directionWithoutSpread = targetPoint - barrelPosition;
+            var directionWithoutSpread = targetPoint - barrel.position;
             var directionWithSpread = directionWithoutSpread + new Vector3(x, y, 0);
 
             return (ray.origin, directionWithSpread);

@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Code.Interfaces.Models
+﻿namespace Code.UI
 {
     public interface IBaseUI
     {

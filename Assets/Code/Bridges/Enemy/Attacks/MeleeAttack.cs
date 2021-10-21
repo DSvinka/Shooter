@@ -3,7 +3,7 @@ using Code.Interfaces.Models;
 using Code.Interfaces.Views;
 using UnityEngine;
 
-namespace Code.Bridges.Attacks
+namespace Code.Bridges.Enemy.Attacks
 {
     internal sealed class MeleeAttack: IAttack
     {
@@ -25,7 +25,7 @@ namespace Code.Bridges.Attacks
                     return;
                     
                 enemy.AudioSource.PlayOneShot(enemy.Data.AttackClip);
-                unitView.AddDamage(enemy.GameObject, enemy.Data.AttackDamage);
+                unitView.AddDamage(enemy.GameObject, raycastHit.point, enemy.Data.AttackDamage);
                 enemy.AttackCooldown = enemy.Data.AttackRate;
             }
         }

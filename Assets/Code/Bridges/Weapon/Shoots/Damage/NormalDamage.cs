@@ -16,10 +16,10 @@ namespace Code.Bridges.Weapon.Shoots.Damage
             _weapon = weapon;
         }
         
-        public void Damage(GameObject gameObject)
+        public void Damage(GameObject gameObject, Vector3 shootPoint)
         {
             if (gameObject.TryGetComponent(out IUnitView unitView))
-                unitView.AddDamage(_player.GameObject, _weapon.Data.Damage);
+                unitView.AddDamage(_player.GameObject, shootPoint, _weapon.Data.Damage);
         }
     }
 }

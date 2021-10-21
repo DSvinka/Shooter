@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Code.Interfaces.Bridges.Weapon.Shoots;
 using Code.Models;
 using Code.Services;
+using Code.Utils.Extensions;
 using Code.Views;
 using RSG;
 using UnityEngine;
@@ -34,7 +35,7 @@ namespace Code.Bridges.Weapon.Shoots.Cast
             {
                 if (_player.View.gameObject.GetInstanceID() != hit.collider.gameObject.GetInstanceID())
                 {
-                    _weapon.Proxies.ShootDamageProxy.Damage(hit.collider.gameObject);
+                    _weapon.Proxies.ShootDamageProxy.Damage(hit.collider.gameObject, hit.point);
                 }
             }
             BulletShoot(direction);
@@ -47,9 +48,8 @@ namespace Code.Bridges.Weapon.Shoots.Cast
             bulletTransform.position = _weapon.BarrelPosition.position;
             bulletTransform.forward = direction.normalized;
             bullet.SetActive(true);
-
-            var bulletView = bullet.AddComponent<BulletView>();
-            if (bulletView == null)
+            
+            if (!bullet.TryGetComponent(out BulletView bulletView))
                 throw new Exception("Пуля не имеет BulletView");
             bulletView.OnCollision += OnBulletHit;
                 
@@ -74,6 +74,7 @@ namespace Code.Bridges.Weapon.Shoots.Cast
                 return;
             
             bullet.SetActive(false);
+            bullet.GetComponentInChildren<TrailRenderer>().Clear();
             _poolService.Destroy(bullet);
             Bullets.Remove(bullet);
         }

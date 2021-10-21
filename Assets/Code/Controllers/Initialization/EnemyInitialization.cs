@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Code.Bridges.Attacks;
+using Code.Bridges.Enemy.Attacks;
 using Code.Bridges.Movement;
 using Code.Data.DataStores;
 using Code.Factory;

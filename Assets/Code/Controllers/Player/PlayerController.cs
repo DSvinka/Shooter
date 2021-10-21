@@ -69,7 +69,7 @@ namespace Code.Controllers.Player
             _hudController.SetArmor((int) _player.Armor);
         }
 
-        private void AddDamage(GameObject attacker, int _, float damage)
+        private void AddDamage(GameObject attacker, Vector3 damagePosition, int _, float damage)
         {
             if (_player.Armor > damage)
             {

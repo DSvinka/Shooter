@@ -4,16 +4,16 @@ using Code.Models;
 using DG.Tweening;
 using UnityEngine;
 
-namespace Code.Bridges.Aims
+namespace Code.Bridges.Weapon.Aims
 {
-    internal sealed class ShotGunAim: IAim
+    internal sealed class DefaultAim: IAim
     {
         public IWeaponModification WeaponModification { get; }
         
         private PlayerModel _player;
         private WeaponModel _weapon;
 
-        public ShotGunAim(PlayerModel playerModel, WeaponModel weaponModel)
+        public DefaultAim(PlayerModel playerModel, WeaponModel weaponModel)
         {
             _player = playerModel;
             _weapon = weaponModel;

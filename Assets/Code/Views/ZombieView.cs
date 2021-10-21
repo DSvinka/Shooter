@@ -9,7 +9,7 @@ namespace Code.Views
         [SerializeField] private Transform _attackPoint;
         public Transform AttackPoint => _attackPoint;
 
-        public event Action<GameObject, int, float> OnDamage = delegate(GameObject attacker, int id, float damage) {  };
+        public event Action<GameObject, Vector3, int, float> OnDamage = delegate(GameObject attacker, Vector3 damagePosition, int id, float damage) {  };
         public event Action<GameObject, int, float> OnArmored = delegate(GameObject armorer, int id, float armor) {  };
         public event Action<GameObject, int, float> OnHealing = delegate(GameObject healer, int id, float health) {  };
 
@@ -23,9 +23,9 @@ namespace Code.Views
             OnArmored.Invoke(armorer, gameObject.GetInstanceID(), armor);
         }
 
-        public void AddDamage(GameObject attacker, float damage)
+        public void AddDamage(GameObject attacker, Vector3 damagePosition, float damage)
         {
-            OnDamage.Invoke(attacker, gameObject.GetInstanceID(), damage);
+            OnDamage.Invoke(attacker, damagePosition, gameObject.GetInstanceID(), damage);
         }
     }
 }

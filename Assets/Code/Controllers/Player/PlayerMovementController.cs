@@ -3,6 +3,8 @@ using Code.Input.Inputs;
 using Code.Interfaces;
 using Code.Interfaces.Input;
 using Code.Models;
+using Code.States;
+using Code.States.Player;
 using UnityEngine;
 
 namespace Code.Controllers.Player
@@ -11,8 +13,8 @@ namespace Code.Controllers.Player
     {
         private readonly PlayerInitialization _playerInitialization;
         private PlayerModel _player;
-
-        private Vector3 _moveDirection;
+        private MovementContext _movementContext;
+        
         private float _rotationX;
 
         private Vector2 _movementInput;
@@ -53,6 +55,7 @@ namespace Code.Controllers.Player
         public void Initialization()
         {
             _player = _playerInitialization.GetPlayer();
+            _movementContext = new MovementContext(new MovementWalk(), _player);
 
             _mouseXProxy.AxisOnChange += OnMouseXInput;
             _mouseYProxy.AxisOnChange += OnMouseYInput;
@@ -81,42 +84,24 @@ namespace Code.Controllers.Player
 
         public void Execute(float deltaTime)
         {
-            var characterController = _player.CharacterController;
-            var transform = _player.Transform;
-            var canMove = _player.CanMove;
             var data = _player.Data;
-            
-            var forward = transform.TransformDirection(Vector3.forward);
-            var right = transform.TransformDirection(Vector3.right);
 
-            var isRunning = _runInput;
-            var curSpeedX = canMove ? (isRunning ? data.RunningSpeed : data.WalkingSpeed) * _movementInput.y : 0;
-            var curSpeedY = canMove ? (isRunning ? data.RunningSpeed : data.WalkingSpeed) * _movementInput.x : 0;
-            var movementDirectionY = _moveDirection.y;
-            _moveDirection = (forward * curSpeedX) + (right * curSpeedY);
+            _movementContext.Update(deltaTime, _movementInput, _runInput, _jumpInput);
+            _movementContext.Request();
 
-            if (_jumpInput && canMove && characterController.isGrounded)
+            if (!_player.CharacterController.isGrounded)
             {
-                _moveDirection.y = data.JumpForce;
-            }
-            else
-            {
-                _moveDirection.y = movementDirectionY;
+                var moveDirection = _movementContext.MovementDirection;
+                moveDirection.y -= data.JumpForce * deltaTime;
+                _movementContext.MovementDirection = moveDirection;
             }
 
-            if (!characterController.isGrounded)
-            {
-                _moveDirection.y -= data.JumpForce * deltaTime;
-            }
-            
-            characterController.Move(_moveDirection * deltaTime);
-
-            if (canMove)
+            if (_player.CanMove)
             {
                 _rotationX += -_mouseInput.y * data.LookSpeed;
                 _rotationX = Mathf.Clamp(_rotationX, -data.LookXLimit, data.LookXLimit);
                 _player.CameraTransform.localRotation = Quaternion.Euler(_rotationX, 0, 0);
-                transform.rotation *= Quaternion.Euler(0, _mouseInput.x * data.LookSpeed, 0);
+                _player.Transform.rotation *= Quaternion.Euler(0, _mouseInput.x * data.LookSpeed, 0);
             }
         }
     }

@@ -3,12 +3,13 @@ using Code.Controllers.Initialization;
 using Code.Controllers.Player;
 using Code.Interfaces;
 using Code.Interfaces.Models;
+using Code.Listeners;
 using Code.Managers;
 using Code.Models;
 using Code.Services;
 using UnityEngine;
 
-namespace Code.Controllers
+namespace Code.Controllers.Enemy
 {
     internal sealed class EnemyController: IController, IInitialization, ICleanup, IExecute
     {
@@ -17,15 +18,18 @@ namespace Code.Controllers
         private readonly PlayerHudController _playerHudController;
         private readonly MessageBrokerService<string> _messageBrokerService;
 
+        private UnitListener _unitListener;
         private Dictionary<int, IEnemyModel> _enemies;
+        
         private PlayerModel _player;
 
-        public EnemyController(EnemyInitialization initialization, PlayerInitialization playerInitialization, PlayerHudController playerHudController, MessageBrokerService<string> messageBrokerService)
+        public EnemyController(EnemyInitialization initialization, PlayerInitialization playerInitialization, PlayerHudController playerHudController, UnitListener unitLogListener, MessageBrokerService<string> messageBrokerService)
         {
             _initialization = initialization;
             _playerInitialization = playerInitialization;
             _playerHudController = playerHudController;
             _messageBrokerService = messageBrokerService;
+            _unitListener = unitLogListener;
         }
         
         public void Initialization()
@@ -43,6 +47,8 @@ namespace Code.Controllers
                         value.View.OnArmored += AddArmor;
                         value.View.OnHealing += AddHealth;
                         value.View.OnDamage += AddDamage;
+
+                        _unitListener.Add(value.View);
                     }
                 }   
             }
@@ -85,6 +91,8 @@ namespace Code.Controllers
                         value.View.OnArmored -= AddArmor;
                         value.View.OnHealing -= AddHealth;
                         value.View.OnDamage -= AddDamage;
+                        
+                        _unitListener.Remove(value.View);
                     }
                 }
             }
@@ -108,10 +116,10 @@ namespace Code.Controllers
                 enemy.Armor = enemy.Data.MaxArmor;
         }
 
-        private void AddDamage(GameObject attacker, int id, float damage)
+        private void AddDamage(GameObject attacker, Vector3 damagePosition, int id, float damage)
         {
             var enemy = _enemies[id];
-            
+
             if (enemy.Armor > damage)
             {
                 enemy.Armor -= damage;
@@ -124,6 +132,7 @@ namespace Code.Controllers
                 enemy.Armor = 0;
             }
 
+            enemy.AudioSource.PlayOneShot(enemy.Data.GetDamageClip);
             enemy.Health -= damage;
             if (enemy.Health <= 0)
             {
@@ -137,6 +146,9 @@ namespace Code.Controllers
             var scoreOnDeath = enemy.Data.ScoreOnDeath;
             _playerHudController.AddScore(scoreOnDeath);
             _messageBrokerService.Publish(enemy.View, string.Format(MessagesManager.Enemy.DEATH, enemy.Data.Name, scoreOnDeath));
+            
+            // TODO: Добавить отдельный
+            AudioSource.PlayClipAtPoint(enemy.Data.GetDamageClip, enemy.Transform.position);
             
             // TODO: Добавить таймер с рандомом, чтобы не сразу спавнились черти.
             enemy.Transform.position = enemy.SpawnPointPosition;
